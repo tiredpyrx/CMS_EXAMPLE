@@ -8,6 +8,9 @@
         <a href="{{ route('categories.show', $category->id) }}" class="btn-secondary">
             Kategoriyi Gör
         </a>
+        <a href="?open-jsmodal-with-category-infos" class="btn-secondary">
+            Bilgiler
+        </a>
         <form action="{{ route('categories.destroy', $category->id) }}" method="POST">
             @csrf
             @method('DELETE')
@@ -37,17 +40,25 @@
                 </div>
                 <div class="col-span-12">
                     <div class="flex items-center gap-x-4">
-                        <div class="flex items-center mb-4">
-                            <input @checked($category->have_details) name="have_details" id="have_details" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                            <label for="have_details" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Detaya Sahip</label>
+                        <div class="mb-4 flex items-center">
+                            <input @checked($category->have_details) name="have_details" id="have_details" type="checkbox"
+                                value=""
+                                class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
+                            <label for="have_details"
+                                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Detaya Sahip</label>
                         </div>
-                        <div class="flex items-center mb-4">
-                            <input @checked($category->direct_access) name="direct_access" id="direct_access" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                            <label for="direct_access" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Direkt Kategori</label>
+                        <div class="mb-4 flex items-center">
+                            <input @checked($category->as_page) name="as_page" id="as_page" type="checkbox"
+                                value=""
+                                class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
+                            <label for="as_page"
+                                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Sayfayı Temsil Ediyor</label>
                         </div>
-                        <div class="flex items-center mb-4">
-                            <input @checked($category->active) name="active" id="active" type="checkbox" value="" class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                            <label for="active" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Aktif</label>
+                        <div class="mb-4 flex items-center">
+                            <input @checked($category->active) name="active" id="active" type="checkbox" value=""
+                                class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
+                            <label for="active"
+                                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Aktif</label>
                         </div>
                     </div>
                 </div>
@@ -62,60 +73,6 @@
     @if ($fields->count())
         <x-document-panel>
             <div class="relative overflow-x-auto border border-gray-100 shadow-md sm:rounded-lg">
-                <div
-                    class="flex-column flex flex-wrap items-center justify-between space-y-4 bg-white p-4 dark:bg-gray-900 md:flex-row md:space-y-0">
-                    <div class="relative">
-                        <button id="user_index_dropdown_trigger" data-dropdown-toggle="dropdownAction"
-                            class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-700"
-                            type="button">
-                            <span class="sr-only">Action button</span>
-                            Action
-                            <svg class="ms-2.5 h-2.5 w-2.5" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
-                                fill="none" viewBox="0 0 10 6">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="m1 1 4 4 4-4" />
-                            </svg>
-                        </button>
-                        <!-- Dropdown menu -->
-                        <div id="user_index_dropdown_target"
-                            class="close-on-outside-click absolute left-0 top-full z-10 hidden w-44 divide-y divide-gray-100 rounded-lg bg-white shadow dark:divide-gray-600 dark:bg-gray-700">
-                            <ul class="py-1 text-sm text-gray-700 dark:text-gray-200"
-                                aria-labelledby="dropdownActionButton">
-                                <li>
-                                    <a href="#"
-                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Reward</a>
-                                </li>
-                                <li>
-                                    <a href="#"
-                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Promote</a>
-                                </li>
-                                <li>
-                                    <a href="#"
-                                        class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white">Activate
-                                        account</a>
-                                </li>
-                            </ul>
-                            <div class="py-1">
-                                <a href="#"
-                                    class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-600 dark:hover:text-white">Delete
-                                    User</a>
-                            </div>
-                        </div>
-                    </div>
-                    <label for="table-search" class="sr-only">Search</label>
-                    <div class="relative">
-                        <div class="rtl:inset-r-0 pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
-                            <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
-                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="m19 19-4-4m0-7A7 7 0 1 1 1 8a7 7 0 0 1 14 0Z" />
-                            </svg>
-                        </div>
-                        <input type="text" id="table-search-users"
-                            class="block w-80 rounded-lg border border-gray-300 bg-gray-50 p-2 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
-                            placeholder="Search for fields">
-                    </div>
-                </div>
                 <div class="relative overflow-x-auto">
                     <div class="relative overflow-x-auto">
                         <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
@@ -154,7 +111,16 @@
                                             {{ $field->author_name }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            {{ $field->active }}
+                                            <div class="mb-4 flex items-center">
+                                                <label for="{{ $field->handler . '-actice-togglebox' }}" class="sr-only">
+                                                    {{ $category->title . ' Aktif Seçim Kutusu' }}
+                                                </label>
+                                                <input data-key="id" data-value="{{ $field->id }}"
+                                                    data-modelname="field" data-modelname_plural="fields"
+                                                    @checked($field->active) id="{{ $field->handler . '-actice-togglebox' }}"
+                                                    type="checkbox"
+                                                    class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
+                                            </div>
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="mb-4 flex items-center">
@@ -171,11 +137,12 @@
                         aria-label="Table navigation">
                         <span
                             class="mb-4 block w-full text-sm font-normal text-black/90 dark:text-gray-50 md:mb-0 md:inline md:w-auto">Showing
-                            <span class="font-semibold text-black/90 dark:text-gray-50">{{ $fields->count() }}</span> of <span
-                                class="font-semibold text-black/90 dark:text-gray-50">{{ getAll('field')->count() }}</span></span>
-                        @if (count($fields->links()->elements[0]) > 1)
+                            <span class="font-semibold text-black/90 dark:text-gray-50">{{ $fields->count() }}</span> of
+                            <span
+                                class="font-semibold text-black/90 dark:text-gray-50">{{ $category->fields()->count() }}</span></span>
+                        @if (count($paginationArray) > 1)
                             <ul class="inline-flex h-8 -space-x-px text-sm rtl:space-x-reverse">
-                                @foreach ($fields->links()->elements[0] as $idx => $link)
+                                @foreach ($paginationArray as $idx => $link)
                                     <li>
                                         <a href="{{ $link }}"
                                             class="flex h-8 items-center justify-center border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
@@ -187,6 +154,12 @@
                         @endif
                     </nav>
                 </div>
+            </div>
+            <div class="mt-6 flex justify-end">
+                <a href="{{ route('fields.create', ['modelName' => strtolower(class_basename($category)), 'modelId' => $category->id]) }}"
+                    class="btn-secondary">
+                    Alan Ekle
+                </a>
             </div>
         </x-document-panel>
     @else

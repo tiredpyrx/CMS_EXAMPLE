@@ -123,10 +123,10 @@
                                             </td>
                                             <td class="px-6 py-4">
                                                 <div class="mb-4 flex items-center">
-                                                    <label for="{{ $category->title.'-aktif' }}" class="sr-only">
+                                                    <label for="{{ $category->title.'-actice-togglebox' }}" class="sr-only">
                                                         {{ $category->title.' Aktif Seçim Kutusu' }}
                                                     </label>
-                                                    <input @checked($category->active) id="{{ $category->title.'-active' }}" type="checkbox"
+                                                    <input data-key="title" data-value="{{ $category->title }}" data-modelname="category" data-modelname_plural="categories" @checked($category->active) id="{{ $category->title.'-actice-togglebox' }}" type="checkbox"
                                                         class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                                                 </div>
                                             </td>

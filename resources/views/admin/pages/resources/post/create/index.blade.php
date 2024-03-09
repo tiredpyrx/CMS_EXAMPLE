@@ -1,7 +1,7 @@
 @extends('templates.admin')
 
 @section('content')
-    <x-document-header title="{{ $category->title }} Kategorisi İçin Gönderi Ekle">
+    <x-document-header title='"{{ shortenText($category->title, 20) }}" Kategorisi İçin Gönderi Ekle'>
         @if (auth()->user()->role == 'admin' || auth()->user()->role == 'editor')
             {{-- add button here --}}
         @endif
@@ -17,8 +17,10 @@
             @csrf
             <div class="grid grid-cols-12 gap-4">
                 @foreach ($fields as $field)
-                    <div class="col-span-{{ $field->column }}">
-                        <label default for="{{ $field->handler }}">{{ $field->label }}</label>
+                    <div class="{{ 'col-span-'.$field->column }}">
+                        <label default for="{{ $field->handler }}">
+                            {{ $field->required ? $field->label . '*' : $field->label }}
+                        </label>
                         <input
                             default
                             name="{{ $field->handler }}"

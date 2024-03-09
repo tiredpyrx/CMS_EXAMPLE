@@ -10,6 +10,10 @@ class Category extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public const DEFAULT_HAVE_DETAILS_VALUE = false;
+    public const DEFAULT_AS_PAGE_VALUE = false;
+    public const DEFAULT_ACTIVE_VALUE = true;
+
     public const MASS_ASSIGNABLES = [
         'title' => 'title',
         'icon' => 'icon',
@@ -17,7 +21,7 @@ class Category extends Model
         'description' => 'description',
 
         'have_details' => 'have_details',
-        'direct_access' => 'direct_access',
+        'as_page' => 'as_page',
         'active' => 'active',
 
         'deleted_at' => 'deleted_at'
@@ -25,8 +29,15 @@ class Category extends Model
 
     public const MASS_ASSIGNABLE_BOOLS = [
         'have_details' => 'have_details',
-        'direct_access' => 'direct_access',
+        'as_page' => 'as_page',
         'active' => 'active',
+    ];
+
+    public const RULES = [
+        'title' => ['required', 'string', 'max:60'],
+        'icon' => ['nullable', 'string', 'max:60'],
+        'view' => ['nullable', 'string', 'max:60'],
+        'description' => ['nullable', 'string', 'max:160'],
     ];
 
     protected $fillable = [
@@ -39,7 +50,7 @@ class Category extends Model
         'description',
 
         'have_details',
-        'direct_access',
+        'as_page',
         'active',
 
         'deleted_at',
@@ -92,6 +103,6 @@ class Category extends Model
 
     public function getMassAssignableBools()
     {
-        return $this->getMassAssignables()->filter(fn($d) => in_array($d, $this::MASS_ASSIGNABLE_BOOLS));
+        return $this->getMassAssignables()->filter(fn ($d) => in_array($d, $this::MASS_ASSIGNABLE_BOOLS));
     }
 }

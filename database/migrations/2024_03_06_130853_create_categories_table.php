@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Category;
+use App\Models\Field;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -22,9 +24,9 @@ return new class extends Migration
             $table->string('view')->nullable();
             $table->text('description')->nullable();
 
-            $table->boolean('have_details')->nullable()->default(false);
-            $table->boolean('direct_access')->nullable()->default(false);
-            $table->boolean('active')->nullable()->default(true);
+            $table->boolean('have_details')->nullable()->default(Category::DEFAULT_HAVE_DETAILS_VALUE);
+            $table->boolean('as_page')->nullable()->default(Category::DEFAULT_AS_PAGE_VALUE);
+            $table->boolean('active')->nullable()->default(Category::DEFAULT_ACTIVE_VALUE);
             $table->softDeletes();
             $table->timestamps();
         });

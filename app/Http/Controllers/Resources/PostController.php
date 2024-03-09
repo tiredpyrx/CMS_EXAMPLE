@@ -33,10 +33,11 @@ class PostController extends Controller
      */
     public function store(StorePostRequest $request, Category $category, PostService $postService)
     {
-        $post = Post::create(array_merge($request->only('title'), ['user_id' => auth()->id(), 'category_id' => $category->id]));
+        $safeRequest = $request->only('title');
+        $additional = ['user_id' => auth()->id(), 'category_id' => $category->id];
+        $merged = array_merge($safeRequest, $additional);
+        $post = Post::create($merged);
         $postService->registerFields($post, $request);
-
-        $posts = $category->posts()->paginate(10);
         return to_route('categories.show', $category->id)->with('success', 'Gönderi başarıyla eklendi!');
     }
 

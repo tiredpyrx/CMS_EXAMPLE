@@ -2,16 +2,16 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Field;
 
-class StoreFieldRequest extends FormRequest
+class StoreFieldRequest extends AppFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,8 +21,6 @@ class StoreFieldRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        return Field::RULES;
     }
 }

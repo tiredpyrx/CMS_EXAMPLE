@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Models\Field;
 
-class UpdateFieldRequest extends FormRequest
+class UpdateFieldRequest extends AppFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,8 +21,6 @@ class UpdateFieldRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        return Field::RULES;
     }
 }

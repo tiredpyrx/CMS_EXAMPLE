@@ -17,8 +17,8 @@ return new class extends Migration
             $table->string('avatar_source')->nullable();
             $table->string('name')->nullable();
             $table->string('nickname')->unique();
-            $table->text('biography')->nullable();
             $table->string('email')->unique();
+            $table->text('biography')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->boolean('grounded')->nullable()->default(false);

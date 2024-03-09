@@ -2,9 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Category;
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateCategoryRequest extends FormRequest
+class UpdateCategoryRequest extends AppFormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -21,8 +22,6 @@ class UpdateCategoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        return [
-            //
-        ];
+        return Category::RULES;
     }
 }

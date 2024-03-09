@@ -22,6 +22,7 @@ class CategoryFactory extends Factory
             'icon' => 'fas fa-folder',
             'view' => 'some-view',
             'description' => 'This is a category',
+            'have_details' => 1,
         ];
     }
 }

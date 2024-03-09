@@ -10,6 +10,11 @@ class Field extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public const DEFAULT_COLUMN_VALUE = 6;
+    public const DEFAULT_TYPE_VALUE = 'text';
+    public const DEFAULT_REQUIRED_VALUE = false;
+    public const DEFAULT_ACTIVE_VALUE = true;
+
     public const MASS_ASSIGNABLES = [
         'label' => 'label',
         'placeholder' => 'placeholder',
@@ -18,8 +23,28 @@ class Field extends Model
         'handler' => 'handler',
         'value' => 'value',
         'type' => 'type',
+
+        'required' => 'required',
         'active' => 'active',
+
         'deleted_at' => 'deleted_at'
+    ];
+
+    public const MASS_ASSIGNABLE_BOOLS = [
+        'required' => 'required',
+        'active' => 'active',
+    ];
+
+    public const RULES = [
+        'label' => ['nullable', 'string', 'max:60'],
+        'handler' => ['required', 'string', 'max:60'],
+        'value' => ['nullable', 'string'],
+        'placeholder' => ['nullable', 'string'],
+        'description' => ['nullable', 'string', 'max:160'],
+        'type' => ['nullable', 'string'],
+        'column' => ['nullable', 'string', 'max: 2'],
+        'required' => ['nullable', 'string'],
+        'active' => ['nullable', 'string'],
     ];
 
     protected $fillable = [
@@ -27,6 +52,7 @@ class Field extends Model
         'blueprint_id',
         'category_id',
         'post_id',
+
         'label',
         'placeholder',
         'column',
@@ -34,7 +60,10 @@ class Field extends Model
         'handler',
         'value',
         'type',
+
+        'required',
         'active',
+
         'deleted_at',
     ];
 
@@ -61,5 +90,10 @@ class Field extends Model
     public function getMassAssignables()
     {
         return collect($this::MASS_ASSIGNABLES);
+    }
+
+    public function getMassAssignableBools()
+    {
+        return $this->getMassAssignables()->filter(fn ($d) => in_array($d, $this::MASS_ASSIGNABLE_BOOLS));
     }
 }

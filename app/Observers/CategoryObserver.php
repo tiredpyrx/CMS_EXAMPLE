@@ -11,9 +11,9 @@ class CategoryObserver
      */
     public function created(Category $category): void
     {
-        $fieldRecords = [['user_id' => auth()->id() || 1, 'category_id' => $category->id, 'label' => 'Başlık', 'handler' => 'title']];
+        $fieldRecords = [['user_id' => auth()->id() || 1, 'category_id' => $category->id, 'required' => true, 'label' => 'Başlık', 'handler' => 'title']];
 
-        if ($category->have_details) $fieldRecords[] = ['user_id' => auth()->id() || 1, 'category_id' => $category->id, 'label' => 'Slug', 'handler' => 'slug'];
+        if ($category->have_details) $fieldRecords[] = ['user_id' => auth()->id() || 1, 'category_id' => $category->id, 'required' => true, 'label' => 'Slug', 'handler' => 'slug'];
 
         $category->fields()->createMany($fieldRecords);
     }
@@ -23,7 +23,13 @@ class CategoryObserver
      */
     public function updated(Category $category): void
     {
-        //
+        $slugField = $category->fields()->where('handler', 'slug');
+
+        if (!$category->have_details && $slugField->exists())
+            $slugField->delete();
+
+        if ($category->have_details && $slugField->doesntExist())
+            $category->fields()->create(['user_id' => auth()->id() || 1, 'category_id' => $category->id, 'label' => 'Slug', 'handler' => 'slug']);
     }
 
     /**

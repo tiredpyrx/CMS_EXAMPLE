@@ -10,6 +10,8 @@ class Post extends Model
 {
     use HasFactory, SoftDeletes;
 
+    public const RULES = ['title' => 'required'];
+
     protected $fillable = [
         'user_id',
         'category_id',
@@ -19,6 +21,11 @@ class Post extends Model
         'active',
         'deleted_at',
     ];
+
+    public function take(string $handler)
+    {
+        return $this->fields()->where('handler', $handler)->value('value');
+    }
 
     public function user()
     {

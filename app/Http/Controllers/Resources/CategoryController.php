@@ -4,18 +4,21 @@ namespace App\Http\Controllers\Resources;
 
 use App\Actions\FilterRequest;
 use App\Actions\GetUpdatedDatas;
+use App\Actions\ToggleActive;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use App\Services\CategoryService;
+use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
 
     private $categoryService;
 
-    public function __construct(CategoryService $categoryService) {
+    public function __construct(CategoryService $categoryService)
+    {
         $this->categoryService = $categoryService;
     }
 
@@ -50,7 +53,8 @@ class CategoryController extends Controller
     public function edit(Category $category)
     {
         $fields = $category->fields()->paginate(10);
-        return view('admin.pages.resources.category.edit.index', compact('category', 'fields'));
+        $paginationArray  = $fields->links()->elements[0];
+        return view('admin.pages.resources.category.edit.index', compact('category', 'fields', 'paginationArray'));
     }
 
 
@@ -68,5 +72,13 @@ class CategoryController extends Controller
     public function destroy(Category $category)
     {
         //
+    }
+
+    public function updateActive(Request $request, ToggleActive $toggleActive, string $modelName)
+    {
+        $primaryKey = $request->input('primaryKey');
+        $primaryValue = $request->input('primaryValue');
+        $checked = $request->input('checked');
+        return $toggleActive->execute($primaryKey, $primaryValue, $modelName, $checked);
     }
 }

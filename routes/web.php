@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticationController;
+use App\Http\Controllers\FrontController;
 use App\Http\Controllers\Views\DashboardViewController;
 use App\Http\Controllers\Views\LoginViewController;
 use App\Http\Controllers\Resources\UserController;
@@ -30,17 +31,32 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', DashboardViewController::class)->name('dashboard');
 
     Route::prefix('dashboard')->group(function () {
+        Route::prefix('categories')->group(function () {
+            Route::patch('/{modelName}/active', [CategoryController::class, 'updateActive'])->name('categories.active');
+        });
+
         Route::prefix('posts')->group(function () {
             Route::get('{category}/create', [PostController::class, 'create'])->name('posts.create');
             Route::post('{category}/store', [PostController::class, 'store'])->name('posts.store');
+        });
+
+        Route::group(['prefix' => 'fields', 'controller' => FieldController::class], function () {
+            Route::get('{modelName}/{modelId}/create', 'create')->name('fields.create');
+            Route::post('{modelName}/{modelId}/store', 'store')->name('fields.store');
+
+            Route::patch('/{modelName}/active', 'updateActive')->name('fields.active');
+
         });
 
         Route::resources([
             'users' => UserController::class,
             'categories' => CategoryController::class,
             'blueprints' => BlueprintController::class,
-            'fields' => FieldController::class
         ]);
         Route::resource('posts', PostController::class)->except(['create', 'store']);
+        Route::resource('fields', FieldController::class)->except(['create', 'store']);
     });
 });
+
+
+Route::get('{slug}', FrontController::class);
