@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Resources;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
+use App\Models\Category;
 use App\Models\Post;
+use App\Services\PostService;
 
 class PostController extends Controller
 {
@@ -20,17 +22,22 @@ class PostController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function create(Category $category)
     {
-        //
+        $fields = $category->fields;
+        return view('admin.pages.resources.post.create.index', compact('category', 'fields'));
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePostRequest $request)
+    public function store(StorePostRequest $request, Category $category, PostService $postService)
     {
-        //
+        $post = Post::create(array_merge($request->only('title'), ['user_id' => auth()->id(), 'category_id' => $category->id]));
+        $postService->registerFields($post, $request);
+
+        $posts = $category->posts()->paginate(10);
+        return to_route('categories.show', $category->id)->with('success', 'Gönderi başarıyla eklendi!');
     }
 
     /**

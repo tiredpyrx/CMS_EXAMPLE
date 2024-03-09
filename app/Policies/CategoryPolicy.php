@@ -13,7 +13,7 @@ class CategoryPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->role_name === 'admin' || $user->role_name === 'editor';
     }
 
     /**
@@ -21,7 +21,7 @@ class CategoryPolicy
      */
     public function view(User $user, Category $category): bool
     {
-        //
+        return $user->role_name !== 'observer';
     }
 
     /**
@@ -29,7 +29,7 @@ class CategoryPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->role_name === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -37,7 +37,7 @@ class CategoryPolicy
      */
     public function update(User $user, Category $category): bool
     {
-        //
+        return $user->role_name === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -45,7 +45,10 @@ class CategoryPolicy
      */
     public function delete(User $user, Category $category): bool
     {
-        //
+        if ($category->required) {
+            return $user->role_name === 'admin';
+        }
+        return $user->role_name === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -53,7 +56,7 @@ class CategoryPolicy
      */
     public function restore(User $user, Category $category): bool
     {
-        //
+        return $user->role_name === 'admin' || $user->role === 'editor';
     }
 
     /**
@@ -61,6 +64,10 @@ class CategoryPolicy
      */
     public function forceDelete(User $user, Category $category): bool
     {
-        //
+        if ($category->allow_force_deletion) {
+            return $user->role_name === 'admin' || $user->role === 'editor';
+        }
+
+        return $user->role_name === 'admin';
     }
 }

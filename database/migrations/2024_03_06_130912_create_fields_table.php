@@ -13,6 +13,24 @@ return new class extends Migration
     {
         Schema::create('fields', function (Blueprint $table) {
             $table->id();
+
+            $table->foreignId('user_id');
+            $table->foreignId('blueprint_id')->nullable()->cascadeOnDelete();
+            $table->foreignId('category_id')->nullable()->cascadeOnDelete();
+            $table->foreignId('post_id')->nullable()->cascadeOnDelete()->cascadeOnUpdate();
+
+            $table->string('label')->nullable();
+            $table->string('column')->nullable()->default('6');
+            $table->string('placeholder')->nullable();
+            $table->text('description')->nullable();
+            $table->string('handler');
+
+            $table->string('value')->nullable();
+
+            $table->string('type')->nullable()->default('text');
+
+            $table->boolean('active')->nullable()->default(true);
+            $table->softDeletes();
             $table->timestamps();
         });
     }

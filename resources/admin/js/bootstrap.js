@@ -12,6 +12,13 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 import $ from "jquery"
 window.$ = $;
 
+import toastr from 'toastr';
+window.toastr = toastr;
+
+import Swal from 'sweetalert2';
+import jquery from 'jquery';
+window.Swal = Swal;
+
 /**
  * Echo exposes an expressive API for subscribing to channels and listening
  * for events that are broadcast by Laravel. Echo and event broadcasting

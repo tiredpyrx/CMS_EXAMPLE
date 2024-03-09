@@ -18,6 +18,10 @@
         "@fortawesome/fontawesome-svg-core": "^6.5.1",
         "@fortawesome/free-regular-svg-icons": "^6.5.1",
         "@fortawesome/free-solid-svg-icons": "^6.5.1",
-        "jquery": "^3.7.1"
+        "@migliori/universal-icon-picker": "^1.1.6",
+        "jquery": "^3.7.1",
+        "sweetalert2": "^11.10.6",
+        "toastr": "^2.1.4",
+        "ziggy-js": "^2.0.4"
     }
 }

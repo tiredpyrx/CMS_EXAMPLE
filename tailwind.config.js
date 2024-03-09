@@ -1,6 +1,7 @@
 /** @type {import('tailwindcss').Config} */
 export default {
     content: ["./resources/**/*.blade.php", "./resources/**/*.js"],
+    // darkMode: ['class', 'selector'],
     theme: {
         extend: {
             colors: {
@@ -16,6 +17,19 @@ export default {
                     800: "#1e40af",
                     900: "#1e3a8a",
                     950: "#172554",
+                },
+                secondary: {
+                    50: "#85d9a1",
+                    100: "#73d393",
+                    200: "#62ce86",
+                    300: "#50c878",
+                    400: "#48b46c",
+                    500: "#40a060",
+                    600: "#388c54",
+                    700: "#307848",
+                    800: "#28643c",
+                    900: "#205030",
+                    950: "#183c24",
                 },
             },
         },

@@ -4,13 +4,26 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
+
+    public const AVATAR_FILE_NAMES = [
+        'nogender' => 'avatar-nogender.jpg',
+        // 'avatar-male.jpg',
+        // 'avatar-female.jpg',
+        // 'avatar-boy.jpg',
+        // 'avatar-girl.jpg',
+        // 'avatar-man.jpg',
+        // 'avatar-woman.jpg',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -19,9 +32,13 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'role_id',
+        'avatar_source',
         'name',
+        'nickname',
+        'biography',
         'email',
         'password',
+        'deleted_at',
     ];
 
     /**
@@ -43,4 +60,34 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    public function role(): BelongsTo
+    {
+        return $this->belongsTo(Role::class);
+    }
+
+    public function categories(): HasMany
+    {
+        return $this->hasMany(Category::class);
+    }
+
+    public function posts(): HasMany
+    {
+        return $this->hasMany(Post::class);
+    }
+
+    public function fields(): HasMany
+    {
+        return $this->hasMany(Field::class);
+    }
+
+    public function blueprints(): HasMany
+    {
+        return $this->hasMany(Blueprint::class);
+    }
+
+    public function getRoleNameAttribute(): string
+    {
+        return $this->role->name;
+    }
 }

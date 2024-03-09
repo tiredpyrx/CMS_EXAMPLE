@@ -8,12 +8,18 @@ use Illuminate\Auth\Access\Response;
 
 class FieldPolicy
 {
+
+    public function beforeAll(User $user, Field $field)
+    {
+        return !$user->grounded && ($user->role_name === 'editor' || $user->role_name === 'admin');
+    }
+
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->role_name === 'editor' || $user->role_name === 'admin';
     }
 
     /**
@@ -21,7 +27,7 @@ class FieldPolicy
      */
     public function view(User $user, Field $field): bool
     {
-        //
+        return $user->role_name === 'editor' || $user->role_name === 'admin';
     }
 
     /**
@@ -29,7 +35,7 @@ class FieldPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->role_name === 'editor' || $user->role_name === 'admin';
     }
 
     /**
@@ -37,7 +43,7 @@ class FieldPolicy
      */
     public function update(User $user, Field $field): bool
     {
-        //
+        return $user->role_name === 'editor' || $user->role_name === 'admin';
     }
 
     /**
@@ -45,7 +51,7 @@ class FieldPolicy
      */
     public function delete(User $user, Field $field): bool
     {
-        //
+        return $user->role_name === 'editor' || $user->role_name === 'admin';
     }
 
     /**
@@ -53,7 +59,7 @@ class FieldPolicy
      */
     public function restore(User $user, Field $field): bool
     {
-        //
+        return $user->role_name === 'editor' || $user->role_name === 'admin';
     }
 
     /**
@@ -61,6 +67,6 @@ class FieldPolicy
      */
     public function forceDelete(User $user, Field $field): bool
     {
-        //
+        return $user->role_name === 'editor' || $user->role_name === 'admin';
     }
 }

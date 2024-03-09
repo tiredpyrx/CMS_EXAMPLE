@@ -10,12 +10,12 @@
     @yield('css')
 </head>
 
-<body class="dark antialiased hide-scrollbar">
+<body class="hide-scrollbar dark antialiased">
 
     @unless (Route::is('login'))
         <div class="flex max-h-screen">
             <x-sidebar />
-            <div id="app_content" class="h-screen flex-1 overflow-y-scroll p-12 sm:ml-64 hide-scrollbar">
+            <div id="app_content" class="hide-scrollbar h-screen flex-1 overflow-y-scroll p-12 sm:ml-64">
                 @yield('content')
             </div>
         </div>
@@ -23,10 +23,8 @@
         @yield('content')
     @endunless
 
-    @yield('js')
-
-    <script src="https://kit.fontawesome.com/1e21adaaa9.js" crossorigin="anonymous"></script>
-    @vite('resources/admin/js/app.js')
+    <x-scripts />
+    <x-session-alerts />
 </body>
 
 </html>

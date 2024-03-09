@@ -13,7 +13,7 @@ class PostPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return $user->role_name !== 'observer';
     }
 
     /**
@@ -21,7 +21,7 @@ class PostPolicy
      */
     public function view(User $user, Post $post): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -29,7 +29,7 @@ class PostPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return !$user->graunded && $user->role_name !== 'observer';
     }
 
     /**
@@ -37,7 +37,7 @@ class PostPolicy
      */
     public function update(User $user, Post $post): bool
     {
-        //
+        return !$user->graunded && $user->role_name !== 'observer';
     }
 
     /**
@@ -45,7 +45,11 @@ class PostPolicy
      */
     public function delete(User $user, Post $post): bool
     {
-        //
+        if ($post->required) {
+            return $user->role_name === 'admin';
+        }
+
+        return !$user->graunded && $user->role_name !== 'observer';
     }
 
     /**
@@ -53,7 +57,7 @@ class PostPolicy
      */
     public function restore(User $user, Post $post): bool
     {
-        //
+        return !$user->graunded && $user->role_name !== 'observer';
     }
 
     /**
@@ -61,6 +65,12 @@ class PostPolicy
      */
     public function forceDelete(User $user, Post $post): bool
     {
-        //
+        if ($user->grounded) return false;
+
+        if ($post->allow_force_deletion) {
+            return $user->role_name !== 'observer';
+        }
+
+        return $user->role_name === 'admin';
     }
 }

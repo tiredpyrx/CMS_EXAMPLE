@@ -17,7 +17,11 @@ class CategoryFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'user_id' => 1,
+            'title' => fake()->text(20),
+            'icon' => 'fas fa-folder',
+            'view' => 'some-view',
+            'description' => 'This is a category',
         ];
     }
 }

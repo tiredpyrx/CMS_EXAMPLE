@@ -1,5 +1,5 @@
 @extends("templates.admin")
 
 @section('content')
-    <div class="app-icon">home</div>
+    <x-document-header title="Dashboard" />
 @endsection
