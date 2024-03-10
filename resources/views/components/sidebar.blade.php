@@ -15,7 +15,7 @@
     aria-label="Sidebar">
     <div class="h-full overflow-y-auto bg-gray-50 px-3 py-4 dark:bg-gray-800 hide-scrollbar">
         <div class="flex h-full flex-col justify-between">
-            <div>
+            <nav>
                 <div class="font-bold text-gray-950 dark:text-gray-100 my-4 ml-2 text-3xl">
                     <h2>
                         <a href="/">
@@ -134,7 +134,7 @@
                         </li>
                     @endforeach
                 </ul>
-            </div>
+            </nav>
             <ul class="space-y-2 font-medium mt-4">
                 <li>
                     <a href="{{ route('users.show', auth()->id()) }}"

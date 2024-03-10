@@ -71,7 +71,8 @@ class CategoryController extends Controller
 
     public function destroy(Category $category)
     {
-        //
+        $this->categoryService->destroy($category);
+        return to_route('categories.index')->with('success', 'Kategori başarıyla silindi!');
     }
 
     public function updateActive(Request $request, ToggleActive $toggleActive, string $modelName)
@@ -79,6 +80,19 @@ class CategoryController extends Controller
         $primaryKey = $request->input('primaryKey');
         $primaryValue = $request->input('primaryValue');
         $checked = $request->input('checked');
-        return $toggleActive->execute($primaryKey, $primaryValue, $modelName, $checked);
+        $success = $toggleActive->execute($primaryKey, $primaryValue, $modelName, $checked);
+
+        if ($request->expectsJson() || $request->ajax())
+            return 1;
+        if (!$success)
+            return back(304)->with('error', 'Bir şeyler ters gitti!');
+        return back()->with('success', 'Kategori aktif özelliği düzenlendi!');
+    }
+
+    public function deleteAllSelected(Request $request)
+    {
+        $ids = $request->input('ids');
+        $this->categoryService->deleteAllSelected($ids);
+        // return back()->with('success', 'Seçilen kategoriler başarıyla silindi!');
     }
 }

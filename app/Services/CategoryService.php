@@ -18,4 +18,25 @@ class CategoryService
     {
         return $category->update($updated);
     }
+
+    public function destroy(Category $category)
+    {
+        foreach ($category->posts as $post) {
+            foreach ($post->fields as $field) {
+                $field->delete();
+            }
+            $post->delete();
+        }
+        foreach ($category->fields as $field) {
+            $field->delete();
+        }
+        return $category->delete();
+    }
+
+    public function deleteAllSelected(array $ids)
+    {
+        foreach ($ids as $id) {
+            $this->destroy(Category::find($id));
+        }
+    }
 }

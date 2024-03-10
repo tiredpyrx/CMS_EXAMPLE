@@ -33,6 +33,8 @@ Route::group(['middleware' => 'auth'], function () {
     Route::prefix('dashboard')->group(function () {
         Route::prefix('categories')->group(function () {
             Route::patch('/{modelName}/active', [CategoryController::class, 'updateActive'])->name('categories.active');
+
+            Route::delete('/delete/all/selected', [CategoryController::class, 'deleteAllSelected'])->name('categories.deleteAllSelected');
         });
 
         Route::prefix('posts')->group(function () {
@@ -45,7 +47,6 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('{modelName}/{modelId}/store', 'store')->name('fields.store');
 
             Route::patch('/{modelName}/active', 'updateActive')->name('fields.active');
-
         });
 
         Route::resources([

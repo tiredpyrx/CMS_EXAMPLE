@@ -36,3 +36,9 @@ export function fadeToggle({ trigger_id = "", target_id = "" }) {
     }
     return eval(target_id);
 }
+
+export function ucfirst(anyText) {
+    return anyText[0].toUpperCase() + anyText.substring(1);
+}
+
+window.ucfirst = ucfirst;

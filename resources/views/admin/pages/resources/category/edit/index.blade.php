@@ -48,11 +48,10 @@
                                 class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Detaya Sahip</label>
                         </div>
                         <div class="mb-4 flex items-center">
-                            <input @checked($category->as_page) name="as_page" id="as_page" type="checkbox"
-                                value=""
+                            <input @checked($category->as_page) name="as_page" id="as_page" type="checkbox" value=""
                                 class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
-                            <label for="as_page"
-                                class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Sayfayı Temsil Ediyor</label>
+                            <label for="as_page" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Sayfa
+                                Temsil</label>
                         </div>
                         <div class="mb-4 flex items-center">
                             <input @checked($category->active) name="active" id="active" type="checkbox" value=""
@@ -72,28 +71,69 @@
     </x-document-panel>
     @if ($fields->count())
         <x-document-panel>
+            <div class="mb-2 flex items-center justify-between text-black/95">
+                <h2 class="tex-sm font-semibold">Kategori Alanları</h2>
+            </div>
             <div class="relative overflow-x-auto border border-gray-100 shadow-md sm:rounded-lg">
                 <div class="relative overflow-x-auto">
                     <div class="relative overflow-x-auto">
                         <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
                             <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" class="px-4 py-2">
                                         Alan Etiketi
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" class="px-4 py-2">
                                         İşleyici
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" class="px-4 py-2">
                                         Yazaar İsmi
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" class="px-4 py-2">
                                         Aktif
                                     </th>
-                                    <th scope="col" class="px-6 py-3">
+                                    <th scope="col" class="px-4 py-2">
                                         <span class="sr-only">
                                             Seç
                                         </span>
+                                        <div
+                                            class="flex-column z-20 flex flex-wrap items-center justify-end space-y-4 dark:bg-gray-900 md:flex-row md:space-y-0">
+                                            <div class="flex">
+                                                <button id="document_dropdown_trigger">
+                                                    <div
+                                                        class="flex h-9 w-9 items-center justify-center rounded-full duration-200 hover:bg-black/25">
+                                                        <i class="fa fa-ellipsis-vertical"></i>
+                                                    </div>
+                                                    <div class="relative">
+                                                        <div id="document_dropdown"
+                                                            class="close-on-outside-click absolute right-full bottom-1/2 translate-y-3/4 hidden bg-gray-50 text-sm shadow">
+                                                            <ul class="p-1">
+                                                                <li
+                                                                    class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                                    Seçilenlerin aktifini aç
+                                                                </li>
+                                                                <li
+                                                                    class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                                    Seçilenlerin aktifini kapa
+                                                                </li>
+                                                                <li
+                                                                    class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                                    Seçilenleri sil
+                                                                </li>
+                                                                <li
+                                                                    class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                                    Aktif olmayanları sil
+                                                                </li>
+                                                                <li
+                                                                    class="whitespace-nowrap rounded-sm px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                                    Sırala
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </button>
+                                            </div>
+                                        </div>
                                     </th>
                                 </tr>
                             </thead>
@@ -112,17 +152,17 @@
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="mb-4 flex items-center">
-                                                <label for="{{ $field->handler . '-actice-togglebox' }}" class="sr-only">
+                                                <label for="{{ $field->handler . '-active-togglebox' }}" class="sr-only">
                                                     {{ $category->title . ' Aktif Seçim Kutusu' }}
                                                 </label>
                                                 <input data-key="id" data-value="{{ $field->id }}"
                                                     data-modelname="field" data-modelname_plural="fields"
-                                                    @checked($field->active) id="{{ $field->handler . '-actice-togglebox' }}"
-                                                    type="checkbox"
+                                                    @checked($field->active)
+                                                    id="{{ $field->handler . '-active-togglebox' }}" type="checkbox"
                                                     class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                                             </div>
                                         </td>
-                                        <td class="px-6 py-4">
+                                        <td class="flex justify-end px-6 py-4">
                                             <div class="mb-4 flex items-center">
                                                 <input id="default-checkbox" type="checkbox" value=""
                                                     class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
@@ -133,7 +173,7 @@
                             </tbody>
                         </table>
                     </div>
-                    <nav class="flex-column flex flex-wrap items-center justify-between border-t border-gray-200 border-opacity-40 bg-gray-50 p-4 dark:bg-gray-800 md:flex-row"
+                    <nav class="flex-column z-0 flex flex-wrap items-center justify-between border-t border-gray-200 border-opacity-40 bg-gray-50 p-4 dark:bg-gray-800 md:flex-row"
                         aria-label="Table navigation">
                         <span
                             class="mb-4 block w-full text-sm font-normal text-black/90 dark:text-gray-50 md:mb-0 md:inline md:w-auto">Showing

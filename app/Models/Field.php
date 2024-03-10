@@ -47,6 +47,11 @@ class Field extends Model
         'active' => ['nullable', 'string'],
     ];
 
+    public const PRIMARY_HANDLERS = [
+        'title',
+        'slug'
+    ];
+
     protected $fillable = [
         'user_id',
         'blueprint_id',

@@ -23,10 +23,10 @@ class UpdateFieldActiveRequest extends AppFormRequest
     public function rules(): array
     {
         return [
-            'primaryValue' => function ($attribute, $value, $fail) {
+            'primaryValue' => function ($_, $value, $fail) {
                 $field = Field::find($value);
                 $fieldHandler = $field->getAttribute('handler');
-                if ($fieldHandler == 'title' || $fieldHandler == 'slug')
+                if (in_array($fieldHandler, Field::PRIMARY_HANDLERS))
                     $fail("{$field->label} alanının 'aktif' özelliği düzenlenemez!");
             }
         ];

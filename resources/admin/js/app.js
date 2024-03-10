@@ -1,13 +1,11 @@
 import "./bootstrap";
 import * as DH from "./helpers/document-helpers";
 import * as SH from "./helpers/system-helpers";
-import axios from "axios";
 
 DH.replaceToIcon();
 SH.toggleResourcesActive();
 
 DH.slideToggle("sidebar-advanced-trigger", "sidebar-advanced-target");
-
 
 if (document.getElementById("user_index_dropdown_trigger"))
     DH.fadeToggle({
@@ -40,7 +38,61 @@ function toastrAlert(type, success) {
 
 window.toastrAlert = toastrAlert;
 
-document.querySelectorAll("input[type='checkbox']").forEach((i) => {
-    i.value = i.checked;
-    i.addEventListener("click", () => (i.value = new Boolean(i.checked)));
+DH.fadeToggle({
+    trigger_id: "document_dropdown_trigger",
+    target_id: "document_dropdown",
 });
+
+let selectedToggleBoxes = [];
+let selectedToggleBoxParents = [];
+Array.from(document.querySelectorAll("input[type='checkbox']"))
+    .filter((i) => i.id.endsWith("-selectbox"))
+    .forEach((i) => {
+        i.addEventListener("click", function () {
+            let id = i.id.slice(0, i.id.indexOf("-"));
+            let parentNodeName = i.dataset.parent_node_name;
+            let parent = i;
+            if (i.checked && !selectedToggleBoxes.includes(id)) {
+                selectedToggleBoxes.push(id);
+                while (parent.nodeName != parentNodeName) {
+                    parent = parent.parentElement;
+                }
+                selectedToggleBoxParents.push(parent);
+            } else if (!i.checked) {
+                let idPos = selectedToggleBoxes.indexOf(id);
+                let parentPos = selectedToggleBoxParents.indexOf(parent);
+
+                selectedToggleBoxes.splice(idPos);
+                selectedToggleBoxParents.splice(parentPos);
+            }
+        });
+    });
+
+const selectActionDecorator = (callback, { successMessage, failedMessage }) => {
+    return function (prefix) {
+        callback.call(this, prefix);
+        selectedToggleBoxes = [];
+        selectedToggleBoxParents.forEach((parent) => {
+            parent?.remove();
+        });
+        toastrAlert("success", successMessage);
+    };
+};
+
+let selectActionDeleteAllSelected = async (prefix) => {
+    await axios.delete(route(prefix + ".deleteAllSelected"), {
+        data: {
+            ids: selectedToggleBoxes,
+        },
+    });
+};
+
+selectActionDeleteAllSelected = selectActionDecorator(
+    selectActionDeleteAllSelected,
+    {
+        successMessage: "Seçilen kategoriler başarıyla silindi!",
+        failedMessage: "Seçilen kategorileri silerken bir sorun oluştu!",
+    }
+);
+
+window.selectActionDeleteAllSelected = selectActionDeleteAllSelected;

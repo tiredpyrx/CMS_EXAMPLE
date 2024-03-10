@@ -80,3 +80,18 @@ html {
 .fade.in {
     opacity: 1 !important;
 }
+
+div {
+    @apply hide-scrollbar
+}
+
+#document_dropdown_trigger {
+    @apply cursor-pointer
+}
+
+tr {
+    @apply duration-300
+}
+tr.disabled {
+    background-color: gray;
+}
