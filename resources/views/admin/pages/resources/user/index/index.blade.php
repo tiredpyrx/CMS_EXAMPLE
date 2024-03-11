@@ -15,8 +15,8 @@
         <div
             class="flex-column flex flex-wrap items-center justify-between space-y-4 bg-white p-4 dark:bg-gray-900 md:flex-row md:space-y-0">
             <div class="relative">
-                <button id="user_index_dropdown_trigger" data-dropdown-toggle="dropdownAction"
-                    class="inline-flex items-center rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-700"
+                <button data-dropdown-toggle="dropdownAction"
+                    class="document_dropdown_trigger inline-flex items-center rounded-lg border border-gray-300 bg-white px-3 py-1.5 text-sm font-medium text-gray-500 hover:bg-gray-100 focus:outline-none dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-700"
                     type="button">
                     <span class="sr-only">Action button</span>
                     Action
@@ -26,9 +26,8 @@
                             d="m1 1 4 4 4-4" />
                     </svg>
                 </button>
-                <!-- Dropdown menu -->
-                <div id="user_index_dropdown_target"
-                    class="close-on-outside-click absolute left-0 top-full z-10 hidden w-44 divide-y divide-gray-100 rounded-lg bg-white shadow dark:divide-gray-600 dark:bg-gray-700">
+                <div
+                    class="document_dropdown close-on-outside-click absolute left-0 top-full z-10 hidden w-44 divide-y divide-gray-100 rounded-lg bg-white shadow dark:divide-gray-600 dark:bg-gray-700">
                     <ul class="py-1 text-sm text-gray-700 dark:text-gray-200" aria-labelledby="dropdownActionButton">
                         <li>
                             <a href="#"

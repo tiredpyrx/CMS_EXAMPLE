@@ -27,14 +27,20 @@ export function slideToggle(trigger_id, target_id) {
     });
 }
 
-export function fadeToggle({ trigger_id = "", target_id = "" }) {
-    if (!trigger_id) $(`#${target_id}`).fadeToggle();
-    else {
-        $(`#${trigger_id}`).on("click tocyhstart", () => {
-            $(`#${target_id}`).fadeToggle();
-        });
+export function fadeToggle({ trigger_class = "", target_class = "" }) {
+    if (!trigger_class && !target_class) {
+        console.warn(
+            "fadeToggle helper expected 2 unpositional argument, got none!"
+        );
+        return 0;
     }
-    return eval(target_id);
+
+    $(`.${trigger_class}`).on("click touchstart", e => {
+        $(e.target)
+            .siblings(`.${target_class}`)
+            .first()
+            .fadeToggle();
+    });
 }
 
 export function ucfirst(anyText) {

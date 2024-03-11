@@ -12,6 +12,7 @@ class AppFormRequest extends FormRequest
         $response = redirect()
             ->back()
             ->with('error', $validator->errors()->first())
+            ->withInput()
             ->withErrors($validator);
 
         throw (new ValidationException($validator, $response))

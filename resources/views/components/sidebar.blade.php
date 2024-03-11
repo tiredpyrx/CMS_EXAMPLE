@@ -30,7 +30,7 @@
                             <div class="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white text-xl items-center flex">
                                 <i class="fa fa-home"></i>
                             </div>
-                            <span class="ms-3">Dashboard</span>
+                            <span class="ms-3">Panel</span>
                         </a>
                     </li>
                 </ul>
@@ -143,6 +143,15 @@
                             <i class="fa fa-user"></i>
                         </div>
                         <span class="ms-3">Profil</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="trash"
+                        class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        <div class="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white text-xl items-center flex">
+                            <i class="fa fa-trash"></i>
+                        </div>
+                        <span class="ms-3">Çöp Kutusu</span>
                     </a>
                 </li>
                 <li>

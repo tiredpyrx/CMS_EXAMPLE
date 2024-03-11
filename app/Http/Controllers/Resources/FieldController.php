@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Resources;
 
 use App\Actions\FilterRequest;
+use App\Actions\GetInputs;
 use App\Actions\ToggleActive;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFieldRequest;
@@ -93,10 +94,11 @@ class FieldController extends Controller
 
     public function updateActive(UpdateFieldActiveRequest $request, ToggleActive $toggleActive, string $modelName)
     {
-        $primaryKey = $request->input('primaryKey');
-        $primaryValue = $request->input('primaryValue');
-        $checked = $request->input('checked');
-        $success = $toggleActive->execute($primaryKey, $primaryValue, $modelName, $checked);
+        $success = $toggleActive->execute($request, $modelName);
+
+        if ($request->expectsJson() || $request->ajax())
+            return 1;
+
         if (!$success)
             return back(304)->with('error', 'Bir şeyler ters gitti!');
         return back()->with('success', 'Alanın aktif özelliği düzenlendi!');

@@ -28,4 +28,29 @@ class PostService
             ]);
         }
     }
+
+    public function destroy(Post $post)
+    {
+        foreach ($post->fields as $field) {
+            $field->delete();
+        }
+        return $post->delete();
+    }
+
+    public function deleteMany(array $ids)
+    {
+        $IDontKnowWhatToNameThisArray = [];
+        foreach ($ids as $id) {
+            $res = $this->destroy(Post::find($id));
+            array_push($IDontKnowWhatToNameThisArray, $res);
+        }
+        if (array_intersect($IDontKnowWhatToNameThisArray, [false]))
+            return 0;
+        return 1;
+    }
+
+    public function deleteAllSelected(array $ids)
+    {
+        return $this->deleteMany($ids);
+    }
 }

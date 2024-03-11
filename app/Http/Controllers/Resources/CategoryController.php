@@ -3,12 +3,14 @@
 namespace App\Http\Controllers\Resources;
 
 use App\Actions\FilterRequest;
+use App\Actions\GetInputs;
 use App\Actions\GetUpdatedDatas;
 use App\Actions\ToggleActive;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreCategoryRequest;
 use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
+use App\Models\Field;
 use App\Services\CategoryService;
 use Illuminate\Http\Request;
 
@@ -54,7 +56,8 @@ class CategoryController extends Controller
     {
         $fields = $category->fields()->paginate(10);
         $paginationArray  = $fields->links()->elements[0];
-        return view('admin.pages.resources.category.edit.index', compact('category', 'fields', 'paginationArray'));
+        $notEditableFields = Field::PRIMARY_HANDLERS;
+        return view('admin.pages.resources.category.edit.index', compact('category', 'fields', 'paginationArray', 'notEditableFields'));
     }
 
 
@@ -77,13 +80,11 @@ class CategoryController extends Controller
 
     public function updateActive(Request $request, ToggleActive $toggleActive, string $modelName)
     {
-        $primaryKey = $request->input('primaryKey');
-        $primaryValue = $request->input('primaryValue');
-        $checked = $request->input('checked');
-        $success = $toggleActive->execute($primaryKey, $primaryValue, $modelName, $checked);
+        $success = $toggleActive->execute($request, $modelName);
 
         if ($request->expectsJson() || $request->ajax())
             return 1;
+
         if (!$success)
             return back(304)->with('error', 'Bir şeyler ters gitti!');
         return back()->with('success', 'Kategori aktif özelliği düzenlendi!');
@@ -92,7 +93,26 @@ class CategoryController extends Controller
     public function deleteAllSelected(Request $request)
     {
         $ids = $request->input('ids');
-        $this->categoryService->deleteAllSelected($ids);
-        // return back()->with('success', 'Seçilen kategoriler başarıyla silindi!');
+        $success = $this->categoryService->deleteAllSelected($ids);
+
+        if ($request->expectsJson() || $request->ajax())
+            return $success;
+
+        if (!$success)
+            return back(304)->with('error', 'Bir şeyler ters gitti!');
+        return back()->with('success', 'Kategori aktif özelliği düzenlendi!');
+    }
+
+    public function deleteAllUnactives()
+    {
+        return Category::whereNot('active', true)->delete();
+    }
+
+    public function deleteAllUnactiveChildren(Request $request, Category $category)
+    {
+        $mname = $request->input('modelName');
+        $model = getModel($mname);
+        $model->where('category_id', $category->id)->whereNot('active', true)->get()->each(fn($child) => $child->delete());
+        return Category::whereNot('active', true)->delete();
     }
 }

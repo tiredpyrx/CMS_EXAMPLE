@@ -35,11 +35,16 @@ Route::group(['middleware' => 'auth'], function () {
             Route::patch('/{modelName}/active', [CategoryController::class, 'updateActive'])->name('categories.active');
 
             Route::delete('/delete/all/selected', [CategoryController::class, 'deleteAllSelected'])->name('categories.deleteAllSelected');
+            Route::delete('/unactives/delete', [CategoryController::class, 'deleteAllUnactives'])->name('categories.deleteAllUnactives');
+            Route::delete('{category}/unactives/children/delete', [CategoryController::class, 'deleteAllUnactiveChildren'])->name('categories.deleteAllUnactiveChildren');
         });
 
         Route::prefix('posts')->group(function () {
             Route::get('{category}/create', [PostController::class, 'create'])->name('posts.create');
             Route::post('{category}/store', [PostController::class, 'store'])->name('posts.store');
+
+            Route::delete('/delete/all/selected', [PostController::class, 'deleteAllSelected'])->name('posts.deleteAllSelected');
+            Route::delete('/unactives/delete', [PostController::class, 'deleteAllUnactives'])->name('posts.deleteAllUnactives');
         });
 
         Route::group(['prefix' => 'fields', 'controller' => FieldController::class], function () {

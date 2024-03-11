@@ -87,7 +87,7 @@
                                         İşleyici
                                     </th>
                                     <th scope="col" class="px-4 py-2">
-                                        Yazaar İsmi
+                                        Yazar İsmi
                                     </th>
                                     <th scope="col" class="px-4 py-2">
                                         Aktif
@@ -98,40 +98,58 @@
                                         </span>
                                         <div
                                             class="flex-column z-20 flex flex-wrap items-center justify-end space-y-4 dark:bg-gray-900 md:flex-row md:space-y-0">
-                                            <div class="flex">
-                                                <button id="document_dropdown_trigger">
-                                                    <div
-                                                        class="flex h-9 w-9 items-center justify-center rounded-full duration-200 hover:bg-black/25">
-                                                        <i class="fa fa-ellipsis-vertical"></i>
-                                                    </div>
-                                                    <div class="relative">
-                                                        <div id="document_dropdown"
-                                                            class="close-on-outside-click absolute right-full bottom-1/2 translate-y-3/4 hidden bg-gray-50 text-sm shadow">
-                                                            <ul class="p-1">
-                                                                <li
-                                                                    class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                                    Seçilenlerin aktifini aç
-                                                                </li>
-                                                                <li
-                                                                    class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                                    Seçilenlerin aktifini kapa
-                                                                </li>
-                                                                <li
-                                                                    class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                                    Seçilenleri sil
-                                                                </li>
-                                                                <li
-                                                                    class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                                    Aktif olmayanları sil
-                                                                </li>
-                                                                <li
-                                                                    class="whitespace-nowrap rounded-sm px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                                    Sırala
-                                                                </li>
-                                                            </ul>
-                                                        </div>
-                                                    </div>
-                                                </button>
+                                            <div class="relative flex">
+
+                                                <div
+                                                    class="document_dropdown_trigger flex h-9 w-9 items-center justify-center rounded-full duration-200 hover:bg-black/25">
+                                                    <i class="fa fa-ellipsis-vertical"></i>
+                                                </div>
+                                                <div
+                                                    class="document_dropdown close-on-outside-click absolute bottom-1/2 right-full hidden translate-y-3/4 bg-gray-50 text-sm shadow">
+                                                    <ul class="p-1">
+                                                        <li
+                                                            class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                            <form action="" method="POST">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <button class="text-gray-800">Seçilenlerin
+                                                                    aktifini
+                                                                    aç</button>
+                                                            </form>
+                                                        </li>
+                                                        <li
+                                                            class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                            <form action="" method="POST">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <button class="text-gray-800">Seçilenlerin
+                                                                    aktifini
+                                                                    kapa</button>
+                                                            </form>
+                                                        </li>
+                                                        <li
+                                                            class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                            <form action="" method="POST">
+                                                                @csrf
+                                                                @method('PUT')
+                                                                <button class="text-gray-800">Sırala</button>
+                                                            </form>
+                                                        </li>
+                                                        <li
+                                                            class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                            <button
+                                                                onclick="deleteAllUnactivesGlobal('categories', 'field', '{{ $category->id }}')"
+                                                                class="text-red-500">Aktif olmayanları
+                                                                sil</button>
+                                                        </li>
+                                                        <li
+                                                            class="whitespace-nowrap rounded-sm px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                            <button onclick="selectActionDeleteAllSelected('fields')"
+                                                                class="w-full text-left text-red-500">Seçilenleri
+                                                                sil</button>
+                                                        </li>
+                                                    </ul>
+                                                </div>
                                             </div>
                                         </div>
                                     </th>
@@ -139,7 +157,10 @@
                             </thead>
                             <tbody>
                                 @foreach ($fields as $field)
-                                    <tr class="border-b bg-white dark:border-gray-700 dark:bg-gray-800">
+                                    <tr @class([
+                                        'border-b bg-white dark:border-gray-700 dark:bg-gray-800',
+                                        'disabled' => !$field->active,
+                                    ])>
                                         <th scope="row"
                                             class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {{ $field->label }}
@@ -151,22 +172,30 @@
                                             {{ $field->author_name }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            <div class="mb-4 flex items-center">
-                                                <label for="{{ $field->handler . '-active-togglebox' }}" class="sr-only">
-                                                    {{ $category->title . ' Aktif Seçim Kutusu' }}
-                                                </label>
-                                                <input data-key="id" data-value="{{ $field->id }}"
-                                                    data-modelname="field" data-modelname_plural="fields"
-                                                    @checked($field->active)
-                                                    id="{{ $field->handler . '-active-togglebox' }}" type="checkbox"
-                                                    class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
-                                            </div>
+                                            @unless (in_array($field->handler, $notEditableFields))
+                                                <div class="flex items-center">
+                                                    <label for="{{ $field->handler . '-active-togglebox' }}" class="sr-only">
+                                                        {{ $category->title . ' Aktif Seçim Kutusu' }}
+                                                    </label>
+                                                    <input data-key="id" data-value="{{ $field->id }}"
+                                                        data-modelname="field" data-modelname_plural="fields"
+                                                        @checked($field->active)
+                                                        id="{{ $field->handler . '-active-togglebox' }}" type="checkbox"
+                                                        class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
+                                                </div>
+                                                @else
+                                                    <input disabled checked onclick="return false" type="checkbox" class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
+                                            @endunless
                                         </td>
                                         <td class="flex justify-end px-6 py-4">
-                                            <div class="mb-4 flex items-center">
-                                                <input id="default-checkbox" type="checkbox" value=""
-                                                    class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
-                                            </div>
+                                            @unless (in_array($field->handler, $notEditableFields))
+                                                <div class="flex items-center">
+                                                    <input id="default-checkbox" type="checkbox" value=""
+                                                        class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
+                                                </div>
+                                                @else
+                                                    <input disabled onclick="return false" type="checkbox" class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
+                                            @endunless
                                         </td>
                                     </tr>
                                 @endforeach

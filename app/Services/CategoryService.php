@@ -33,10 +33,20 @@ class CategoryService
         return $category->delete();
     }
 
+    public function deleteMany(array $ids) {
+        $IDontKnowWhatToNameThisArray = [];
+        foreach ($ids as $id) {
+            $res = $this->destroy(Category::find($id));
+            array_push($IDontKnowWhatToNameThisArray, $res);
+        }
+        if (array_intersect($IDontKnowWhatToNameThisArray, [false]))
+            return 0;
+        return 1;
+    }
+
     public function deleteAllSelected(array $ids)
     {
-        foreach ($ids as $id) {
-            $this->destroy(Category::find($id));
-        }
+        return $this->deleteMany($ids);
     }
+
 }

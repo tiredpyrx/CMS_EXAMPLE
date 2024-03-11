@@ -13,7 +13,6 @@ if (document.getElementById("user_index_dropdown_trigger"))
         target_id: "user_index_dropdown_target",
     });
 
-// customs
 document
     .querySelectorAll(".close-on-outside-click")
     .forEach(function (element) {
@@ -26,7 +25,7 @@ document
                     (element.dataset.method === "hide" ||
                         !element.dataset.method)
                 ) {
-                    DH.fadeToggle({ target_id: element.id });
+                    $(element).fadeToggle();
                 }
             }
         });
@@ -39,8 +38,8 @@ function toastrAlert(type, success) {
 window.toastrAlert = toastrAlert;
 
 DH.fadeToggle({
-    trigger_id: "document_dropdown_trigger",
-    target_id: "document_dropdown",
+    trigger_class: "document_dropdown_trigger",
+    target_class: "document_dropdown",
 });
 
 let selectedToggleBoxes = [];
@@ -68,31 +67,64 @@ Array.from(document.querySelectorAll("input[type='checkbox']"))
         });
     });
 
-const selectActionDecorator = (callback, { successMessage, failedMessage }) => {
+const selectActionDecorator = (callback) => {
     return function (prefix) {
+        if (!selectedToggleBoxes.length) return;
         callback.call(this, prefix);
         selectedToggleBoxes = [];
         selectedToggleBoxParents.forEach((parent) => {
             parent?.remove();
         });
-        toastrAlert("success", successMessage);
     };
 };
 
 let selectActionDeleteAllSelected = async (prefix) => {
-    await axios.delete(route(prefix + ".deleteAllSelected"), {
-        data: {
-            ids: selectedToggleBoxes,
-        },
-    });
+    await axios
+        .delete(route(prefix + ".deleteAllSelected"), {
+            data: {
+                ids: selectedToggleBoxes,
+            },
+        })
+        .then((_) =>
+            toastrAlert("success", "Seçilen kaynaklar başarıyla silindi")
+        )
+        .catch((_) =>
+            toastrAlert("error", "Seçilen kaynakları silerken bir sorun oluştu")
+        );
 };
 
 selectActionDeleteAllSelected = selectActionDecorator(
-    selectActionDeleteAllSelected,
-    {
-        successMessage: "Seçilen kategoriler başarıyla silindi!",
-        failedMessage: "Seçilen kategorileri silerken bir sorun oluştu!",
-    }
+    selectActionDeleteAllSelected
 );
 
 window.selectActionDeleteAllSelected = selectActionDeleteAllSelected;
+
+async function deleteAllUnactivesGlobal(prefix, children, parent_id) {
+    return await axios
+        .delete(
+            route(
+                prefix +
+                    "." +
+                    (children
+                        ? "deleteAllUnactiveChildren"
+                        : "deleteAllUnactives"),
+                parent_id
+            ),
+            {
+                data: {
+                    modelName: children,
+                },
+            }
+        )
+        .then((res) => {
+            toastr.success("Aktif olmayan kaynaklar başarıyla silindi!");
+            document.querySelectorAll("table tr").forEach((tr) => {
+                if (tr.classList.contains("disabled")) tr.remove();
+            });
+        })
+        .catch((_) =>
+            toastr.error("Aktif olmayan kaynakları silerken bir sorun oluştu!")
+        );
+}
+
+window.deleteAllUnactivesGlobal = deleteAllUnactivesGlobal;
