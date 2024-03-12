@@ -7,17 +7,6 @@ use Jenssegers\Agent\Agent;
 
 class LogUserLogin
 {
-    /**
-     * Create the event listener.
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    /**
-     * Handle the event.
-     */
     public function handle(): void
     {
 
@@ -28,7 +17,7 @@ class LogUserLogin
             ->withProperties([
                 'logged_at' => now()->format('d/m/Y H:i:s'),
                 'ip' => request()->ip(),
-                'user_agent' => request()->userAgent(),
+                'user_agent' => $agent->getUserAgent(),
                 'browser' => $agent->browser(),
                 'browser_version' => $agent->version($agent->browser()),
                 'platform' => $agent->platform(),
