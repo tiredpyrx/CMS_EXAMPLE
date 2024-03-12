@@ -4,8 +4,7 @@ namespace App\Listeners;
 
 use Jenssegers\Agent\Agent;
 
-
-class LogUserLogin
+class LogUserLogout
 {
     /**
      * Create the event listener.
@@ -20,13 +19,12 @@ class LogUserLogin
      */
     public function handle(): void
     {
-
         $agent = new Agent();
 
         activity()
             ->causedBy(request()->user)
             ->withProperties([
-                'logged_at' => now()->format('d/m/Y H:i:s'),
+                'logged_out_at' => now()->format('d/m/Y H:i:s'),
                 'ip' => request()->ip(),
                 'user_agent' => request()->userAgent(),
                 'browser' => $agent->browser(),
@@ -36,6 +34,6 @@ class LogUserLogin
                 'device' => $agent->device(),
                 'device_version' => $agent->platform($agent->device()),
             ])
-            ->log(':causer.nickname logged in!');
+            ->log(':causer.nickname logged out!');
     }
 }

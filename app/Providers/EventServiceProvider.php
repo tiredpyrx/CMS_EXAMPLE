@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Listeners\LogUserLogin;
+use App\Listeners\LogUserLogout;
 use App\Models\Blueprint;
 use App\Models\Category;
 use App\Models\Field;
@@ -14,12 +15,11 @@ use App\Observers\FieldObserver;
 use App\Observers\PostObserver;
 use App\Observers\UserObserver;
 use Illuminate\Auth\Events\Login;
+use Illuminate\Auth\Events\Logout;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Event;
 
-use function Pest\Laravel\post;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -34,6 +34,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         Login::class => [
             LogUserLogin::class,
+        ],
+        Logout::class => [
+            LogUserLogout::class
         ]
     ];
 

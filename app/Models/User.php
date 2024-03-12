@@ -67,6 +67,7 @@ class User extends Authenticatable
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
+        ->dontLogIfAttributesChangedOnly(['updated_at', 'remember_token'])
         ->logAll()
         ->dontSubmitEmptyLogs()
         ->logOnlyDirty();
