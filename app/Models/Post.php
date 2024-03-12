@@ -2,13 +2,18 @@
 
 namespace App\Models;
 
+use App\Pipes\ActivityPreventAttributePipe;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Post extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsActivity;
+
+    protected static $ignoreChangedAttributes = ['updated_at'];
 
     public const RULES = ['title' => 'required'];
 
@@ -22,7 +27,24 @@ class Post extends Model
         'deleted_at',
     ];
 
-    public function take(string $handler)
+    protected static function booted()
+    {
+        static::addLogChange(new ActivityPreventAttributePipe);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            ->setDescriptionForEvent(function ($eventName) {
+                $eventName = config('activitylog.EVENT_NAMES')[$eventName];
+                return ":subject.title, kullanıcı :causer.name tarafından {$eventName}.";
+            })
+            ->logAll()
+            ->dontSubmitEmptyLogs()
+            ->logOnlyDirty();
+    }
+
+    public function get(string $handler)
     {
         return $this->fields()->where('handler', $handler)->value('value');
     }
@@ -60,5 +82,10 @@ class Post extends Model
     public function getCreatedAtFormattedAttribute()
     {
         return $this->created_at->format('d/m/Y');
+    }
+
+    public function getPrimaryTextAttribute()
+    {
+        return $this->title;
     }
 }

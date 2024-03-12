@@ -17,9 +17,9 @@
             <div class="mb-2 flex items-center justify-between text-black/95">
                 <h2 class="tex-sm font-semibold">Kategori Gönderileri</h2>
             </div>
-            <div class="relative overflow-x-auto border border-gray-100 shadow-md sm:rounded-lg">
-                <div class="relative overflow-x-auto">
-                    <div class="relative overflow-x-auto">
+            <div class="relative border border-gray-100 shadow-md sm:rounded-lg">
+                <div class="relative">
+                    <div class="relative">
                         <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
                             <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>

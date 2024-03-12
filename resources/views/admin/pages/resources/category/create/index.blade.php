@@ -42,7 +42,7 @@
                 </div>
                 <div class="col-span-12">
                     <button class="btn-primary">
-                        Yeni Ekle
+                        Ekle 
                     </button>
                 </div>
             </div>

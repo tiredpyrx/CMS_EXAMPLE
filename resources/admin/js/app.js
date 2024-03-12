@@ -100,6 +100,8 @@ selectActionDeleteAllSelected = selectActionDecorator(
 window.selectActionDeleteAllSelected = selectActionDeleteAllSelected;
 
 async function deleteAllUnactivesGlobal(prefix, children, parent_id) {
+    let threshold = Array.from(document.querySelectorAll('table input[id$="active-togglebox"]')).some(i => !i.checked)
+    if (!threshold) return;
     return await axios
         .delete(
             route(
@@ -116,15 +118,63 @@ async function deleteAllUnactivesGlobal(prefix, children, parent_id) {
                 },
             }
         )
-        .then((res) => {
+        .then(_ => {
             toastr.success("Aktif olmayan kaynaklar başarıyla silindi!");
             document.querySelectorAll("table tr").forEach((tr) => {
                 if (tr.classList.contains("disabled")) tr.remove();
             });
         })
-        .catch((_) =>
+        .catch(_ =>
             toastr.error("Aktif olmayan kaynakları silerken bir sorun oluştu!")
         );
 }
 
 window.deleteAllUnactivesGlobal = deleteAllUnactivesGlobal;
+
+function tableResourceAction(el) {
+    let rPrefix = el.dataset.route_prefix;
+    let rSuffix = el.dataset.route_suffix;
+    let successMessage = el.dataset.success_message;
+    let errorMessage = el.dataset.error_message;
+    let method = el.dataset.method;
+    let id = el.dataset.resource_unique;
+    let parentNodeName = el.dataset.parent_node_name || false;
+    let parent = el;
+    if (parentNodeName)
+        while (parent.nodeName !== parentNodeName)
+            parent = parent.parentElement;
+    axios[method](route(rPrefix + "." + rSuffix, id))
+        .then(_ => {
+            if (parentNodeName) parent?.remove();
+            toastrAlert("success", successMessage);
+        })
+        .catch(_ => toastrAlert("error", errorMessage));
+}
+
+window.tableResourceAction = tableResourceAction;
+
+if (route("categories.create")) {
+    tippy("[for='title']", {
+        content: "Kategori başlık, zorunlu, en fazla 60 karakter",
+    });
+    tippy("[for='icon']", {
+        content: "Kategori ikon, en fazla 60 karakter",
+    });
+    tippy("[for='view']", {
+        content: "Kategori dosya ismi, en fazla 60 karakter",
+    });
+    tippy("[for='description']", {
+        content: "Kategori açıklama, en fazla 160 karakter",
+    });
+    tippy("[for='have_details']", {
+        content:
+            "Kategorinin gönderilerine slug alanı aç, her gönderi bir sayfayı temsil eder, gönderinin özel dosya ismi varsa o kullanılır, varsayılan olarak kategorinin dosyası kullanılır",
+    });
+    tippy("[for='as_page']", {
+        content:
+            "Kategorinin kendisine slug alanı açar, gönderi sayısını 1'e sabitler! Kategori sayfa olarak kullanılır",
+    });
+    tippy("[for='active']", {
+        content: "Kategorinin aktif durumu",
+    });
+}

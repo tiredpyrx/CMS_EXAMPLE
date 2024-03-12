@@ -41,18 +41,20 @@ class CategoryObserver
     }
 
     /**
-     * Handle the Category "restored" event.
+     * Handle the Category "restore" event.
      */
     public function restored(Category $category): void
     {
-        //
+        $category->posts()->onlyTrashed()->get()->each(fn($post) => $post->restore());
+        $category->fields()->onlyTrashed()->get()->each(fn($field) => $field->restore());
     }
 
     /**
-     * Handle the Category "force deleted" event.
+     * Handle the Category "force delete" event.
      */
     public function forceDeleted(Category $category): void
     {
-        //
+        $category->posts()->get()->each(fn($post) => $post->forceDelete());
+        $category->fields()->get()->each(fn($field) => $field->forceDelete());
     }
 }

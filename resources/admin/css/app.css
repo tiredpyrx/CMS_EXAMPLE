@@ -57,7 +57,7 @@ html {
 }
 
 .app-form label[default] {
-    @apply block mb-2 text-sm font-medium text-gray-900 dark:text-white;
+    @apply inline-block mb-2 text-sm font-medium text-gray-900 dark:text-white;
 }
 
 .app-form input[default] {
@@ -94,4 +94,12 @@ tr {
 }
 tr.disabled {
     background-color: gray;
+}
+
+.link-simple-unstyled {
+    @apply hover:underline [&.disabled]:pointer-events-none [&.disabled]:text-gray-400
+}
+
+.link-simple {
+    @apply text-purple-500 hover:text-purple-600 hover:underline visited:text-purple-700 [&.disabled]:pointer-events-none [&.disabled]:text-gray-400
 }

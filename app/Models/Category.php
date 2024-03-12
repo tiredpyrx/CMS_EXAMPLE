@@ -2,13 +2,18 @@
 
 namespace App\Models;
 
+use App\Pipes\ActivityPreventAttributePipe;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 class Category extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, LogsActivity;
+
+    protected static $ignoreChangedAttributes = ['updated_at'];
 
     public const DEFAULT_HAVE_DETAILS_VALUE = false;
     public const DEFAULT_AS_PAGE_VALUE = false;
@@ -55,6 +60,24 @@ class Category extends Model
 
         'deleted_at',
     ];
+
+    protected static function booted()
+    {
+        static::addLogChange(new ActivityPreventAttributePipe);
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+        ->setDescriptionForEvent(function($eventName) {
+            $eventName = config('activitylog.EVENT_NAMES')[$eventName];
+            return ":subject.title, kullanıcı :causer.name tarafından {$eventName}.";
+        })
+        ->dontLogIfAttributesChangedOnly(['updated_at'])
+        ->logAll()
+        ->dontSubmitEmptyLogs()
+        ->logOnlyDirty();
+    }
 
     public function user()
     {
@@ -104,5 +127,10 @@ class Category extends Model
     public function getMassAssignableBools()
     {
         return $this->getMassAssignables()->filter(fn ($d) => in_array($d, $this::MASS_ASSIGNABLE_BOOLS));
+    }
+
+    public function getPrimaryTextAttribute()
+    {
+        return $this->title;
     }
 }

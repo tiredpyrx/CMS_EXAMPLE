@@ -3,7 +3,10 @@
 namespace App\Services;
 
 use App\Models\Category;
+use App\Models\Field;
+use App\Models\Post;
 use Illuminate\Http\Request;
+use Spatie\Activitylog\Facades\LogBatch;
 
 class CategoryService
 {
@@ -21,16 +24,19 @@ class CategoryService
 
     public function destroy(Category $category)
     {
-        foreach ($category->posts as $post) {
+        LogBatch::startBatch();
+        foreach (Post::where('category_id', $category->id) as $post) {
             foreach ($post->fields as $field) {
                 $field->delete();
             }
             $post->delete();
         }
-        foreach ($category->fields as $field) {
+        foreach (Field::where('category_id', $category->id) as $field) {
             $field->delete();
         }
-        return $category->delete();
+        $success = $category->delete();
+        LogBatch::endBatch();
+        return $success;
     }
 
     public function deleteMany(array $ids) {

@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Resources;
 
 use App\Actions\FilterRequest;
-use App\Actions\GetInputs;
 use App\Actions\GetUpdatedDatas;
 use App\Actions\ToggleActive;
 use App\Http\Controllers\Controller;
@@ -27,7 +26,8 @@ class CategoryController extends Controller
     public function index()
     {
         $categories = Category::paginate(10, ['*'], 'pag');
-        return view('admin.pages.resources.category.index.index', compact('categories'));
+        $paginationArray = $categories->links()->elements[0];
+        return view('admin.pages.resources.category.index.index', compact('categories', 'paginationArray'));
     }
 
 
@@ -72,10 +72,28 @@ class CategoryController extends Controller
     }
 
 
-    public function destroy(Category $category)
+    public function destroy(Request $request, Category $category)
     {
-        $this->categoryService->destroy($category);
-        return to_route('categories.index')->with('success', 'Kategori başarıyla silindi!');
+        // return $category;
+        
+        $success = $this->categoryService->destroy($category);
+        if ($request->ajax() || $request->wantsJson())
+            return $success;
+        return to_route('categories.index')->with('success', 'Kategori başarıyla çöpe atıldı!');
+    }
+
+    public function restore(Category $category)
+    {
+        $category->restore();
+        return to_route('categories.show', $category->id)->with('success', 'Kategori başarıyla canlandırıldı!');
+    }
+
+    public function forceDelete(Request $request, Category $category)
+    {
+        $category->forceDelete();
+        if ($request->routeIs('trash.*'))
+            return to_route('categories.index')->with('success', 'Kategori başarıyla silindi!');
+        return back()->with('success', 'Kategori başarıyla silindi!');
     }
 
     public function updateActive(Request $request, ToggleActive $toggleActive, string $modelName)

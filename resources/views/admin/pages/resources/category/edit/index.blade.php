@@ -74,9 +74,9 @@
             <div class="mb-2 flex items-center justify-between text-black/95">
                 <h2 class="tex-sm font-semibold">Kategori Alanları</h2>
             </div>
-            <div class="relative overflow-x-auto border border-gray-100 shadow-md sm:rounded-lg">
-                <div class="relative overflow-x-auto">
-                    <div class="relative overflow-x-auto">
+            <div class="relative border border-gray-100 shadow-md sm:rounded-lg">
+                <div class="relative">
+                    <div class="relative">
                         <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
                             <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
@@ -183,8 +183,9 @@
                                                         id="{{ $field->handler . '-active-togglebox' }}" type="checkbox"
                                                         class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                                                 </div>
-                                                @else
-                                                    <input disabled checked onclick="return false" type="checkbox" class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
+                                            @else
+                                                <input disabled checked onclick="return false" type="checkbox"
+                                                    class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                                             @endunless
                                         </td>
                                         <td class="flex justify-end px-6 py-4">
@@ -193,8 +194,9 @@
                                                     <input id="default-checkbox" type="checkbox" value=""
                                                         class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                                                 </div>
-                                                @else
-                                                    <input disabled onclick="return false" type="checkbox" class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
+                                            @else
+                                                <input disabled onclick="return false" type="checkbox"
+                                                    class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                                             @endunless
                                         </td>
                                     </tr>
@@ -233,5 +235,14 @@
         </x-document-panel>
     @else
         <p class="mt-6 text-center font-semibold text-red-600">Bu kategorinin alanı yok</p>
+        <div class="flex justify-center">
+            <div class="mt-2 flex justify-end">
+                <a href="{{ route('fields.create', ['modelName' => strtolower(class_basename($category)), 'modelId' => $category->id]) }}"
+                    class="btn-secondary">
+                    Alan Ekle
+                </a>
+            </div>
+
+        </div>
     @endif
 @endsection

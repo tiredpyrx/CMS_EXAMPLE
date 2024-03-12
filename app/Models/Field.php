@@ -101,4 +101,9 @@ class Field extends Model
     {
         return $this->getMassAssignables()->filter(fn ($d) => in_array($d, $this::MASS_ASSIGNABLE_BOOLS));
     }
+
+    public function getPrimaryTextAttribute()
+    {
+        return $this->handler;
+    }
 }

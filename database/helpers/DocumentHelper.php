@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 use Pest\Support\Str;
+use Carbon\Carbon;
 
 /**
  * @param string $fname
@@ -17,6 +18,11 @@ function getModel(string $fname)
     throw new BadFunctionCallException('Model class cannot be founded!');
 }
 
+function getAll(string $name)
+{
+    return getModel($name)::all();
+}
+
 function getRelationsCount(Model $model, string $foreign, string $primary)
 {
     $foreign = getModel($foreign);
@@ -30,7 +36,13 @@ function shortenText($text, $length = 150)
     return $text;
 }
 
-function getAll(string $name)
+function limitNumber(int|string $num, int $max = 10): string
 {
-    return getModel($name)->all();
+    if ($num > $max) return "$max+";
+    return $num;
+}
+
+function humanDate(Carbon $date)
+{
+    return $date->diffForHumans();
 }

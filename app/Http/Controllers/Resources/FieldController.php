@@ -3,18 +3,13 @@
 namespace App\Http\Controllers\Resources;
 
 use App\Actions\FilterRequest;
-use App\Actions\GetInputs;
 use App\Actions\ToggleActive;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFieldRequest;
 use App\Http\Requests\UpdateFieldActiveRequest;
 use App\Http\Requests\UpdateFieldRequest;
-use App\Models\Blueprint;
-use App\Models\Category;
 use App\Models\Field;
 use App\Services\FieldService;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Http\Request;
 
 class FieldController extends Controller
 {

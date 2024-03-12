@@ -15,7 +15,6 @@
 
                 <div class="relative border border-gray-100 shadow-md sm:rounded-lg">
                     <div class="relative">
-
                         <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
                             <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
@@ -111,7 +110,7 @@
                                             {{ $category->author_name }}
                                         </td>
                                         <td class="px-6 py-4">
-                                            {{ $category->posts_count }}
+                                            {{ limitNumber($category->posts_count, 50) }}
                                         </td>
                                         <td class="px-6 py-4">
                                             <div class="flex items-center">
@@ -145,11 +144,33 @@
                                                             <li
                                                                 class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
                                                                 <button
+                                                                    class="w-full text-left text-green-500">Göster</button>
+                                                            </li>
+                                                            <li
+                                                                class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                                <button
+                                                                    class="w-full text-left text-green-500">Düzenle</button>
+                                                            </li>
+                                                            <li
+                                                                class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                                <button data-route_prefix="categories"
+                                                                    data-route_suffix="duplicate" data-method="post"
+                                                                    data-resource_unique="{{ $category->id }}"
+                                                                    data-success_message="Kategori başarıyla klonlandı!"
+                                                                    data-error_message="Kategori klonlanırken bir hata oluştu!"
+                                                                    onclick="tableResourceAction(this)"
                                                                     class="w-full text-left text-orange-600">Klonla</button>
                                                             </li>
                                                             <li
                                                                 class="whitespace-nowrap rounded-sm px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                                <button class="w-full text-left text-red-500">Sil</button>
+                                                                <button data-route_prefix="categories"
+                                                                    data-route_suffix="destroy" data-parent_node_name="TR"
+                                                                    data-method="delete"
+                                                                    data-resource_unique="{{ $category->id }}"
+                                                                    data-success_message="Kategori başarıyla silindi!"
+                                                                    data-error_message="Kategoriyi silerken bir hata oluştu!"
+                                                                    onclick="tableResourceAction(this)"
+                                                                    class="w-full text-left text-red-500">Sil</button>
                                                             </li>
                                                         </ul>
                                                     </div>
@@ -168,9 +189,9 @@
                                     class="font-semibold text-black/90 dark:text-gray-50">{{ $categories->count() }}</span>
                                 of <span
                                     class="font-semibold text-black/90 dark:text-gray-50">{{ getAll('category')->count() }}</span></span>
-                            @if (count($categories->links()->elements[0]) > 1)
+                            @if (count($paginationArray) > 1)
                                 <ul class="inline-flex h-8 -space-x-px text-sm rtl:space-x-reverse">
-                                    @foreach ($categories->links()->elements[0] as $idx => $link)
+                                    @foreach ($paginationArray as $idx => $link)
                                         <li>
                                             <a href="{{ $link }}"
                                                 class="flex h-8 items-center justify-center border border-gray-300 bg-white px-3 leading-tight text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:border-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">
@@ -185,7 +206,7 @@
                 </div>
             </x-document-panel>
         @else
-            <p class="mt-6 text-center font-semibold text-red-600">Bu kategorinin alanı yok</p>
+            <p class="mt-6 text-center font-semibold text-red-600">Burada hiç bi şey yok.</p>
         @endif
     </main>
 @endsection

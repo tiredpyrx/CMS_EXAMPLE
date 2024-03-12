@@ -22,8 +22,11 @@ import toastr from "toastr";
 window.toastr = toastr;
 
 import Swal from "sweetalert2";
-import jquery from "jquery";
 window.Swal = Swal;
+
+import tippy from "tippy.js"
+import 'tippy.js/dist/tippy.css';
+window.tippy = tippy;
 
 /**
  * Echo exposes an expressive API for subscribing to channels and listening

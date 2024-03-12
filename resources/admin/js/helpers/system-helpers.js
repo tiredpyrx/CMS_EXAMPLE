@@ -14,7 +14,7 @@ export function toggleResourcesActive() {
                 while (parent.nodeName != "TR") parent = parent.parentElement;
                 await axios
                     .patch(route(prefix + ".active", modelName), DATA)
-                    .then((res) => {
+                    .then(_ => {
                         toastr.success(
                             `${ucfirst(modelName)} aktif özelliği düzenlendi`
                         );

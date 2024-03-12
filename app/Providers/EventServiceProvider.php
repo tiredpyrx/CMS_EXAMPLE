@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Listeners\LogUserLogin;
 use App\Models\Blueprint;
 use App\Models\Category;
 use App\Models\Field;
@@ -12,6 +13,7 @@ use App\Observers\CategoryObserver;
 use App\Observers\FieldObserver;
 use App\Observers\PostObserver;
 use App\Observers\UserObserver;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -30,6 +32,9 @@ class EventServiceProvider extends ServiceProvider
         Registered::class => [
             SendEmailVerificationNotification::class,
         ],
+        Login::class => [
+            LogUserLogin::class,
+        ]
     ];
 
     /**

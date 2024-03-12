@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
@@ -27,6 +28,7 @@ class UserFactory extends Factory
             'name' => fake()->name(),
             'nickname' => strtolower(fake()->userName()),
             'email' => fake()->unique()->safeEmail(),
+            'avatar_source' => User::AVATAR_FILE_PATHS['nogender'],
             'biography' => 'Lorem, ipsum dolor sit amet consectetur adipisicing elit. Fugiat, ad est ipsam dolorum deserunt omnis expedita eum officiis a porro numquam quisquam nobis dolores explicabo excepturi nulla iure sit voluptates.',
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),

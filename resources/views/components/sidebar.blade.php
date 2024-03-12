@@ -11,12 +11,12 @@
 
 
 <aside id="default-sidebar"
-    class="fixed left-0 top-0 z-40 h-screen w-64 -translate-x-full transition-transform sm:translate-x-0 hide-scrollbar"
+    class="hide-scrollbar fixed left-0 top-0 z-40 h-screen w-64 -translate-x-full transition-transform sm:translate-x-0"
     aria-label="Sidebar">
-    <div class="h-full overflow-y-auto bg-gray-50 px-3 py-4 dark:bg-gray-800 hide-scrollbar">
+    <div class="hide-scrollbar h-full overflow-y-auto bg-gray-50 px-3 py-4 dark:bg-gray-800">
         <div class="flex h-full flex-col justify-between">
             <nav>
-                <div class="font-bold text-gray-950 dark:text-gray-100 my-4 ml-2 text-3xl">
+                <div class="my-4 ml-2 text-3xl font-bold text-gray-950 dark:text-gray-100">
                     <h2>
                         <a href="/">
                             LOGO
@@ -27,7 +27,8 @@
                     <li>
                         <a href="{{ route('dashboard') }}"
                             class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                            <div class="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white text-xl items-center flex">
+                            <div
+                                class="flex h-5 w-5 flex-shrink-0 items-center text-xl text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
                                 <i class="fa fa-home"></i>
                             </div>
                             <span class="ms-3">Panel</span>
@@ -49,7 +50,8 @@
                     <li>
                         <a href="#"
                             class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                            <div class="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white text-xl items-center flex">
+                            <div
+                                class="flex h-5 w-5 flex-shrink-0 items-center text-xl text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
                                 <i class="fa fa-gear"></i>
                             </div>
                             <span class="ms-3">Ayarlar</span>
@@ -109,8 +111,8 @@
                     </li>
                     <li>
                         <a href="{{ route('users.index') }}"
-                            class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700 text-sm">
-                            <svg class="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white text-sm"
+                            class="group flex items-center rounded-lg p-2 text-sm text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                            <svg class="h-5 w-5 flex-shrink-0 text-sm text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
                                 aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                 viewBox="0 0 20 18">
                                 <path
@@ -119,49 +121,64 @@
                             <span class="ms-3 flex-1 whitespace-nowrap">Kullanıcılar</span>
                         </a>
                     </li>
+                    <li>
+                        <a href=""
+                            class="group flex items-center rounded-lg p-2 text-sm text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                            <div
+                                class="flex h-5 w-5 flex-shrink-0 items-center text-xl text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
+                                <i class="fa fa-users-viewfinder"></i>
+                            </div>
+                            <span class="ms-3 flex-1 whitespace-nowrap">Kullanıcı aksiyonları</span>
+                        </a>
+                    </li>
                 </ul>
                 <ul class="hide-scrollbar max-h-72 space-y-2 overflow-y-scroll font-medium">
-                    @foreach (App\Models\Category::all() as $category)
-                        <li>
-                            <a
-                                href="{{ route('categories.show', $category->id) }}"
-                                class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                                <div class="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white text-xl items-center flex">
-                                    <i class="{{ $category->icon }}"></i>
-                                </div>
-                                <span class="ms-3">{{ $category->title }}</span>
+                    @foreach (getAll('category') as $category)
+                        <li class="group flex items-center gap-x-1">
+                            <button
+                                class="flex h-8 w-8 items-center justify-center rounded-md text-xl text-gray-500 transition duration-75 hover:bg-gray-100 group-hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:group-hover:text-white">
+                                <i class="{{ $category->icon }}"></i>
+                            </button>
+                            <a href="{{ route('categories.show', $category->id) }}"
+                                class="flex-1 rounded-md p-2 px-4 text-left text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                <span>{{ $category->title }}</span>
                             </a>
                         </li>
                     @endforeach
                 </ul>
             </nav>
-            <ul class="space-y-2 font-medium mt-4">
+            <ul class="mt-4 space-y-2 font-medium">
                 <li>
                     <a href="{{ route('users.show', auth()->id()) }}"
                         class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                        <div class="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white text-xl items-center flex">
+                        <div
+                            class="flex h-5 w-5 flex-shrink-0 items-center text-xl text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
                             <i class="fa fa-user"></i>
                         </div>
                         <span class="ms-3">Profil</span>
                     </a>
                 </li>
                 <li>
-                    <a href="trash"
+                    <a href="{{ route('trash') }}"
                         class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                        <div class="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white text-xl items-center flex">
+                        <div
+                            class="flex h-5 w-5 flex-shrink-0 items-center text-xl text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
                             <i class="fa fa-trash"></i>
                         </div>
                         <span class="ms-3">Çöp Kutusu</span>
                     </a>
                 </li>
                 <li>
-                    <a href=""
-                        class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                        <div class="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white text-xl items-center flex">
-                            <i class="fa fa-right-to-bracket"></i>
-                        </div>
-                        <span class="ms-3">Çıkış Yap</span>
-                    </a>
+                    <form action="{{ route('logout') }}" class="w-full">
+                        <button
+                            class="group flex w-full items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                            <div
+                                class="flex h-5 w-5 flex-shrink-0 items-center text-xl text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
+                                <i class="fa fa-right-to-bracket"></i>
+                            </div>
+                            <span class="ms-3">Çıkış Yap</span>
+                        </button>
+                    </form>
                 </li>
             </ul>
         </div>
