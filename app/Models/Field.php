@@ -88,6 +88,8 @@ class Field extends Model
         ]
     ];
 
+    public const AS_PAGE_RECORDS = [];
+
     protected $fillable = [
         'user_id',
         'blueprint_id',

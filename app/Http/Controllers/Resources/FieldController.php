@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Resources;
 
 use App\Actions\FilterRequest;
+use App\Actions\GetUpdatedDatas;
 use App\Actions\ToggleActive;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFieldRequest;
@@ -75,9 +76,14 @@ class FieldController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateFieldRequest $request, Field $field)
+    public function update(UpdateFieldRequest $request, Field $field, FilterRequest $filterRequest, GetUpdatedDatas $getUpdatedDatas)
     {
-        //
+        $safeRequest = $filterRequest->execute($request, 'field');
+        $updated = $getUpdatedDatas->execute($safeRequest, 'field', $field->id);
+        $success = $field->update($updated);
+        if (!$success)
+            return back(304)->with('error', 'Bir şeyler ters gitti!');
+        return to_route('categories.edit', $field->category->id)->with('success', 'Alan başarıyla güncellendi!');
     }
 
     /**

@@ -11,7 +11,7 @@ class UpdateFieldRequest extends AppFormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
