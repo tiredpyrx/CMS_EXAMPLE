@@ -47,7 +47,7 @@ class CategoryController extends Controller
 
     public function show(Category $category)
     {
-        $posts = $category->posts()->paginate(10);
+        $posts = $category->posts()->orderByDesc('created_at')->paginate(10);
         return view('admin.pages.resources.category.show.index', compact('category', 'posts'));
     }
 
@@ -57,14 +57,23 @@ class CategoryController extends Controller
         $fields = $category->fields()->paginate(10);
         $paginationArray  = $fields->links()->elements[0];
         $notEditableFields = Field::PRIMARY_HANDLERS;
-        return view('admin.pages.resources.category.edit.index', compact('category', 'fields', 'paginationArray', 'notEditableFields'));
+
+        return view(
+            'admin.pages.resources.category.edit.index',
+            compact(
+                'category',
+                'fields',
+                'paginationArray',
+                'notEditableFields'
+            )
+        );
     }
 
 
     public function update(UpdateCategoryRequest $request, Category $category, FilterRequest $filterRequest, GetUpdatedDatas $getUpdatedDatas)
     {
         $safeRequest = $filterRequest->execute($request, 'category');
-        $updated = $getUpdatedDatas->execute($safeRequest, 'category');
+        $updated = $getUpdatedDatas->execute($safeRequest, 'category', $category->id);
         $success = $this->categoryService->update($category, $updated);
         if (!$success)
             return back(304)->with('error', 'Bir şeyler ters gitti!');
@@ -75,7 +84,7 @@ class CategoryController extends Controller
     public function destroy(Request $request, Category $category)
     {
         // return $category;
-        
+
         $success = $this->categoryService->destroy($category);
         if ($request->ajax() || $request->wantsJson())
             return $success;
@@ -130,7 +139,13 @@ class CategoryController extends Controller
     {
         $mname = $request->input('modelName');
         $model = getModel($mname);
-        $model->where('category_id', $category->id)->whereNot('active', true)->get()->each(fn($child) => $child->delete());
+        $model->where('category_id', $category->id)->whereNot('active', true)->get()->each(fn ($child) => $child->delete());
         return Category::whereNot('active', true)->delete();
+    }
+
+    public function updateIcon(Request $request, Category $category)
+    {
+        $icon = $request->json()->all()['data']['icon'];
+        return $category->update(['icon' => $icon]);
     }
 }

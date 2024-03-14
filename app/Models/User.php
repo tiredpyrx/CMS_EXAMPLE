@@ -28,11 +28,6 @@ class User extends Authenticatable
         // 'avatar-woman.jpg',
     ];
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
         'role_id',
         'avatar_source',
@@ -44,21 +39,11 @@ class User extends Authenticatable
         'deleted_at',
     ];
 
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var array<int, string>
-     */
     protected $hidden = [
         'password',
         'remember_token',
     ];
 
-    /**
-     * The attributes that should be cast.
-     *
-     * @var array<string, string>
-     */
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
@@ -68,8 +53,9 @@ class User extends Authenticatable
     {
         return LogOptions::defaults()
         ->dontLogIfAttributesChangedOnly(['updated_at', 'remember_token'])
-        ->logAll()
         ->dontSubmitEmptyLogs()
+
+        ->logAll()
         ->logOnlyDirty();
     }
 

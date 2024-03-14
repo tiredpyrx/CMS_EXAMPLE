@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Pest\Support\Str;
 use Carbon\Carbon;
@@ -45,4 +46,11 @@ function limitNumber(int|string $num, int $max = 10): string
 function humanDate(Carbon $date)
 {
     return $date->diffForHumans();
+}
+
+function findUserWithNickname(string $nickname): User
+{
+    return User::where('nickname', $nickname)->firstOr("*", function() {
+        throw new BadFunctionCallException('User cannot be founded!');
+    });
 }

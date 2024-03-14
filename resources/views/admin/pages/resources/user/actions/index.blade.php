@@ -4,7 +4,7 @@
     <main>
         <ul class="w-full">
             @foreach ($actions as $action)
-                @include('admin.auth.actions.partials.item')
+                @include('admin.pages.resources.user.actions.partials.item')
             @endforeach
         </ul>
     </main>

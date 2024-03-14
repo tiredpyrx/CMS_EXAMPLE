@@ -153,6 +153,9 @@
                                             </div>
                                         </div>
                                     </th>
+                                    <th scope="col" class="px-4 py-2">
+                                        Edit
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -198,6 +201,11 @@
                                                 <input disabled onclick="return false" type="checkbox"
                                                     class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                                             @endunless
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div>
+                                                <a href="{{ route('fields.edit', $field->id) }}">edit</a>
+                                            </div>
                                         </td>
                                     </tr>
                                 @endforeach

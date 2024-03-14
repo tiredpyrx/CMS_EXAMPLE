@@ -5,9 +5,13 @@ namespace App\Actions;
 
 class GetUpdatedDatas
 {
-    public function execute(array $safeRequest, string $modelName)
+    public function execute(array $safeRequest, string $modelName, int $modelId)
     {
-        $originalAttributes = getModel($modelName)->get(array_keys($safeRequest));
-        return collect($safeRequest)->diff($originalAttributes)->toArray();
+        $originalAttributes = getModel($modelName)::find($modelId)->getAttributes();
+        $result = collect($safeRequest)->diff($originalAttributes);
+        $bools = collect($safeRequest)->filter(fn($val) => is_bool($val));
+        $bools->each(fn($bool, $key) => $result[$key] = $bool);
+        return $result->toArray();
+        
     }
 }

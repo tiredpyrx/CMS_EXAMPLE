@@ -65,7 +65,7 @@ class PostPolicy
      */
     public function forceDelete(User $user, Post $post): bool
     {
-        if ($user->grounded) return false;
+        if ($user->banned) return false;
 
         if ($post->allow_force_deletion) {
             return $user->role_name !== 'observer';

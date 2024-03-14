@@ -68,7 +68,8 @@ class FieldController extends Controller
      */
     public function edit(Field $field)
     {
-        //
+        $category = $field->category;
+        return view('admin.pages.resources.field.edit.index', compact('field', 'category'));
     }
 
     /**

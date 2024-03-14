@@ -18,11 +18,15 @@ class Field extends Model
     public const MASS_ASSIGNABLES = [
         'label' => 'label',
         'placeholder' => 'placeholder',
-        'column' => 'column',
         'description' => 'description',
         'handler' => 'handler',
         'value' => 'value',
         'type' => 'type',
+        'min_value' => 'min_value',
+        'max_value' => 'max_value',
+        'step' => 'step',
+        'column' => 'column',
+
 
         'required' => 'required',
         'active' => 'active',
@@ -42,6 +46,9 @@ class Field extends Model
         'placeholder' => ['nullable', 'string'],
         'description' => ['nullable', 'string', 'max:160'],
         'type' => ['nullable', 'string'],
+        'min_value' => ['nullable'],
+        'max_value' => ['nullable'],
+        'step' => ['nullable'],
         'column' => ['nullable', 'string', 'max: 2'],
         'required' => ['nullable', 'string'],
         'active' => ['nullable', 'string'],
@@ -49,7 +56,36 @@ class Field extends Model
 
     public const PRIMARY_HANDLERS = [
         'title',
-        'slug'
+        'slug',
+        'changefreq',
+        'priority'
+    ];
+
+    public const HAVE_DETAILS_RECORDS = [
+        [
+            'required' => true,
+            'label' => 'Slug',
+            'handler' => 'slug',
+            'column' => '6'
+        ],
+        [
+            'required' => true,
+            'value' => "0.5",
+            'type' => "number",
+            'min_value' => '0',
+            'max_value' => '1',
+            'step' => '0.25',
+            'label' => 'Sitemap Öncelik',
+            'handler' => 'priority',
+            'column' => '6'
+        ],
+        [
+            'required' => true,
+            'value' => "daily",
+            'label' => 'Sitemap Güncelleme Sıklığı',
+            'handler' => 'changefreq',
+            'column' => '6'
+        ]
     ];
 
     protected $fillable = [
@@ -57,6 +93,7 @@ class Field extends Model
         'blueprint_id',
         'category_id',
         'post_id',
+        'field_id',
 
         'label',
         'placeholder',
@@ -65,6 +102,9 @@ class Field extends Model
         'handler',
         'value',
         'type',
+        'min_value',
+        'max_value',
+        'step',
 
         'required',
         'active',
@@ -85,6 +125,23 @@ class Field extends Model
     public function category()
     {
         return $this->belongsTo(Category::class);
+    }
+
+    public function post()
+    {
+        return $this->belongsTo(Post::class);
+    }
+
+    public function field()
+    {
+        return $this->belongsTo(Field::class);
+    }
+
+    public function fields()
+    {
+        // multiple fields save opened fields to original multifield input
+        // then if field type is multifield on post get, field->where('handler', $handler)->fields()->value('value)
+        return $this->hasMany(Field::class);
     }
 
     public function getAuthorNameAttribute()

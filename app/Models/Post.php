@@ -35,6 +35,7 @@ class Post extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
+            ->useLogName('safe')
             ->setDescriptionForEvent(function ($eventName) {
                 $eventName = config('activitylog.EVENT_NAMES')[$eventName];
                 return ":subject.title, kullanıcı :causer.name tarafından {$eventName}.";
@@ -44,9 +45,20 @@ class Post extends Model
             ->logOnlyDirty();
     }
 
-    public function get(string $handler)
+    public function getSlugAttribute(): string
     {
-        return $this->fields()->where('handler', $handler)->value('value');
+        return $this->fields()->where('handler', 'slug')->value('value');
+    }
+
+    public function field(string $handler): mixed
+    {
+        $field = $this->fields()->where('handler', $handler)->where('active', 1)->first();
+        $value = match ($field->type) {
+            'multifield' => $field->fields()->pluck('value'),
+            'siblingfield' => $field->fields()->pluck('value')->chunk(2),
+            default => $field->value
+        };
+        return $value;
     }
 
     public function user()

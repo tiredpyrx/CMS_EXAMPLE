@@ -1,5 +1,9 @@
 @extends('templates.admin')
 
+@push('css')
+    @livewireStyles
+@endpush
+
 @section('content')
     <x-document-header title='"{{ shortenText($category->title, 20) }}" Kategorisi İçin Gönderi Ekle'>
         @if (auth()->user()->role == 'admin' || auth()->user()->role == 'editor')
@@ -17,17 +21,13 @@
             @csrf
             <div class="grid grid-cols-12 gap-4">
                 @foreach ($fields as $field)
-                    <div class="{{ 'col-span-'.$field->column }}">
-                        <label default for="{{ $field->handler }}">
-                            {{ $field->required ? $field->label . '*' : $field->label }}
-                        </label>
-                        <input
-                            default
-                            name="{{ $field->handler }}"
-                            id="{{ $field->handler }}"
-                            value="{{ $field->value }}"
-                            type="{{ $field->type }}"
-                        />
+                    <div class="{{ 'col-span-' . $field->column }}">
+                        <div>
+                            <label default data-description="{{ $field->description }}" for="{{ $field->handler }}">
+                                {{ $field->required ? $field->label . '*' : $field->label }}
+                            </label>
+                            @includeWhen($field->active, 'admin.partials.fields.' . $field->type)
+                        </div>
                     </div>
                 @endforeach
             </div>
@@ -37,3 +37,7 @@
         </form>
     </x-document-panel>
 @endsection
+
+@push('js')
+    @livewireScripts
+@endpush

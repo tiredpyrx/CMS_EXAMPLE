@@ -69,6 +69,7 @@ class Category extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
+        ->useLogName('safe')
         ->setDescriptionForEvent(function($eventName) {
             $eventName = config('activitylog.EVENT_NAMES')[$eventName];
             return ":subject.title, kullanıcı :causer.name tarafından {$eventName}.";

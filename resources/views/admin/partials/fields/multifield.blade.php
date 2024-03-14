@@ -1,0 +1,1 @@
+<livewire:multifield :field="$field" />

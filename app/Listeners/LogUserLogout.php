@@ -2,18 +2,21 @@
 
 namespace App\Listeners;
 
+use Illuminate\Auth\Events\Logout;
 use Jenssegers\Agent\Agent;
 
 class LogUserLogout
 {
-    public function handle(): void
+    public function handle(Logout $event): void
     {
         $agent = new Agent();
 
         activity()
             ->causedBy(request()->user)
+            ->useLog('private')
             ->withProperties([
-                'logged_out_at' => now()->format('d/m/Y H:i:s'),
+                'datetime' => now()->format('d/m/Y H:i:s'),
+                'causer' => $event->user,
                 'ip' => request()->ip(),
                 'user_agent' => $agent->getUserAgent(),
                 'browser' => $agent->browser(),

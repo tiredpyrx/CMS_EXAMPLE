@@ -11,7 +11,7 @@ class FieldPolicy
 
     public function beforeAll(User $user, Field $field)
     {
-        return !$user->grounded && ($user->role_name === 'editor' || $user->role_name === 'admin');
+        return !$user->banned && ($user->role_name === 'editor' || $user->role_name === 'admin');
     }
 
     /**

@@ -21,7 +21,7 @@ return new class extends Migration
             $table->text('biography')->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
-            $table->boolean('grounded')->nullable()->default(false);
+            $table->boolean('banned')->nullable()->default(false);
             $table->softDeletes();
             $table->rememberToken();
             $table->timestamps();

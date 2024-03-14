@@ -10,6 +10,7 @@ use App\Http\Controllers\Resources\CategoryController;
 use App\Http\Controllers\Resources\BlueprintController;
 use App\Http\Controllers\Resources\PostController;
 use App\Http\Controllers\Resources\FieldController;
+use App\Http\Controllers\Views\ActivitiesViewController;
 use App\Http\Controllers\Views\TrashViewController;
 use Illuminate\Support\Facades\Route;
 
@@ -36,7 +37,7 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('/logout', [UserController::class, 'logout'])->name('logout');
         Route::get('/trash', TrashViewController::class)->name('trash');
-        // Route::get('/users/actions', AllUsersActionsViewController::class)->name('users.allUsersActions');
+        Route::get('/activities', ActivitiesViewController::class)->name('activities');
 
         Route::group(['prefix' => 'categories', 'controller' => CategoryController::class], function () {
             Route::patch('/{modelName}/active', 'updateActive')->name('categories.active');
@@ -44,6 +45,8 @@ Route::group(['middleware' => 'auth'], function () {
             Route::delete('/delete/all/selected', 'deleteAllSelected')->name('categories.deleteAllSelected');
             Route::delete('/unactives/delete', 'deleteAllUnactives')->name('categories.deleteAllUnactives');
             Route::delete('{category}/unactives/children/delete', 'deleteAllUnactiveChildren')->name('categories.deleteAllUnactiveChildren');
+
+            Route::patch('{category}/icon', 'updateIcon')->name('categories.update.icon');
         });
 
         Route::group(['prefix' => 'posts', 'controller' => PostController::class], function () {

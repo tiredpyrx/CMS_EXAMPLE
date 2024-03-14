@@ -3,6 +3,8 @@
 namespace App\Observers;
 
 use App\Models\Category;
+use App\Models\Field;
+use App\Services\FieldService;
 
 class CategoryObserver
 {
@@ -11,9 +13,54 @@ class CategoryObserver
      */
     public function created(Category $category): void
     {
-        $fieldRecords = [['user_id' => auth()->id() || 1, 'category_id' => $category->id, 'required' => true, 'label' => 'Başlık', 'handler' => 'title']];
+        $fieldRecords = [
+            [
+                'user_id' => auth()->id(),
+                'category_id' => $category->id,
+                'required' => true,
+                'label' => 'Başlık',
+                'handler' => 'title'
+            ]
+        ];
 
-        if ($category->have_details) $fieldRecords[] = ['user_id' => auth()->id() || 1, 'category_id' => $category->id, 'required' => true, 'label' => 'Slug', 'handler' => 'slug'];
+        $detailedFieldRecords = [
+            [
+                'user_id' => auth()->id(),
+                'category_id' => $category->id,
+                'required' => true,
+                'label' => 'Slug',
+                'handler' => 'slug',
+                'column' => '6'
+            ],
+            [
+                'user_id' => auth()->id(),
+                'category_id' => $category->id,
+                'required' => true,
+                'value' => "0.5",
+                'type' => "number",
+                'min_value' => '0',
+                'max_value' => '1',
+                'step' => '0.25',
+                'label' => 'Sitemap Öncelik',
+                'handler' => 'priority',
+                'column' => '6'
+            ],
+            [
+                'user_id' => auth()->id(),
+                'category_id' => $category->id,
+                'required' => true,
+                'value' => "daily",
+                'label' => 'Sitemap Güncelleme Sıklığı',
+                'handler' => 'changefreq',
+                'column' => '6'
+            ]
+        ];
+
+        if ($category->have_details) {
+            foreach ($detailedFieldRecords as $detailedRecord) {
+                $fieldRecords[] = $detailedRecord;
+            }
+        }
 
         $category->fields()->createMany($fieldRecords);
     }
@@ -23,13 +70,15 @@ class CategoryObserver
      */
     public function updated(Category $category): void
     {
-        $slugField = $category->fields()->where('handler', 'slug');
+        $detailedFields = $category->fields()->whereIn('handler', Field::PRIMARY_HANDLERS)->whereNot('handler', 'title');
 
-        if (!$category->have_details && $slugField->exists())
-            $slugField->delete();
+        if (!$category->have_details && $detailedFields->count())
+            $detailedFields->each(fn ($field) => $field->delete());
 
-        if ($category->have_details && $slugField->doesntExist())
-            $category->fields()->create(['user_id' => auth()->id() || 1, 'category_id' => $category->id, 'label' => 'Slug', 'handler' => 'slug']);
+        $detailedFieldRecords = (new FieldService())->getDetailedArray(auth()->id(), 'category_id', $category->id);
+
+        if ($category->have_details && !$detailedFields->count())
+            $category->fields()->createMany($detailedFieldRecords);
     }
 
     /**
@@ -45,8 +94,8 @@ class CategoryObserver
      */
     public function restored(Category $category): void
     {
-        $category->posts()->onlyTrashed()->get()->each(fn($post) => $post->restore());
-        $category->fields()->onlyTrashed()->get()->each(fn($field) => $field->restore());
+        $category->posts()->onlyTrashed()->get()->each(fn ($post) => $post->restore());
+        $category->fields()->onlyTrashed()->get()->each(fn ($field) => $field->restore());
     }
 
     /**
@@ -54,7 +103,7 @@ class CategoryObserver
      */
     public function forceDeleted(Category $category): void
     {
-        $category->posts()->get()->each(fn($post) => $post->forceDelete());
-        $category->fields()->get()->each(fn($field) => $field->forceDelete());
+        $category->posts()->get()->each(fn ($post) => $post->forceDelete());
+        $category->fields()->get()->each(fn ($field) => $field->forceDelete());
     }
 }

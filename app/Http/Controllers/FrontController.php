@@ -11,14 +11,13 @@ class FrontController extends Controller
 {
     public function __invoke(string $slug)
     {
-        $page = Post::find(1);
-        foreach(Category::where('have_details', 1)->get()->all() as $c) {
+        foreach (Category::where('have_details', 1)->get()->all() as $c) {
             foreach (Post::where('category_id', $c->id)->get()->all() as $post) {
-                if ($post->take('slug') == $slug) {
+                if ($post->slug == $slug) {
                     $page = $post;
                     if ($c->view) {
                         return view('front.pages.' . $c->view, ['page' => $page]);
-                    } else if ($post->take('view'))
+                    } else if ($post->slug)
                         return view('front.pages.' . $post->view, ['page' => $page]);
                 }
             };

@@ -15,17 +15,61 @@ class PostService
             $fieldName = $field->handler;
             $fieldValue = $request->input($fieldName);
             $fieldDatas = [];
-            $post->fields()->create([
-                'user_id' => auth()->id(),
-                'post_id' => $category->id,
-                'label' => $field->label,
-                'placeholder' => $field->placeholder,
-                'handler' => $fieldName,
-                'value' => $fieldValue,
-                'column' => $field->placeholder,
-                'type' => $field->type,
-                'description' => $field->description
-            ]);
+            switch ($field->type) {
+                case 'multifield':
+                    $newField = $post->fields()->create([
+                        'user_id' => auth()->id(),
+                        'post_id' => $post->id,
+                        'label' => $field->label,
+                        'placeholder' => $field->placeholder,
+                        'handler' => $fieldName,
+                        'column' => $field->placeholder,
+                        'type' => $field->type,
+                        'description' => $field->description
+                    ]);
+                    collect($fieldValue)->each(function ($value) use ($newField, $post) {
+                        $newField->fields()->create([
+                            'user_id' => auth()->id(),
+                            'field_id' => $post->id,
+                            'handler' => hexdec(uniqid($newField->handler)),
+                            'value' => $value,
+                        ]);
+                    });
+                    break;
+                case 'siblingfield':
+                    $newField = $post->fields()->create([
+                        'user_id' => auth()->id(),
+                        'post_id' => $post->id,
+                        'label' => $field->label,
+                        'placeholder' => $field->placeholder,
+                        'handler' => $fieldName,
+                        'column' => $field->placeholder,
+                        'type' => $field->type,
+                        'description' => $field->description
+                    ]);
+                    collect($fieldValue)->each(function ($value) use ($newField, $post) {
+                        $newField->fields()->create([
+                            'user_id' => auth()->id(),
+                            'field_id' => $post->id,
+                            'handler' => hexdec(uniqid($newField->handler)),
+                            'value' => $value,
+                        ]);
+                    });
+                    break;
+                default:
+                    $post->fields()->create([
+                        'user_id' => auth()->id(),
+                        'post_id' => $post->id,
+                        'label' => $field->label,
+                        'placeholder' => $field->placeholder,
+                        'handler' => $fieldName,
+                        'value' => $fieldValue,
+                        'column' => $field->placeholder,
+                        'type' => $field->type,
+                        'description' => $field->description
+                    ]);
+                    break;
+            }
         }
     }
 

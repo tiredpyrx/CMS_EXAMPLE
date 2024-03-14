@@ -2,20 +2,23 @@
 
 namespace App\Listeners;
 
+use Illuminate\Auth\Events\Login;
 use Jenssegers\Agent\Agent;
 
 
 class LogUserLogin
 {
-    public function handle(): void
+    public function handle(Login $event): void
     {
 
         $agent = new Agent();
 
         activity()
             ->causedBy(request()->user)
+            ->useLog('private')
             ->withProperties([
-                'logged_at' => now()->format('d/m/Y H:i:s'),
+                'datetime' => now()->format('d/m/Y H:i:s'),
+                'causer' => $event->user,
                 'ip' => request()->ip(),
                 'user_agent' => $agent->getUserAgent(),
                 'browser' => $agent->browser(),

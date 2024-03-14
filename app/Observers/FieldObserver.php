@@ -17,17 +17,18 @@ class FieldObserver
 
     public function updated(Field $field): void
     {
-        if (!$field->category_id) return;
+        if (!$field->category_id || $field->wasRecentlyCreated) return;
 
         Category::find($field->category_id)->posts()->each(function ($post) {
             $activity = Activity::all()->last();
-            foreach ($activity->changes['old'] as $key => $oldValue) {
-                foreach (Field::where('post_id', $post->id) as $field) {
-                    $newAttrs = $activity->changes['attributes'];
-                    if ($field->getAttribute($key) == $oldValue)
-                        $field->update([$key => $newAttrs[$key]]);
+            if (isset($activity->changes['old']))
+                foreach ($activity->changes['old'] as $key => $oldValue) {
+                    foreach (Field::where('post_id', $post->id) as $field) {
+                        $newAttrs = $activity->changes['attributes'];
+                        if ($field->getAttribute($key) == $oldValue)
+                            $field->update([$key => $newAttrs[$key]]);
+                    }
                 }
-            }
         });
     }
 
