@@ -97,4 +97,16 @@ class PostService
     {
         return $this->deleteMany($ids);
     }
+
+    // send it to sitemap.xml
+    public function publish(Post $post)
+    {
+        $post->published = true;
+    }
+
+    // remove from sitemap.xml
+    public function unpublish()
+    {
+        //
+    }
 }

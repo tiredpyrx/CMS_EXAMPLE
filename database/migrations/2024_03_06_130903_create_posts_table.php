@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained();
             $table->foreignId('category_id')->constrained()->cascadeOnDelete();
             $table->string('title')->unique();
+            $table->date('publish_date')->nullable();
+            $table->boolean('published');
             $table->boolean('active')->nullable()->default(true);
             $table->softDeletes();
             $table->timestamps();

@@ -22,7 +22,9 @@ class Post extends Model
         'category_id',
 
         'title',
+        'publish_date',
 
+        'published',
         'active',
         'deleted_at',
     ];
@@ -50,9 +52,13 @@ class Post extends Model
         return $this->fields()->where('handler', 'slug')->value('value');
     }
 
-    public function field(string $handler): mixed
+    public function field(string $handler = ''): mixed
     {
-        $field = $this->fields()->where('handler', $handler)->where('active', 1)->first();
+        $field = $this->fields()->where('handler', $handler)->where('active', 1);
+        if ($field->exists())
+            $field = $field->first();
+        else return collect([]);
+
         $value = match ($field->type) {
             'multifield' => $field->fields()->pluck('value'),
             'siblingfield' => $field->fields()->pluck('value')->chunk(2),

@@ -141,8 +141,6 @@ class Field extends Model
 
     public function fields()
     {
-        // multiple fields save opened fields to original multifield input
-        // then if field type is multifield on post get, field->where('handler', $handler)->fields()->value('value)
         return $this->hasMany(Field::class);
     }
 

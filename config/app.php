@@ -168,7 +168,8 @@ return [
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        Jenssegers\Agent\AgentServiceProvider::class
+        Jenssegers\Agent\AgentServiceProvider::class,
+        Lavary\Menu\ServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -184,6 +185,7 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         'Agent' => Jenssegers\Agent\Facades\Agent::class,
+        'Menu' => Lavary\Menu\Facade::class,
     ])->toArray(),
 
 ];
