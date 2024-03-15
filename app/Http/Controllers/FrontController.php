@@ -18,7 +18,7 @@ class FrontController extends Controller
                     if ($c->view) {
                         return view('front.pages.' . $c->view, ['page' => $page]);
                     } else if ($post->slug)
-                        return view('front.pages.' . $post->view, ['page' => $page]);
+                        return view('front.pages.' . $post->field('view'), ['page' => $page]);
                 }
             };
         };

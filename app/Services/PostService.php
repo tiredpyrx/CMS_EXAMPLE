@@ -99,14 +99,14 @@ class PostService
     }
 
     // send it to sitemap.xml
-    public function publish(Post $post)
+    public function publish(Post $post): bool
     {
-        $post->published = true;
+        return $post->update(['published', true]);
     }
 
     // remove from sitemap.xml
-    public function unpublish()
+    public function unpublish(Post $post): bool
     {
-        //
+        return $post->update(['published', false]);
     }
 }

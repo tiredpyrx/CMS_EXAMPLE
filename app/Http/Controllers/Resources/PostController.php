@@ -33,10 +33,15 @@ class PostController extends Controller
 
     public function store(StorePostRequest $request, Category $category, PostService $postService)
     {
+        $now = now();
         $safeRequest = $request->only('title', 'publish_date');
         $additional = ['user_id' => auth()->id(), 'category_id' => $category->id];
-        if ($request->publish_date >= now())
+        if (!$request->publish_date) {
+            $additional['publish_date'] = $now;
             $additional['published'] = true;
+        } else if ($request->publish_date >= $now)
+            $additional['published'] = true;
+        else $additional['published'] = false;
         $merged = array_merge($safeRequest, $additional);
         $post = Post::create($merged);
         $postService->registerFields($post, $request);
