@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Category;
 use App\Models\Post;
+use Carbon\Carbon;
 
 class PostObserver
 {
@@ -12,7 +13,16 @@ class PostObserver
      */
     public function created(Post $post): void
     {
-        //
+        $publishDate = request()->input('publish_date');
+        $now = now();
+        if ($publishDate) {
+            $publishDate = Carbon::parse($publishDate);
+            $post->publish_date = $publishDate;
+            $post->published = ($publishDate <= $now);
+        } else {
+            $post->publish_date = $now;
+            $post->published = true;
+        }
     }
 
     /**

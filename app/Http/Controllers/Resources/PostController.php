@@ -8,6 +8,7 @@ use App\Http\Requests\UpdatePostRequest;
 use App\Models\Category;
 use App\Models\Post;
 use App\Services\PostService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PostController extends Controller
@@ -33,17 +34,8 @@ class PostController extends Controller
 
     public function store(StorePostRequest $request, Category $category, PostService $postService)
     {
-        $now = now();
-        $safeRequest = $request->only('title', 'publish_date');
-        $additional = ['user_id' => auth()->id(), 'category_id' => $category->id];
-        if (!$request->publish_date) {
-            $additional['publish_date'] = $now;
-            $additional['published'] = true;
-        } else if ($request->publish_date >= $now)
-            $additional['published'] = true;
-        else $additional['published'] = false;
-        $merged = array_merge($safeRequest, $additional);
-        $post = Post::create($merged);
+        $safeRequest = $request->only('title',);
+        $post = $postService->create($request, $safeRequest, $category);
         $postService->registerFields($post, $request);
         return to_route('categories.show', $category->id)->with('success', 'Gönderi başarıyla eklendi!');
     }

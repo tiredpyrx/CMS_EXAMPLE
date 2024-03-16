@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Category;
 use App\Models\Post;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PostService
@@ -96,6 +97,29 @@ class PostService
     public function deleteAllSelected(array $ids)
     {
         return $this->deleteMany($ids);
+    }
+
+    public function create(Request $request, array $safeRequest, Category $category)
+    {
+        $publishDate = $request->input('publish_date');
+        $active = $request->has('active');
+        $now = now();
+        $additional = [
+            'user_id' => auth()->id(),
+            'category_id' => $category->id,
+            'active' => $active
+        ];
+        if ($publishDate) {
+            $publishDate = Carbon::parse($publishDate);
+            $additional['publish_date'] = $publishDate;
+            if ($publishDate <= $now) $additional['published'] = true;
+            else $additional['published'] = false;
+        } else {
+            $additional['publish_date'] = $now;
+            $additional['published'] = true;
+        }
+        $merged = array_merge($safeRequest, $additional);
+        return $post = Post::create($merged);
     }
 
     // send it to sitemap.xml

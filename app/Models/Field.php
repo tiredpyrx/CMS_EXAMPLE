@@ -74,7 +74,7 @@ class Field extends Model
             'type' => "number",
             'min_value' => '0',
             'max_value' => '1',
-            'step' => '0.25',
+            'step' => '0.10',
             'label' => 'Sitemap Öncelik',
             'handler' => 'priority',
             'column' => '6'
