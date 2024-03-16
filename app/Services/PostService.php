@@ -15,7 +15,6 @@ class PostService
         foreach ($category->fields as $field) {
             $fieldName = $field->handler;
             $fieldValue = $request->input($fieldName);
-            $fieldDatas = [];
             switch ($field->type) {
                 case 'multifield':
                     $newField = $post->fields()->create([
@@ -66,6 +65,8 @@ class PostService
                         'handler' => $fieldName,
                         'value' => $fieldValue,
                         'column' => $field->placeholder,
+                        'prefix' => $field->prefix,
+                        'suffix' => $field->suffix,
                         'type' => $field->type,
                         'description' => $field->description
                     ]);

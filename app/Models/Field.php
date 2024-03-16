@@ -25,6 +25,8 @@ class Field extends Model
         'min_value' => 'min_value',
         'max_value' => 'max_value',
         'step' => 'step',
+        'prefix' => 'prefix',
+        'suffix' => 'suffix',
         'column' => 'column',
 
 
@@ -49,6 +51,8 @@ class Field extends Model
         'min_value' => ['nullable'],
         'max_value' => ['nullable'],
         'step' => ['nullable'],
+        'prefix' => ['string', 'nullable'],
+        'suffix' => ['string', 'nullable'],
         'column' => ['nullable', 'string', 'max: 2'],
         'required' => ['nullable', 'string'],
         'active' => ['nullable', 'string'],
@@ -97,16 +101,23 @@ class Field extends Model
         'post_id',
         'field_id',
 
+        'column',
+
         'label',
         'placeholder',
-        'column',
         'description',
+
         'handler',
-        'value',
         'type',
+        'value',
+
         'min_value',
         'max_value',
+
         'step',
+
+        'prefix',
+        'suffix',
 
         'required',
         'active',

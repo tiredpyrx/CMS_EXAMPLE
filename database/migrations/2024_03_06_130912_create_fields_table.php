@@ -33,6 +33,9 @@ return new class extends Migration
             $table->string('step')->nullable();
             $table->string('column')->nullable()->default(Field::DEFAULT_COLUMN_VALUE);
 
+            $table->string('prefix')->nullable();
+            $table->string('suffix')->nullable();
+
             $table->boolean('required')->nullable()->default(Field::DEFAULT_REQUIRED_VALUE);
             $table->boolean('active')->nullable()->default(Field::DEFAULT_ACTIVE_VALUE);
 

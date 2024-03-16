@@ -39,7 +39,7 @@
                 <x-document-panel>
                     <div class="grid gap-6">
                         <div class="relative max-w-sm flex gap-4">
-                            <div class="pointer-events-none flex items-center ps-3.5">
+                            <div class="pointer-events-none flex items-center">
                                 <svg class="h-4 w-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
                                     xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                     <path
@@ -48,7 +48,7 @@
                             </div>
                             <div>
                                 <input name="publish_date" type="date"
-                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 ps-10 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
+                                class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500"
                                 placeholder="Select date">
                             </div>
                         </div>

@@ -2,7 +2,7 @@
 export default {
     content: ["./resources/**/*.blade.php", "./resources/**/*.js"],
     // darkMode: ['class', 'selector'],
-    safelist: [{pattern: /./}],
+    safelist: [{pattern: /col-span.|grid.|text-.|bg./}],
     theme: {
         extend: {
             colors: {

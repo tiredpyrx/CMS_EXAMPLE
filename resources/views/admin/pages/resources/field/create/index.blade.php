@@ -25,6 +25,14 @@
                     <input default id="value" name="value" />
                 </div>
                 <div class="col-span-6">
+                    <label default for="prefix">Önek</label>
+                    <input default id="prefix" name="prefix" />
+                </div>
+                <div class="col-span-6">
+                    <label default for="suffix">Sonek</label>
+                    <input default id="suffix" name="suffix" />
+                </div>
+                <div class="col-span-6">
                     <label default for="type">Alan Tipi</label>
                     <input value="{{ getModel('field')::DEFAULT_TYPE_VALUE }}" default id="type" name="type" />
                 </div>

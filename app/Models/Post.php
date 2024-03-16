@@ -64,6 +64,10 @@ class Post extends Model
             'siblingfield' => $field->fields()->pluck('value')->chunk(2),
             default => $field->value
         };
+
+        if ($field->prefix) $value = $field->prefix . $value;
+        if ($field->suffix) $value .= $field->suffix;
+
         return $value;
     }
 
