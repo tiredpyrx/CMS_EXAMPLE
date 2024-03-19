@@ -21,15 +21,19 @@ class ActivitiesViewController extends Controller
                 $action['subject_model'] = app($action['subject_type'])::withTrashed()->find($action['subject_id']);
                 $action['subject_class'] = Str::substr($action['subject_type'], strrpos($action['subject_type'], '\\') + 1, Str::length($action['subject_type']));
                 $action['casuer'] = User::find($action['causer_id']);
-                $action['is_deleted'] = $action['subject_model']->deleted_at ? true : false;
-                $action['subject_route_prefix'] = match ($action['subject_class']) {
-                    'Category' => 'categories',
-                    'Blueprint' => 'blueprints',
-                    'Post' => 'posts',
-                    'Field' => 'fields',
-                    'Comment' => 'comments',
-                    'Image' => 'images',
-                };
+                if(!$action['subject_model']) {
+                    $action['is_force_deleted'] = true;
+                } else {
+                    $action['is_trashed'] = $action['subject_model']->deleted_at ? true : false;
+                    $action['subject_route_prefix'] = match ($action['subject_class']) {
+                        'Category' => 'categories',
+                        'Blueprint' => 'blueprints',
+                        'Post' => 'posts',
+                        'Field' => 'fields',
+                        'Comment' => 'comments',
+                        'Image' => 'images',
+                    };
+                }
             }
         }
 

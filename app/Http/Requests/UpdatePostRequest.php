@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\Post;
+use App\Services\PostService;
 
 class UpdatePostRequest extends AppFormRequest
 {
@@ -11,7 +12,7 @@ class UpdatePostRequest extends AppFormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -21,6 +22,8 @@ class UpdatePostRequest extends AppFormRequest
      */
     public function rules(): array
     {
-        return Post::RULES;;
+        $rules = Post::RULES;
+        (new PostService)->handlePostsDetailedFieldsValidationOnUpdate($this, $rules);
+        return $rules;
     }
 }

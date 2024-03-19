@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Post;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +19,7 @@ return new class extends Migration
             $table->string('title')->unique();
             $table->date('publish_date')->nullable();
             $table->boolean('published')->nullable();
-            $table->boolean('active')->nullable()->default(true);
+            $table->boolean('active')->nullable()->default(Post::DEFAULT_ACTIVE_VALUE);
             $table->softDeletes();
             $table->timestamps();
         });

@@ -13,6 +13,7 @@ class CategoryObserver
      */
     public function created(Category $category): void
     {
+
         $fieldRecords = [
             [
                 'user_id' => auth()->id(),
@@ -23,41 +24,15 @@ class CategoryObserver
             ]
         ];
 
-        $detailedFieldRecords = [
-            [
-                'user_id' => auth()->id(),
-                'category_id' => $category->id,
-                'required' => true,
-                'label' => 'Slug',
-                'handler' => 'slug',
-                'column' => '6'
-            ],
-            [
-                'user_id' => auth()->id(),
-                'category_id' => $category->id,
-                'required' => true,
-                'value' => "0.5",
-                'type' => "number",
-                'min_value' => '0',
-                'max_value' => '1',
-                'step' => '0.25',
-                'label' => 'Sitemap Öncelik',
-                'handler' => 'priority',
-                'column' => '6'
-            ],
-            [
-                'user_id' => auth()->id(),
-                'category_id' => $category->id,
-                'required' => true,
-                'value' => "daily",
-                'label' => 'Sitemap Güncelleme Sıklığı',
-                'handler' => 'changefreq',
-                'column' => '6'
-            ]
-        ];
+        $detailedFieldRecords = Field::DETAILED_RECORDS;
+
+        foreach ($detailedFieldRecords as &$detailedRecord) {
+            $detailedRecord['user_id'] = auth()->id();
+            $detailedRecord['category_id'] = $category->id;
+        }
 
         if ($category->have_details) {
-            foreach ($detailedFieldRecords as $detailedRecord) {
+            foreach ($detailedFieldRecords as &$detailedRecord) {
                 $fieldRecords[] = $detailedRecord;
             }
         }
@@ -70,7 +45,7 @@ class CategoryObserver
      */
     public function updated(Category $category): void
     {
-        $detailedFields = $category->fields()->whereIn('handler', Field::PRIMARY_HANDLERS)->whereNot('handler', 'title');
+        $detailedFields = $category->fields()->whereIn('handler', Field::DETAILED_HANDLERS);
 
         if (!$category->have_details && $detailedFields->count())
             $detailedFields->each(fn ($field) => $field->delete());

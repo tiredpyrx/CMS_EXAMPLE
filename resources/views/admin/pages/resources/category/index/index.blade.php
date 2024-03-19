@@ -143,13 +143,15 @@
                                                         <ul class="p-1">
                                                             <li
                                                                 class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                                <button
-                                                                    class="w-full text-left text-green-500">Göster</button>
+                                                                <a
+                                                                    href="{{ route('categories.show', $category->id) }}"
+                                                                    class="w-full text-left text-green-500">Göster</a>
                                                             </li>
                                                             <li
                                                                 class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                                <button
-                                                                    class="w-full text-left text-green-500">Düzenle</button>
+                                                                <a
+                                                                    href="{{ route('categories.edit', $category->id) }}"
+                                                                    class="w-full text-left text-green-500">Düzenle</a>
                                                             </li>
                                                             <li
                                                                 class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">

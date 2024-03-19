@@ -120,14 +120,15 @@ class Category extends Model
         return Post::where('category_id', $this->id)->count();
     }
 
-    public function getMassAssignables()
+    public static function getMassAssignables()
     {
-        return collect($this::MASS_ASSIGNABLES);
+        return collect(Category::MASS_ASSIGNABLES);
     }
 
-    public function getMassAssignableBools()
+    public static function getMassAssignableBools()
     {
-        return $this->getMassAssignables()->filter(fn ($d) => in_array($d, $this::MASS_ASSIGNABLE_BOOLS));
+        $bools = Category::MASS_ASSIGNABLE_BOOLS;
+        return Category::getMassAssignables()->filter(fn ($d) => in_array($d, $bools));
     }
 
     public function getPrimaryTextAttribute()

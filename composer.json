@@ -13,6 +13,7 @@
         "laravel/tinker": "^2.8",
         "lavary/laravel-menu": "^1.8",
         "livewire/livewire": "^3.4",
+        "spatie/enum": "^3.13",
         "spatie/laravel-activitylog": "^4.8",
         "spatie/laravel-sitemap": "^7.2",
         "tightenco/ziggy": "^2.0"

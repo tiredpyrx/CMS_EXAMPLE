@@ -53,7 +53,8 @@ return [
     'EVENT_NAMES' => [
         'created' => 'eklendi',
         'updated' => 'güncellendi',
-        'deleted' => 'silindi'
+        'deleted' => 'çöpe atıldı',
+        'forceDeleted' => 'kalıcı olarak silindi',
     ],
 
     'EVENT_NAMES_CSS' => [

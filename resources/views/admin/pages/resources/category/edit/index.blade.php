@@ -40,20 +40,20 @@
                 </div>
                 <div class="col-span-12">
                     <div class="flex items-center gap-x-4">
-                        <div class="mb-4 flex items-center">
+                        <div class="flex items-center">
                             <input @checked($category->have_details) name="have_details" id="have_details" type="checkbox"
                                 value=""
                                 class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                             <label for="have_details"
                                 class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Detaya Sahip</label>
                         </div>
-                        <div class="mb-4 flex items-center">
+                        <div class="flex items-center">
                             <input @checked($category->as_page) name="as_page" id="as_page" type="checkbox" value=""
                                 class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                             <label for="as_page" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Sayfa
                                 Temsil</label>
                         </div>
-                        <div class="mb-4 flex items-center">
+                        <div class="flex items-center">
                             <input @checked($category->active) name="active" id="active" type="checkbox" value=""
                                 class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                             <label for="active"
@@ -62,7 +62,7 @@
                     </div>
                 </div>
                 <div class="col-span-12">
-                    <button class="btn-primary mt-6">
+                    <button class="btn-primary">
                         Güncelle
                     </button>
                 </div>
@@ -193,62 +193,62 @@
                                                     class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                                             @endunless
                                         </td>
-                                        <td class="flex justify-end px-6 py-4">
+                                        <td class="flex h-[70px] items-center justify-end px-6 py-4">
                                             @unless (in_array($field->handler, $notEditableFields))
-                                                <div class="flex items-center">
-                                                    <input id="default-checkbox" type="checkbox" value=""
-                                                        class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
-                                                </div>
+                                                <input type="checkbox"
+                                                    class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                                             @else
                                                 <input disabled onclick="return false" type="checkbox"
-                                                    class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
+                                                class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                                             @endunless
                                         </td>
                                         <td class="px-6 py-4">
-                                            <div class="flex items-center justify-end">
-                                                <div class="relative">
-                                                    <button
-                                                        class="document_dropdown_trigger flex h-9 w-9 cursor-pointer items-center justify-center rounded-full duration-200 hover:bg-black/25">
-                                                        <i class="fa fa-ellipsis-vertical"></i>
-                                                    </button>
-                                                    <div
-                                                        class="document_dropdown close-on-outside-click absolute bottom-1/2 right-full hidden translate-y-3/4 bg-gray-50 text-sm shadow">
-                                                        <ul class="p-1">
-                                                            <li
-                                                                class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                                <button
-                                                                    class="w-full text-left text-green-500">Göster</button>
-                                                            </li>
-                                                            <li
-                                                                class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                                <button
-                                                                    class="w-full text-left text-green-500">Düzenle</button>
-                                                            </li>
-                                                            <li
-                                                                class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                                <button data-route_prefix="fields"
-                                                                    data-route_suffix="duplicate" data-method="post"
-                                                                    data-resource_unique="{{ $field->id }}"
-                                                                    data-success_message="Alan başarıyla klonlandı!"
-                                                                    data-error_message="Alan klonlanırken bir hata oluştu!"
-                                                                    onclick="tableResourceAction(this)"
-                                                                    class="w-full text-left text-orange-600">Klonla</button>
-                                                            </li>
-                                                            <li
-                                                                class="whitespace-nowrap rounded-sm px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                                <button data-route_prefix="fields"
-                                                                    data-route_suffix="destroy" data-parent_node_name="TR"
-                                                                    data-method="delete"
-                                                                    data-resource_unique="{{ $field->id }}"
-                                                                    data-success_message="Alan başarıyla silindi!"
-                                                                    data-error_message="Alanı silerken bir hata oluştu!"
-                                                                    onclick="tableResourceAction(this)"
-                                                                    class="w-full text-left text-red-500">Sil</button>
-                                                            </li>
-                                                        </ul>
+                                            @unless (in_array($field->handler, $notEditableFields))
+                                                <div class="flex items-center justify-end">
+                                                    <div class="relative">
+                                                        <button
+                                                            class="@unless (in_array($field->handler, $notEditableFields)) document_dropdown_trigger @endunless flex h-9 w-9 cursor-pointer items-center justify-center rounded-full duration-200 hover:bg-black/25">
+                                                            <i class="fa fa-ellipsis-vertical"></i>
+                                                        </button>
+                                                        <div
+                                                            class="document_dropdown close-on-outside-click absolute bottom-1/2 right-full hidden translate-y-3/4 bg-gray-50 text-sm shadow">
+                                                            <ul class="p-1">
+                                                                <li
+                                                                    class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                                    <a href="{{ route('fields.show', $field->id) }}"
+                                                                        class="w-full text-left text-green-500">Göster</a>
+                                                                </li>
+                                                                <li
+                                                                    class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                                    <a href="{{ route('fields.edit', $field->id) }}"
+                                                                        class="w-full text-left text-green-500">Düzenle</a>
+                                                                </li>
+                                                                <li
+                                                                    class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                                    <button data-route_prefix="fields"
+                                                                        data-route_suffix="duplicate" data-method="post"
+                                                                        data-resource_unique="{{ $field->id }}"
+                                                                        data-success_message="Alan başarıyla klonlandı!"
+                                                                        data-error_message="Alan klonlanırken bir hata oluştu!"
+                                                                        onclick="tableResourceAction(this)"
+                                                                        class="w-full text-left text-orange-600">Klonla</button>
+                                                                </li>
+                                                                <li
+                                                                    class="whitespace-nowrap rounded-sm px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                                    <button data-route_prefix="fields"
+                                                                        data-route_suffix="destroy" data-parent_node_name="TR"
+                                                                        data-method="delete"
+                                                                        data-resource_unique="{{ $field->id }}"
+                                                                        data-success_message="Alan başarıyla silindi!"
+                                                                        data-error_message="Alanı silerken bir hata oluştu!"
+                                                                        onclick="tableResourceAction(this)"
+                                                                        class="w-full text-left text-red-500">Sil</button>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            @endunless
                                         </td>
                                     </tr>
                                 @endforeach

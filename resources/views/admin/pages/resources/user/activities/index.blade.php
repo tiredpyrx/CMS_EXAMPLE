@@ -20,14 +20,16 @@
                                     <div class="flex items-center gap-x-1">
                                         <div class="font-semibold">Birincil isim:</div>
                                         <div>
-                                            <a @class([
-                                                'link-simple' => $action['is_deleted'],
-                                                'text-' . config('activitylog.EVENT_NAMES_CSS')[$action['event']],
-                                                'disabled' => $action['subject_model']->deleted_at,
-                                            ])
-                                                href="{{ route("{$action['subject_route_prefix']}.show", $action['subject_id']) }}">
-                                                {{ $action['subject_model']->primary_text }}
-                                            </a>
+                                            @unless ($action['is_force_deleted'])
+                                                <a @class([
+                                                    'link-simple' => $action['is_deleted'],
+                                                    'text-' . config('activitylog.EVENT_NAMES_CSS')[$action['event']],
+                                                    'disabled' => $action['subject_model']->deleted_at,
+                                                ])
+                                                    href="{{ route("{$action['subject_route_prefix']}.show", $action['subject_id']) }}">
+                                                    {{ $action['subject_model']->primary_text }}
+                                                </a>
+                                            @endunless
                                         </div>
                                     </div>
                                 </li>
@@ -82,9 +84,9 @@
                             </ul>
                             <div class="absolute right-1 top-1 text-sm font-light">
                                 <i class="fa fa-calendar"></i>
-                                {{ $action['subject_model']->updated_at->diffForHumans() }}
+                                {{ $action['updated_at']->diffForHumans() }}
                             </div>
-                            @if ($action['event'] == 'updated' && !$action['is_deleted'])
+                            @if ($action['event'] == 'updated' && !$action['is_deleted'] || !$action['is_force_deleted'])
                                 <div class="absolute bottom-1 right-1">
                                     <button class="btn-secondary">Geri Al</button>
                                 </div>

@@ -19,9 +19,8 @@ html {
 }
 
 * {
-    @apply hide-scrollbar
+    @apply hide-scrollbar;
 }
-
 
 /* Buttons */
 
@@ -65,6 +64,10 @@ html {
     @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-sm focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500;
 }
 
+.app-form select[default] {
+    @apply bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500;
+}
+
 .app-form textarea[long] {
     @apply block w-full p-4 text-gray-900 border border-gray-300 rounded-lg bg-gray-50 text-base focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 max-h-16 resize-none;
 }
@@ -87,20 +90,20 @@ html {
 }
 
 .document_dropdown_trigger {
-    @apply cursor-pointer
+    @apply cursor-pointer;
 }
 
 tr {
-    @apply duration-300
+    @apply duration-300;
 }
 tr.disabled {
     background-color: gray;
 }
 
 .link-simple-unstyled {
-    @apply hover:underline [&.disabled]:pointer-events-none [&.disabled]:text-gray-400
+    @apply hover:underline [&.disabled]:pointer-events-none [&.disabled]:text-gray-400;
 }
 
 .link-simple {
-    @apply font-medium text-purple-500 hover:text-purple-600 hover:underline visited:text-purple-700 [&.disabled]:pointer-events-none [&.disabled]:text-gray-400
+    @apply font-medium text-purple-500 hover:text-purple-600 hover:underline visited:text-purple-700 [&.disabled]:pointer-events-none [&.disabled]:text-gray-400;
 }

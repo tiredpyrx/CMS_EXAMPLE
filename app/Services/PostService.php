@@ -2,7 +2,10 @@
 
 namespace App\Services;
 
+use App\Actions\FilterRequest;
+use App\Actions\GetUpdatedDatas;
 use App\Models\Category;
+use App\Models\Field;
 use App\Models\Post;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -18,14 +21,31 @@ class PostService
             switch ($field->type) {
                 case 'multifield':
                     $newField = $post->fields()->create([
+                        // 'user_id' => auth()->id(),
+                        // 'post_id' => $post->id,
+                        // 'label' => $field->label,
+                        // 'placeholder' => $field->placeholder,
+                        // 'handler' => $fieldName,
+                        // 'column' => $field->column,
+                        // 'type' => $field->type,
+                        // 'description' => $field->description
                         'user_id' => auth()->id(),
                         'post_id' => $post->id,
                         'label' => $field->label,
                         'placeholder' => $field->placeholder,
                         'handler' => $fieldName,
-                        'column' => $field->placeholder,
+                        'column' => $field->column,
                         'type' => $field->type,
-                        'description' => $field->description
+                        'value' => $fieldValue,
+                        'min_value' => $field->min_value,
+                        'max_value' => $field->max_value,
+                        'prefix' => $field->prefix,
+                        'suffix' => $field->suffix,
+                        'step' => $field->step,
+                        'as_option' => $field->as_option,
+                        'description' => $field->description,
+                        'required' => $field->required,
+                        'active' => $field->active
                     ]);
                     collect($fieldValue)->each(function ($value) use ($newField, $post) {
                         $newField->fields()->create([
@@ -43,9 +63,18 @@ class PostService
                         'label' => $field->label,
                         'placeholder' => $field->placeholder,
                         'handler' => $fieldName,
-                        'column' => $field->placeholder,
+                        'column' => $field->column,
                         'type' => $field->type,
-                        'description' => $field->description
+                        'value' => $fieldValue,
+                        'min_value' => $field->min_value,
+                        'max_value' => $field->max_value,
+                        'prefix' => $field->prefix,
+                        'suffix' => $field->suffix,
+                        'step' => $field->step,
+                        'as_option' => $field->as_option,
+                        'description' => $field->description,
+                        'required' => $field->required,
+                        'active' => $field->active
                     ]);
                     collect($fieldValue)->each(function ($value) use ($newField, $post) {
                         $newField->fields()->create([
@@ -63,12 +92,18 @@ class PostService
                         'label' => $field->label,
                         'placeholder' => $field->placeholder,
                         'handler' => $fieldName,
+                        'column' => $field->column,
+                        'type' => $field->type,
                         'value' => $fieldValue,
-                        'column' => $field->placeholder,
+                        'min_value' => $field->min_value,
+                        'max_value' => $field->max_value,
                         'prefix' => $field->prefix,
                         'suffix' => $field->suffix,
-                        'type' => $field->type,
-                        'description' => $field->description
+                        'step' => $field->step,
+                        'as_option' => $field->as_option,
+                        'description' => $field->description,
+                        'required' => $field->required,
+                        'active' => $field->active
                     ]);
                     break;
             }
@@ -102,36 +137,82 @@ class PostService
 
     public function create(Request $request, array $safeRequest, Category $category)
     {
-        $publishDate = $request->input('publish_date');
         $active = $request->has('active');
-        $now = now();
         $additional = [
             'user_id' => auth()->id(),
             'category_id' => $category->id,
             'active' => $active
         ];
-        if ($publishDate) {
-            $publishDate = Carbon::parse($publishDate);
-            $additional['publish_date'] = $publishDate;
-            if ($publishDate <= $now) $additional['published'] = true;
-            else $additional['published'] = false;
-        } else {
-            $additional['publish_date'] = $now;
-            $additional['published'] = true;
-        }
         $merged = array_merge($safeRequest, $additional);
         return $post = Post::create($merged);
     }
 
-    // send it to sitemap.xml
+    // can go to sitemap.xml
     public function publish(Post $post): bool
     {
         return $post->update(['published', true]);
     }
 
-    // remove from sitemap.xml
+    // cant go to sitemap.xml, if it is, will be removed
     public function unpublish(Post $post): bool
     {
         return $post->update(['published', false]);
+    }
+
+    /**
+     * @var Category $category
+     */
+    public function handlePostsDetailedFieldsValidationOnStore(Request $request, array &$rules)
+    {
+        $category = $request->route()->parameter('category');
+        if ($category->have_details)
+            foreach (Field::DETAILED_HANDLERS as $prHandler) {
+                $rules[$prHandler] = 'required';
+            }
+    }
+
+    /**
+     * @var Post $post
+     */
+    public function handlePostsDetailedFieldsValidationOnUpdate(Request $request, array &$rules)
+    {
+        $post = $request->route()->parameter('post');
+        if ($post->getSlugAttribute())
+            foreach (Field::DETAILED_HANDLERS as $prHandler) {
+                $rules[$prHandler] = 'required';
+            }
+    }
+
+    public function update(Request $request, Post $post)
+    {
+        $safeRequest = $this->getSafeRequest($request);
+        return $this->updateChangedDatas($safeRequest, $post);
+    }
+
+    public function getSafeRequest(Request $request)
+    {
+        return (new FilterRequest())->execute($request, 'post');
+    }
+
+    public function updateChangedDatas(array $safeRequest, Post $post): bool
+    {
+        $updated = (new GetUpdatedDatas())->execute($safeRequest, 'post', $post->id);
+        return $post->update($updated);
+    }
+
+    public function updateFields(Request $request, Post $post): bool
+    {
+        return $this->updateChangedFields($request, $post);
+    }
+
+    public function updateChangedFields(Request $request, Post $post): bool
+    {
+        $result = [];
+        foreach ($post->fields as $field) {
+            $fieldValue = $request->input($field->handler);
+            if ($field->value != $fieldValue)
+                $result[] = $field->update(['value' => $fieldValue]);
+        }
+        return !in_array(false, $result);
     }
 }

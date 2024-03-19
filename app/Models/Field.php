@@ -2,18 +2,16 @@
 
 namespace App\Models;
 
+use App\Enums\FieldDefaultValues;
+use App\Enums\FieldTypes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 
 class Field extends Model
 {
     use HasFactory, SoftDeletes;
-
-    public const DEFAULT_COLUMN_VALUE = 6;
-    public const DEFAULT_TYPE_VALUE = 'text';
-    public const DEFAULT_REQUIRED_VALUE = false;
-    public const DEFAULT_ACTIVE_VALUE = true;
 
     public const MASS_ASSIGNABLES = [
         'label' => 'label',
@@ -30,6 +28,7 @@ class Field extends Model
         'column' => 'column',
 
 
+        'as_option' => 'as_option',
         'required' => 'required',
         'active' => 'active',
 
@@ -37,6 +36,7 @@ class Field extends Model
     ];
 
     public const MASS_ASSIGNABLE_BOOLS = [
+        'as_option' => 'as_option',
         'required' => 'required',
         'active' => 'active',
     ];
@@ -54,6 +54,7 @@ class Field extends Model
         'prefix' => ['string', 'nullable'],
         'suffix' => ['string', 'nullable'],
         'column' => ['nullable', 'string', 'max: 2'],
+        'as_option' => ['nullable', 'string'],
         'required' => ['nullable', 'string'],
         'active' => ['nullable', 'string'],
     ];
@@ -65,7 +66,13 @@ class Field extends Model
         'priority'
     ];
 
-    public const HAVE_DETAILS_RECORDS = [
+    public const DETAILED_HANDLERS = [
+        'slug',
+        'changefreq',
+        'priority'
+    ];
+
+    public const DETAILED_RECORDS = [
         [
             'required' => true,
             'label' => 'Slug',
@@ -78,7 +85,7 @@ class Field extends Model
             'type' => "number",
             'min_value' => '0',
             'max_value' => '1',
-            'step' => '0.10',
+            'step' => '0.1',
             'label' => 'Sitemap Öncelik',
             'handler' => 'priority',
             'column' => '6'
@@ -119,6 +126,7 @@ class Field extends Model
         'prefix',
         'suffix',
 
+        'as_option',
         'required',
         'active',
 
@@ -160,18 +168,104 @@ class Field extends Model
         return User::find($this->user_id)->name;
     }
 
-    public function getMassAssignables()
+    public static function getMassAssignables()
     {
-        return collect($this::MASS_ASSIGNABLES);
+        return collect(Field::MASS_ASSIGNABLES);
     }
 
-    public function getMassAssignableBools()
+    public function getMassAssignableAttributes()
     {
-        return $this->getMassAssignables()->filter(fn ($d) => in_array($d, $this::MASS_ASSIGNABLE_BOOLS));
+        return $this->getAttributesOnly(Field::getMassAssignables()->keys());
+    }
+
+    public function getAttributesOnly(array|Collection $keyArray)
+    {
+        if (!($keyArray instanceof Collection)) {
+            $keyArray = collect($keyArray);
+        }
+        return collect($this->getAttributes())
+            ->filter(
+                fn ($d, $k) => in_array($k, array_values($keyArray->toArray()))
+            )->toArray();
+    }
+
+    public static function getMassAssignableBools()
+    {
+        return Field::getMassAssignables()->filter(fn ($d) => in_array($d, Field::MASS_ASSIGNABLE_BOOLS));
     }
 
     public function getPrimaryTextAttribute()
     {
         return $this->handler;
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getTypes(): array
+    {
+        return FieldTypes::values();
+    }
+
+    /**
+     * @return array[]<array-key, string>
+     */
+    public static function getTypesWithLabels(): array
+    {
+        return [
+            [
+                'label' => 'Text',
+                'value' => FieldTypes::text(),
+            ],
+            [
+                'label' => 'Number',
+                'value' => FieldTypes::number(),
+            ],
+            [
+                'label' => 'Color',
+                'value' => FieldTypes::color(),
+            ],
+            [
+                'label' => 'Range',
+                'value' => FieldTypes::range(),
+            ],
+            [
+                'label' => 'Multi Fields',
+                'value' => FieldTypes::multifield(),
+            ],
+            [
+                'label' => 'Sibling Fields',
+                'value' => FieldTypes::siblingfield(),
+            ],
+            [
+                'label' => 'Text Editor',
+                'value' => FieldTypes::texteditor(),
+            ],
+        ];
+    }
+
+    public static function getDefaultValues(): array
+    {
+        return FieldDefaultValues::values();
+    }
+
+    public static function getDefaultColumnValue(): string
+    {
+        return FieldDefaultValues::column();
+    }
+
+    public static function getDefaultTypeValue(): string
+    {
+        return FieldDefaultValues::type();
+    }
+
+    public static function getDefaultRequiredValue(): string
+    {
+        return FieldDefaultValues::required();
+    }
+
+    public static function getDefaultActiveValue(): string
+    {
+        return FieldDefaultValues::active();
     }
 }

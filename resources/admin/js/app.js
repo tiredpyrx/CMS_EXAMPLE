@@ -1,3 +1,5 @@
+"use strict";
+
 import "./bootstrap";
 import * as DH from "./helpers/document-helpers";
 import * as SH from "./helpers/system-helpers";
@@ -11,6 +13,15 @@ const APP_BODY = document.body;
 const APP_CONTENT = document.getElementById("app_content");
 const APP_SIDEBAR = document.getElementById("app_sidebar");
 const APP_CATEGORY_EDIT_ICON_MODAL = document.getElementById("app_icon_modal");
+
+// credits https://stackoverflow.com/a/64203190/21720378
+const MAX_TOASTS = 2;
+toastr.subscribe(function (args) {
+    if (args.state === "visible") {
+        var toasts = $("#toast-container > *:not([hidden])");
+        if (toasts && toasts.length > MAX_TOASTS) toasts[0].hidden = true;
+    }
+});
 
 if (document.getElementById("user_index_dropdown_trigger"))
     DH.fadeToggle({
@@ -151,9 +162,14 @@ function tableResourceAction(el) {
         while (parent.nodeName !== parentNodeName)
             parent = parent.parentElement;
     axios[method](route(rPrefix + "." + rSuffix, id))
-        .then((_) => {
+        .then((res) => {
             if (parentNodeName) parent?.remove();
+            if (!res.data) {
+                toastrAlert("error", errorMessage);
+                return 0;
+            }
             toastrAlert("success", successMessage);
+            return 1;
         })
         .catch((_) => toastrAlert("error", errorMessage));
 }

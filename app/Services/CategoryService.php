@@ -12,9 +12,14 @@ class CategoryService
 {
     public function create(array $filtered)
     {
-        $additional = ['user_id' => auth()->id()];
-        $merged = array_merge($filtered, $additional);
+        $merged = $this->getMergedOnCreate($filtered);
         return Category::create($merged);
+    }
+
+    public function getMergedOnCreate(array $filtered)
+    {
+        $additional = ['user_id' => auth()->id()];
+        return array_merge($filtered, $additional);
     }
 
     public function update(Category $category, array $updated)
@@ -40,12 +45,12 @@ class CategoryService
     }
 
     public function deleteMany(array $ids) {
-        $IDontKnowWhatToNameThisArray = [];
+        $result = [];
         foreach ($ids as $id) {
             $res = $this->destroy(Category::find($id));
-            array_push($IDontKnowWhatToNameThisArray, $res);
+            array_push($result, $res);
         }
-        if (array_intersect($IDontKnowWhatToNameThisArray, [false]))
+        if (array_intersect($result, [false]))
             return 0;
         return 1;
     }

@@ -34,7 +34,13 @@
                 </div>
                 <div class="col-span-6">
                     <label default for="type">Alan Tipi</label>
-                    <input value="{{ getModel('field')::DEFAULT_TYPE_VALUE }}" default id="type" name="type" />
+                    <select default name="type" id="type">
+                        @foreach ($typesWithLabels as $typeWithLabel)
+                            <option @selected($defaultTypeValue === $typeWithLabel['value']) value="{{ $typeWithLabel['value'] }}">
+                                {{ $typeWithLabel['label'] }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
                 <div class="col-span-6 flex flex-col justify-start gap-y-6">
                     <label for="column" class="block text-sm font-medium text-gray-900 dark:text-white">
@@ -45,7 +51,7 @@
                         </div>
                     </label>
                     <input name="column" id="field-column-range" type="range"
-                        value="{{ getModel('field')::DEFAULT_COLUMN_VALUE }}" min="3" max="12"
+                        value="{{ $defaultColumnValue }}" min="3" max="12"
                         class="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700">
                 </div>
                 <div class="col-span-12">

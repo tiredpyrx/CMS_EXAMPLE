@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Models\Category;
 use App\Models\Post;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Artisan;
 
 class PostObserver
 {
@@ -17,12 +18,17 @@ class PostObserver
         $now = now();
         if ($publishDate) {
             $publishDate = Carbon::parse($publishDate);
-            $post->publish_date = $publishDate;
-            $post->published = ($publishDate <= $now);
+            $post->update([
+                'publish_date' => $publishDate,
+                'published' => ($publishDate <= $now)
+            ]);
         } else {
-            $post->publish_date = $now;
-            $post->published = true;
+            $post->update([
+                'publish_date' => $now,
+                'published' => true
+            ]);
         }
+        // Artisan::call('app:log-to-sitemap');
     }
 
     /**
@@ -38,7 +44,7 @@ class PostObserver
      */
     public function deleted(Post $post): void
     {
-        //
+        // Artisan::call('app:log-to-sitemap');
     }
 
     /**

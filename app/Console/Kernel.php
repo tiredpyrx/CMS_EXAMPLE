@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule): void
     {
         $schedule->command('app:publish-scheduled-posts')->hourly();
-        $schedule->command('app:log-to-sitemap')->daily();
+        $schedule->command('app:log-to-sitemap')->hourly();
     }
 
     /**

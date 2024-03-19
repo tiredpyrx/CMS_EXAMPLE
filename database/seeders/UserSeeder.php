@@ -25,7 +25,7 @@ class UserSeeder extends Seeder
             'email' => 'admin@gmail.com',
             'avatar_source' => User::AVATAR_FILE_PATHS['nogender'],
             'biography' => 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Asperiores eius deleniti vel magni commodi delectus quasi, iure placeat mollitia accusamus animi molestias, ad id ipsa veritatis ipsum pariatur veniam modi.',
-            'password' => bcrypt('password'),
+            'password' => bcrypt('123'),
             'remember_token' => Str::random(10),
         ]);
 

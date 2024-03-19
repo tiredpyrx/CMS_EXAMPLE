@@ -1,11 +1,13 @@
 @extends('templates.admin')
 
 @section('content')
-    <x-document-header title="{{ $category->title . ' Alan ' . $field->title . ' Düzenle' }}" />
+    <x-document-header title="{{ $category->title . ' Alan ' . $field->title . ' Düzenle' }}">
+        <a href="{{ route('fields.show', $field->id) }}" class="btn-secondary">
+            Alanı Gör
+        </a>
+    </x-document-header>
     <x-document-panel>
-        <form class="app-form"
-            action="{{ route('fields.update', $field->id) }}"
-            method="POST">
+        <form class="app-form" action="{{ route('fields.update', $field->id) }}" method="POST">
             @csrf
             @method('PUT')
             <div class="grid grid-cols-12 gap-4">
@@ -23,7 +25,7 @@
                 </div>
                 <div class="col-span-6">
                     <label default for="value">Varsayılan Değer</label>
-                    <input default id="value" {{ $field->value }} name="value" />
+                    <input default id="value" value="{{ $field->value }}" name="value" />
                 </div>
                 <div class="col-span-6">
                     <label default for="type">Alan Tipi</label>
@@ -37,8 +39,8 @@
                             <span class="tracking-tighter">/ 12</span>
                         </div>
                     </label>
-                    <input name="column" id="field-column-range" type="range" value="{{ $field->column }}" min="3"
-                        max="12"
+                    <input name="column" id="field-column-range" type="range" step="1" value="{{ $field->column }}"
+                        min="3" max="12"
                         class="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700">
                 </div>
                 <div class="col-span-12">
@@ -48,13 +50,13 @@
                 <div class="col-span-12">
                     <div class="flex items-center gap-x-4">
                         <div class="flex items-center">
-                            <input checked name="active" id="active" value="{{ $field->active }}" type="checkbox"
+                            <input name="active" id="active" @checked($field->active) type="checkbox"
                                 class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                             <label for="active"
                                 class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Aktif</label>
                         </div>
                         <div class="flex items-center">
-                            <input name="required" id="required" value="{{ $field->required }}" type="checkbox"
+                            <input name="required" id="required" @checked($field->required) type="checkbox"
                                 class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                             <label for="required"
                                 class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Zorunlu</label>

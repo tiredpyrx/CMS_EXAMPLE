@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\PostChangeFrequencyOptions;
 use App\Pipes\ActivityPreventAttributePipe;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -15,7 +16,22 @@ class Post extends Model
 
     protected static $ignoreChangedAttributes = ['updated_at'];
 
-    public const RULES = ['title' => 'required'];
+    public const DEFAULT_ACTIVE_VALUE = TRUE;
+
+    public const RULES = ['title' => 'required|string'];
+
+    public const MASS_ASSIGNABLES = [
+        'title' => 'title',
+        'publish_date' => 'publish_date',
+        'published' => 'published',
+        'active' => 'active',
+        'deleted_at' => 'deleted_at'
+    ];
+
+    public const MASS_ASSIGNABLE_BOOLS = [
+        'published' => 'published',
+        'active' => 'active',
+    ];
 
     protected $fillable = [
         'user_id',
@@ -47,17 +63,16 @@ class Post extends Model
             ->logOnlyDirty();
     }
 
-    public function getSlugAttribute(): string
+    public function getSlugAttribute(): string|null
     {
         return $this->fields()->where('handler', 'slug')->value('value');
     }
 
-    public function field(string $handler = ''): mixed
+    public function field(string $handler = '', mixed $default = ''): mixed
     {
         $field = $this->fields()->where('handler', $handler)->where('active', 1);
-        if ($field->exists())
-            $field = $field->first();
-        else return collect([]);
+        if ($field->exists()) $field = $field->first();
+        else return $default;
 
         $value = match ($field->type) {
             'multifield' => $field->fields()->pluck('value'),
@@ -109,5 +124,59 @@ class Post extends Model
     public function getPrimaryTextAttribute()
     {
         return $this->title;
+    }
+
+    /**
+     * @return string[]
+     */
+    public static function getChangeFrequencyValues(): array
+    {
+        return PostChangeFrequencyOptions::values();
+    }
+
+    public static function getChangeFrequencyAlwaysValue(): string
+    {
+        return PostChangeFrequencyOptions::always();
+    }
+
+    public static function getChangeFrequencyHourlyValue(): string
+    {
+        return PostChangeFrequencyOptions::hourly();
+    }
+
+    public static function getChangeFrequencyDailyValue(): string
+    {
+        return PostChangeFrequencyOptions::daily();
+    }
+
+    public static function getChangeFrequencyWeeklyValue(): string
+    {
+        return PostChangeFrequencyOptions::weekly();
+    }
+
+    public static function getChangeFrequencyMonthlyValue(): string
+    {
+        return PostChangeFrequencyOptions::monthly();
+    }
+
+    public static function getChangeFrequencyYearlyValue(): string
+    {
+        return PostChangeFrequencyOptions::yearly();
+    }
+
+    public static function getChangeFrequencyNeverValue(): string
+    {
+        return PostChangeFrequencyOptions::never();
+    }
+
+    public static function getMassAssignables()
+    {
+        return collect(Post::MASS_ASSIGNABLES);
+    }
+
+    public static function getMassAssignableBools()
+    {
+        $bools = Post::MASS_ASSIGNABLE_BOOLS;
+        return Post::getMassAssignables()->filter(fn ($d) => in_array($d, $bools));
     }
 }

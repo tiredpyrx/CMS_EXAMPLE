@@ -9,7 +9,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreFieldRequest;
 use App\Http\Requests\UpdateFieldActiveRequest;
 use App\Http\Requests\UpdateFieldRequest;
+use App\Models\Category;
 use App\Models\Field;
+use App\Models\Post;
 use App\Services\FieldService;
 
 class FieldController extends Controller
@@ -22,27 +24,21 @@ class FieldController extends Controller
         $this->fieldService = $fieldService;
     }
 
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         //
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
     public function create(string $modelName, int $modelId)
     {
         $instance = getModel($modelName);
         $model = $instance->find($modelId);
-        return view('admin.pages.resources.field.create.index', compact('model'));
+        $defaultColumnValue = Field::getDefaultColumnValue();
+        $defaultTypeValue = Field::getDefaultTypeValue();
+        $typesWithLabels = Field::getTypesWithLabels();
+        return view('admin.pages.resources.field.create.index', compact('model', 'typesWithLabels', 'defaultTypeValue', 'defaultColumnValue'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(StoreFieldRequest $request, string $modelName, int $modelId, FilterRequest $filterRequest)
     {
         $instance = getModel($modelName);
@@ -56,42 +52,43 @@ class FieldController extends Controller
         return to_route($modelName . '.edit', $model->id)->with('success', 'Alan başarıyla eklendi!');
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Field $field)
     {
-        //
+        $infos = $field->getMassAssignableAttributes();
+        $infos = array_filter($infos, fn($d) => $d);
+        $infos = array_combine(
+            array_map('ucfirst', array_keys($infos)),
+            array_values($infos)
+        );
+        return view('admin.pages.resources.field.show.index', compact('field', 'infos'));
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
     public function edit(Field $field)
     {
         $category = $field->category;
         return view('admin.pages.resources.field.edit.index', compact('field', 'category'));
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(UpdateFieldRequest $request, Field $field, FilterRequest $filterRequest, GetUpdatedDatas $getUpdatedDatas)
     {
         $safeRequest = $filterRequest->execute($request, 'field');
-        $updated = $getUpdatedDatas->execute($safeRequest, 'field', $field->id);
-        $success = $field->update($updated);
+        $success = $this->fieldService->updateFields($field, $safeRequest);
         if (!$success)
-            return back(304)->with('error', 'Bir şeyler ters gitti!');
+            return back()->with('error', 'Bir şeyler ters gitti!');
         return to_route('categories.edit', $field->category->id)->with('success', 'Alan başarıyla güncellendi!');
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Field $field)
+    public function destroy(Field $field): bool
     {
-        //
+        $field->fields()->each(fn($field) => $field->delete());
+        foreach (Post::where('category_id', $field->category_id) as $post) {
+            foreach (Field::where('post_id', $post->id) as $pField) {
+                $pField->fields()->each(fn($field) => $field->delete());
+                $pField->delete();
+            }
+        }
+        $field->fields()->each(fn($field) => $field->delete());
+        return $field->delete();
     }
 
     public function updateActive(UpdateFieldActiveRequest $request, ToggleActive $toggleActive, string $modelName)

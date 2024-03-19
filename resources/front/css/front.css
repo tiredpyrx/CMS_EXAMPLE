@@ -1,0 +1,7 @@
+img {
+    width: 100%;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    margin-top: 8px;
+}

@@ -9,9 +9,9 @@ class FilterRequest
     public function execute(Request $request, string $modelName)
     {
         $model = getModel($modelName);
-        $allowedDatas = $model->getMassAssignables()->toArray();
+        $allowedDatas = $model::getMassAssignables()->toArray();
         $allowedDatas = array_intersect_key($allowedDatas, $request->all());
-        $allowedBools = $model->getMassAssignableBools()->toArray();
+        $allowedBools = $model::getMassAssignableBools()->toArray();
         $safeRequest = array_filter(array_keys($request->all()), fn ($d) => in_array($d, $allowedDatas) || is_null($d));
         $safeRequest = $request->only($safeRequest);
         foreach ($safeRequest as $key => $value) {

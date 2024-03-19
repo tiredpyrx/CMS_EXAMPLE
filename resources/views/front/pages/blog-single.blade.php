@@ -1,5 +1,11 @@
-@extends('templates.front')
+@extends('front.pages.template.index')
 
-@section('content')
-    <pre>{{ $page->field('section_title') }}</pre>
+@section('page')
+    {{ $page->title }}
+    <article>
+        {{ $page->field('content') }}
+    </article>
+    <article>
+        {{ $page->field('content2') }}
+    </article>
 @endsection

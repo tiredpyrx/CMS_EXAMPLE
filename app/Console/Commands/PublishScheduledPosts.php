@@ -28,7 +28,7 @@ class PublishScheduledPosts extends Command
      */
     public function handle()
     {
-        $postsThatWillBePublished = Post::where('publish_date', '>=', now())->where('active', 1)->get();
+        $postsThatWillBePublished = Post::where('publish_date', '<=', now())->where('active', 1)->get();
         $postsThatWillBePublished->each(fn($post) => (new PostService())->publish($post));
 
         $this->info('Planlanmış gönderiler başarıyla yayınlandı!');

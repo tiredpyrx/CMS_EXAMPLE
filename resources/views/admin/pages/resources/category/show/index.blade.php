@@ -95,6 +95,11 @@
                                             </div>
                                         </div>
                                     </th>
+                                    <th scope="col" class="px-4 py-2">
+                                        <span class="sr-only">
+                                            Düzenle
+                                        </span>
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -130,6 +135,54 @@
                                                 <input data-parent_node_name="TR" id="{{ $post->id . '-selectbox' }}"
                                                     type="checkbox" value=""
                                                     class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
+                                            </div>
+                                        </td>
+                                        <td class="px-6 py-4">
+                                            <div class="flex items-center justify-end">
+                                                <div class="relative">
+                                                    <button
+                                                        class="document_dropdown_trigger flex h-9 w-9 cursor-pointer items-center justify-center rounded-full duration-200 hover:bg-black/25">
+                                                        <i class="fa fa-ellipsis-vertical"></i>
+                                                    </button>
+                                                    <div
+                                                        class="document_dropdown close-on-outside-click absolute bottom-1/2 right-full hidden translate-y-3/4 bg-gray-50 text-sm shadow">
+                                                        <ul class="p-1">
+                                                            <li
+                                                                class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                                <a
+                                                                    href="{{ route('posts.show', $post->id) }}"
+                                                                    class="w-full text-left text-green-500">Göster</a>
+                                                            </li>
+                                                            <li
+                                                                class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                                <a
+                                                                    href="{{ route('posts.edit', $post->id) }}"
+                                                                    class="w-full text-left text-green-500">Düzenle</a>
+                                                            </li>
+                                                            <li
+                                                                class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                                <button data-route_prefix="posts"
+                                                                    data-route_suffix="duplicate" data-method="post"
+                                                                    data-resource_unique="{{ $post->id }}"
+                                                                    data-success_message="Gönderi başarıyla klonlandı!"
+                                                                    data-error_message="Gönderi klonlanırken bir hata oluştu!"
+                                                                    onclick="tableResourceAction(this)"
+                                                                    class="w-full text-left text-orange-600">Klonla</button>
+                                                            </li>
+                                                            <li
+                                                                class="whitespace-nowrap rounded-sm px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                                <button data-route_prefix="posts"
+                                                                    data-route_suffix="destroy" data-parent_node_name="TR"
+                                                                    data-method="delete"
+                                                                    data-resource_unique="{{ $post->id }}"
+                                                                    data-success_message="Gönderi başarıyla silindi!"
+                                                                    data-error_message="Gönderiyi silerken bir hata oluştu!"
+                                                                    onclick="tableResourceAction(this)"
+                                                                    class="w-full text-left text-red-500">Sil</button>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
