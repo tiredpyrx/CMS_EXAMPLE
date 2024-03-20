@@ -9,11 +9,11 @@ class FilterRequest
     public function execute(Request $request, string $modelName)
     {
         $model = getModel($modelName);
-        $allowedDatas = $model::getMassAssignables()->toArray();
-        $allowedDatas = array_intersect_key($allowedDatas, $request->all());
+        $allowedGeneral = $model::getMassAssignables()->toArray();
+        $allowedGeneral = array_intersect_key($allowedGeneral, $request->all());
         $allowedBools = $model::getMassAssignableBools()->toArray();
-        $safeRequest = array_filter(array_keys($request->all()), fn ($d) => in_array($d, $allowedDatas) || is_null($d));
-        $safeRequest = $request->only($safeRequest);
+        $allowedDatas = array_filter(array_keys($request->all()), fn ($d) => in_array($d, $allowedGeneral) || is_null($d));
+        $safeRequest = $request->only($allowedDatas);
         foreach ($safeRequest as $key => $value) {
             if (in_array($key, $allowedBools))
                 $safeRequest[$key] = filter_var($value, FILTER_VALIDATE_BOOLEAN);

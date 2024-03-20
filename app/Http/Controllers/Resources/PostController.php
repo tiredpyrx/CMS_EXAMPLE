@@ -61,13 +61,40 @@ class PostController extends Controller
         $result = [];
         $result[] = $this->postService->update($request, $post);
         $result[] = $this->postService->updateFields($request, $post);
-        // $title = $request->input('title');
-        // if ($post->title != $title) $post->update(['title' => $title]);
-        // $active = $request->has('active');
-        // if ($post->active != $active) $post->update(['active' => $active]);
-        // $publishDate = $request->input('publish_date');
-        // if ($post->publish_date != $publishDate)
-        //     $post->update(['publish_date' => $publishDate]);
+
+        // dd($request->all());
+        $post->fields()->where('type', 'multifield')->each(fn ($field) => $field->fields()->forceDelete());
+        foreach ($post->fields()->where('type', 'multifield')->get() as $field) {
+            $fValue = $request->input($field->handler);
+            collect($fValue)->each(function ($value, $idx) use ($field, $post) {
+                if (!$field->fields()->where('value', $value)->exists()) {
+                    if (is_array($value)) $value = $value[0];
+                    $field->fields()->create([
+                        'user_id' => auth()->id(),
+                        'field_id' => $post->id,
+                        'handler' => hexdec(uniqid($field->handler)),
+                        'value' => $value,
+                    ]);
+                }
+            });
+        }
+
+        $post->fields()->where('type', 'siblingfield')->each(fn ($field) => $field->fields()->forceDelete());
+        foreach ($post->fields()->where('type', 'siblingfield')->get() as $field) {
+            $fValue = $request->input($field->handler);
+            collect($fValue)->each(function ($value) use ($field, $post) {
+                if (!$field->fields()->where('value', $value)->exists()) {
+                    if (is_array($value)) $value = $value[0];
+                    $field->fields()->create([
+                        'user_id' => auth()->id(),
+                        'field_id' => $post->id,
+                        'handler' => hexdec(uniqid($field->handler)),
+                        'value' => $value,
+                    ]);
+                }
+            });
+        }
+
         if (in_array(false, $result))
             return back()->with('error', 'Gönderiyi güncellerken bir şeyler ters gitti!');
         return back()->with('success', 'Gönderi başarıyla güncellendi!');

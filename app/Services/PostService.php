@@ -21,14 +21,6 @@ class PostService
             switch ($field->type) {
                 case 'multifield':
                     $newField = $post->fields()->create([
-                        // 'user_id' => auth()->id(),
-                        // 'post_id' => $post->id,
-                        // 'label' => $field->label,
-                        // 'placeholder' => $field->placeholder,
-                        // 'handler' => $fieldName,
-                        // 'column' => $field->column,
-                        // 'type' => $field->type,
-                        // 'description' => $field->description
                         'user_id' => auth()->id(),
                         'post_id' => $post->id,
                         'label' => $field->label,
@@ -36,16 +28,7 @@ class PostService
                         'handler' => $fieldName,
                         'column' => $field->column,
                         'type' => $field->type,
-                        'value' => $fieldValue,
-                        'min_value' => $field->min_value,
-                        'max_value' => $field->max_value,
-                        'prefix' => $field->prefix,
-                        'suffix' => $field->suffix,
-                        'step' => $field->step,
-                        'as_option' => $field->as_option,
-                        'description' => $field->description,
-                        'required' => $field->required,
-                        'active' => $field->active
+                        'description' => $field->description
                     ]);
                     collect($fieldValue)->each(function ($value) use ($newField, $post) {
                         $newField->fields()->create([
@@ -65,16 +48,7 @@ class PostService
                         'handler' => $fieldName,
                         'column' => $field->column,
                         'type' => $field->type,
-                        'value' => $fieldValue,
-                        'min_value' => $field->min_value,
-                        'max_value' => $field->max_value,
-                        'prefix' => $field->prefix,
-                        'suffix' => $field->suffix,
-                        'step' => $field->step,
-                        'as_option' => $field->as_option,
-                        'description' => $field->description,
-                        'required' => $field->required,
-                        'active' => $field->active
+                        'description' => $field->description
                     ]);
                     collect($fieldValue)->each(function ($value) use ($newField, $post) {
                         $newField->fields()->create([
@@ -120,12 +94,12 @@ class PostService
 
     public function deleteMany(array $ids)
     {
-        $IDontKnowWhatToNameThisArray = [];
+        $result = [];
         foreach ($ids as $id) {
             $res = $this->destroy(Post::find($id));
-            array_push($IDontKnowWhatToNameThisArray, $res);
+            array_push($result, $res);
         }
-        if (array_intersect($IDontKnowWhatToNameThisArray, [false]))
+        if (array_intersect($result, [false]))
             return 0;
         return 1;
     }

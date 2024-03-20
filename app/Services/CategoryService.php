@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Actions\FilterRequest;
 use App\Models\Category;
 use App\Models\Field;
 use App\Models\Post;
@@ -10,16 +11,17 @@ use Spatie\Activitylog\Facades\LogBatch;
 
 class CategoryService
 {
-    public function create(array $filtered)
+    public function create(Request $request)
     {
-        $merged = $this->getMergedOnCreate($filtered);
+        $safeRequest = (new FilterRequest())->execute($request, 'category');
+        $merged = $this->getMergedOnCreate($safeRequest);
         return Category::create($merged);
     }
 
-    public function getMergedOnCreate(array $filtered)
+    public function getMergedOnCreate(array $safeRequest)
     {
         $additional = ['user_id' => auth()->id()];
-        return array_merge($filtered, $additional);
+        return array_merge($safeRequest, $additional);
     }
 
     public function update(Category $category, array $updated)
@@ -29,7 +31,6 @@ class CategoryService
 
     public function destroy(Category $category)
     {
-        LogBatch::startBatch();
         foreach (Post::where('category_id', $category->id) as $post) {
             foreach ($post->fields as $field) {
                 $field->delete();
@@ -40,7 +41,6 @@ class CategoryService
             $field->delete();
         }
         $success = $category->delete();
-        LogBatch::endBatch();
         return $success;
     }
 

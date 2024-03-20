@@ -39,8 +39,7 @@ class CategoryController extends Controller
 
     public function store(StoreCategoryRequest $request, FilterRequest $filterRequest)
     {
-        $filtered = $filterRequest->execute($request, 'category');
-        $category = $this->categoryService->create($filtered);
+        $category = $this->categoryService->create($request);
         return to_route('categories.show', $category->id)->with('success', 'Kategori başarıyla eklendi!');
     }
 

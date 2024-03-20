@@ -9,8 +9,9 @@ class GetUpdatedDatas
     {
         $originalAttributes = getModel($modelName)::find($modelId)->getAttributes();
         $result = array_diff_assoc($safeRequest, $originalAttributes);
-        $bools = collect($safeRequest)->filter(fn($val) => is_bool($val));
-        $bools->each(fn($bool, $key) => $result[$key] = $bool);
+        // old code
+        // $bools = collect($safeRequest)->filter(fn($val) => is_bool($val));
+        // $bools->each(fn($bool, $key) => $result[$key] = $bool);
         return $result;
     }
 }

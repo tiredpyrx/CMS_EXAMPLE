@@ -26,7 +26,7 @@
 @endpush
 
 @section('content')
-    <x-document-header title='"{{ shortenText($category->title, 20) }}" Kategorisi İçin Gönderi Ekle'>
+    <x-document-header title='"{{ shortenText($post->title, 20) }}" Gönderisini Güncelle'>
         @if (auth()->user()->role == 'admin' || auth()->user()->role == 'editor')
             {{-- add button here --}}
         @endif
@@ -85,7 +85,7 @@
             </div>
         </div>
         <div class="mt-6">
-            <button type="submit" class="btn-primary">Ekle</button>
+            <button type="submit" class="btn-primary">Güncelle</button>
         </div>
     </form>
 @endsection
@@ -93,6 +93,7 @@
 @push('js')
     @livewireScripts
     <script src="https://cdn.ckeditor.com/ckeditor5/41.2.0/super-build/ckeditor.js"></script>
+
 
     <script>
         // This sample still does not showcase all CKEditor&nbsp;5 features (!)
@@ -242,7 +243,6 @@
                         minimumCharacters: 1
                     }]
                 },
-                // The "superbuild" contains more premium features that require additional configuration, disable them below.
                 // Do not turn them on unless you read the documentation and know how to configure them and setup the editor.
                 removePlugins: [
                     // These two are commercial, but you can try them out without registering to a trial.

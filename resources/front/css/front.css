@@ -1,5 +1,12 @@
+@import url('./partials/ckeditor_content.css');
+
 img {
     width: 100%;
+}
+
+article img {
+    width: auto;
+    height: auto !important;
 }
 
 .breadcrumb-item + .breadcrumb-item::before {
