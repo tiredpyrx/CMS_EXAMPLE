@@ -8,7 +8,7 @@ class ToggleActive
 {
     public function execute(Request $request, string $modelName)
     {
-        $model = getModel($modelName)::where($request->get('primaryKey'), $request->get('primaryValue'));
+        $model = getModelClass($modelName)::where($request->get('primaryKey'), $request->get('primaryValue'));
         if ($model->doesntExist()) return 0;
 
         $model = $model->first();

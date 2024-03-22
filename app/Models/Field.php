@@ -241,6 +241,10 @@ class Field extends Model
                 'label' => 'Text Editor',
                 'value' => FieldTypes::texteditor(),
             ],
+            [
+                'label' => 'Select',
+                'value' => FieldTypes::select(),
+            ],
         ];
     }
 
@@ -267,5 +271,10 @@ class Field extends Model
     public static function getDefaultActiveValue(): string
     {
         return FieldDefaultValues::active();
+    }
+
+    public function onlyOptionFields()
+    {
+        return $this->fields()->where('as_option', 1)->get();
     }
 }

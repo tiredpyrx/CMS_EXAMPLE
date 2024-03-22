@@ -107,3 +107,19 @@ tr.disabled {
 .link-simple {
     @apply font-medium text-purple-500 hover:text-purple-600 hover:underline visited:text-purple-700 [&.disabled]:pointer-events-none [&.disabled]:text-gray-400;
 }
+
+/* credits https://stackoverflow.com/a/71185384/21720378 */
+select {
+    appearance: none;
+    -webkit-appearance: none !important;
+    -moz-appearance: none !important;
+    background-color: #fafafa;
+    height: 45px;
+    width: 100%;
+    background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAUCAMAAACtdX32AAAAdVBMVEUAAAD///8AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAhMdQaAAAAJ3RSTlMAAAECAwQGBwsOFBwkJTg5RUZ4eYCHkJefpaytrsXGy8zW3+Do8vNn0bsyAAAAYElEQVR42tXROwJDQAAA0Ymw1p9kiT+L5P5HVEi3qJn2lcPjtIuzUIJ/rhIGy762N3XaThqMN1ZPALsZPEzG1x8LrFL77DHBnEMxBewz0fJ6LyFHTPL7xhwzWYrJ9z22AqmQBV757MHfAAAAAElFTkSuQmCC);
+    background-position: 99%;
+    background-repeat: no-repeat;
+    border: 1px solid #ccc;
+    padding: 30rem;
+    border-radius: 0;
+}

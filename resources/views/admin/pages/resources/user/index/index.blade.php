@@ -177,7 +177,7 @@
                         class="mb-4 block w-full text-sm font-normal text-black/90 dark:text-gray-50 md:mb-0 md:inline md:w-auto">Showing
                         <span class="font-semibold text-black/90 dark:text-gray-50">{{ $users->count() }}</span>
                         of <span
-                            class="font-semibold text-black/90 dark:text-gray-50">{{ getAll('user')->count() }}</span></span>
+                            class="font-semibold text-black/90 dark:text-gray-50">{{ modelGetAll('user')->count() }}</span></span>
                     @if (count($paginationArray) > 1)
                         <ul class="inline-flex h-8 -space-x-px text-sm rtl:space-x-reverse">
                             @foreach ($paginationArray as $idx => $link)

@@ -11,14 +11,23 @@ class FrontController extends Controller
 {
     public function __invoke(string $slug)
     {
-        foreach (Category::where('have_details', 1)->get()->all() as $c) {
-            foreach (Post::where('category_id', $c->id)->get()->all() as $post) {
+        foreach (Category::where('have_details', 1)->get()->all() as $category) {
+            foreach (Post::where('category_id', $category->id)->get()->all() as $post) {
                 if ($post->slug == $slug) {
                     $page = $post;
-                    if ($c->view) {
-                        return view('front.pages.' . $c->view, ['page' => $page]);
-                    } else if ($post->slug)
-                        return view('front.pages.' . $post->field('view'), ['page' => $page]);
+                    $pages = $category->posts;
+                    $pageCount = $category->posts_count;
+                    $datas = ['page' => $page, 'pages' => $pages, 'pageCount' => $pageCount, 'pageTitle' => $page->getTitle()];
+                    $datas['viewName'] = match (!is_null($category->view)) {
+                        true => $category?->view,
+                        default => $page?->view,
+                    };
+                    if ($category->view) {
+                        $datas['viewName'] = $category->view;
+                        return view('front.pages.' . $category->view, $datas);
+                    } else if ($post->slug) {
+                        return view('front.pages.' . $post->field('vissew'), $datas);
+                    }
                 }
             };
         };

@@ -8,7 +8,7 @@ class FilterRequest
 {
     public function execute(Request $request, string $modelName)
     {
-        $model = getModel($modelName);
+        $model = getModelClass($modelName);
         $allowedGeneral = $model::getMassAssignables()->toArray();
         $allowedGeneral = array_intersect_key($allowedGeneral, $request->all());
         $allowedBools = $model::getMassAssignableBools()->toArray();

@@ -295,3 +295,5 @@ APP_SIDEBAR.querySelectorAll("[edit-icon-trigger]").forEach((trigger) => {
         });
     });
 });
+
+

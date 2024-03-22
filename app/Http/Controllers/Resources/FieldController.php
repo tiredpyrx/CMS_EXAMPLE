@@ -31,7 +31,7 @@ class FieldController extends Controller
 
     public function create(string $modelName, int $modelId)
     {
-        $instance = getModel($modelName);
+        $instance = getModelClass($modelName);
         $model = $instance->find($modelId);
         $defaultColumnValue = Field::getDefaultColumnValue();
         $defaultTypeValue = Field::getDefaultTypeValue();
@@ -41,7 +41,7 @@ class FieldController extends Controller
 
     public function store(StoreFieldRequest $request, string $modelName, int $modelId, FilterRequest $filterRequest)
     {
-        $instance = getModel($modelName);
+        $instance = getModelClass($modelName);
         $model = $instance->find($modelId);
         $filtered = $filterRequest->execute($request, 'field');
         $this->fieldService->create($filtered, $model);

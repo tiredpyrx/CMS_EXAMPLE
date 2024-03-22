@@ -189,4 +189,39 @@ class PostService
         }
         return !in_array(false, $result);
     }
+
+    public function updateMultiField(Request $request, Post $post)
+    {
+        // dd($request->all());
+        $post->fields()->where('type', 'multifield')->each(fn ($field) => $field->fields()->forceDelete());
+        foreach ($post->fields()->where('type', 'multifield')->get() as $field) {
+            $fValue = $request->input($field->handler);
+            collect($fValue)->each(function ($value) use ($field, $post) {
+                if (is_array($value)) $value = $value[0];
+                    $field->fields()->create([
+                        'user_id' => auth()->id(),
+                        'field_id' => $post->id,
+                        'handler' => hexdec(uniqid($field->handler)),
+                        'value' => $value,
+                    ]);
+            });
+        }
+    }
+
+    public function updateSiblingField(Request $request, Post $post)
+    {
+        $post->fields()->where('type', 'siblingfield')->each(fn ($field) => $field->fields()->forceDelete());
+        foreach ($post->fields()->where('type', 'siblingfield')->get() as $field) {
+            $fValue = $request->input($field->handler);
+            collect($fValue)->each(function ($value) use ($field, $post) {
+                if (is_array($value)) $value = $value[0];
+                $field->fields()->create([
+                    'user_id' => auth()->id(),
+                    'field_id' => $post->id,
+                    'handler' => hexdec(uniqid($field->handler)),
+                    'value' => $value,
+                ]);
+            });
+        }
+    }
 }

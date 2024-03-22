@@ -190,7 +190,7 @@
                                 <span
                                     class="font-semibold text-black/90 dark:text-gray-50">{{ $categories->count() }}</span>
                                 of <span
-                                    class="font-semibold text-black/90 dark:text-gray-50">{{ getAll('category')->count() }}</span></span>
+                                    class="font-semibold text-black/90 dark:text-gray-50">{{ modelGetAll('category')->count() }}</span></span>
                             @if (count($paginationArray) > 1)
                                 <ul class="inline-flex h-8 -space-x-px text-sm rtl:space-x-reverse">
                                     @foreach ($paginationArray as $idx => $link)

@@ -2,10 +2,12 @@
     <div class="grid grid-cols-12 gap-3">
         @foreach ($fields as $idx => $field)
             <div class="col-span-{{ $col_span }} relative">
-                <input @required($field['required'] ?: false) default name="{{ $field['handler'] }}" id="{{ $field['handler'] }}"
-                    value="{{ $field['value'] ?? '' }}" type="{{ $field['type'] ?? 'text' }}" />
+                <input @required($field['required'] ?: false) default name="{{ $field['handler'] }}"
+                    id="{{ $loop->first ? $field['handler'] : '' }}" value="{{ $field['value'] ?? '' }}"
+                    type="{{ $field['type'] ?? 'text' }}" />
                 @unless ($loop->first)
-                    <button type="button" wire:click="removeField({{ $idx }})" class="absolute right-4 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full hover:bg-gray-200">
+                    <button type="button" wire:click="removeField({{ $idx }})"
+                        class="absolute right-4 top-1/2 h-6 w-6 -translate-y-1/2 rounded-full hover:bg-gray-200">
                         <i class="fa fa-xmark"></i>
                     </button>
                 @endunless

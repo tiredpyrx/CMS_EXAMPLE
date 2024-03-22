@@ -136,8 +136,8 @@ class CategoryController extends Controller
 
     public function deleteAllUnactiveChildren(Request $request, Category $category)
     {
-        $mname = $request->input('modelName');
-        $model = getModel($mname);
+        $mName = $request->input('modelName');
+        $model = getModelClass($mName);
         $model->where('category_id', $category->id)->whereNot('active', true)->get()->each(fn ($child) => $child->delete());
         return Category::whereNot('active', true)->delete();
     }

@@ -63,12 +63,32 @@ class Post extends Model
             ->logOnlyDirty();
     }
 
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    public function getCategoryTitle()
+    {
+        return $this->category_title;
+    }
+
+    public function getCategoryTitleAttribute()
+    {
+        return Category::find($this->category_id)->title;
+    }
+
     public function getSlugAttribute(): string|null
     {
         return $this->fields()->where('handler', 'slug')->value('value');
     }
 
-    public function field(string $handler = '', mixed $default = ''): mixed
+    public function field(string $handler, mixed $default = ''): mixed
     {
         $field = $this->fields()->where('handler', $handler)->where('active', 1);
         if ($field->exists()) $field = $field->first();
@@ -76,7 +96,7 @@ class Post extends Model
 
         $value = match ($field->type) {
             'multifield' => $field->fields()->pluck('value'),
-            'siblingfield' => $field->fields()->pluck('value')->chunk(2),
+            'siblingfield' => array_chunk($field->fields()->pluck('value')->toArray(), 2),
             default => $field->value
         };
 

@@ -42,6 +42,11 @@
                         @endforeach
                     </select>
                 </div>
+                <div class="col-span-12">
+                    <div class="field-options-container">
+                        this is select options can be created as many as needed
+                    </div>
+                </div>
                 <div class="col-span-6 flex flex-col justify-start gap-y-6">
                     <label for="column" class="block text-sm font-medium text-gray-900 dark:text-white">
                         Sütun Uzunluğu

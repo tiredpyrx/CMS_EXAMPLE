@@ -135,8 +135,8 @@
             <ul class="flex-1 overflow-y-scroll">
                 <li>
                     <ul class="hide-scrollbar max-h-72 space-y-2 overflow-y-scroll font-medium">
-                        @foreach (getAll('category')->where('active', 1) as $category)
-                            <li class="group flex items-center gap-x-1">
+                        @foreach (modelGetAll('category')->where('active', 1) as $category)
+                            <li class="group flex items-center gap-x-0.5">
                                 <button
                                     edit-icon-trigger
                                     data-icon="{{ $category->icon }}"

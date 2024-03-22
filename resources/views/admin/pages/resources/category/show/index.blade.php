@@ -196,7 +196,7 @@
                             class="mb-4 block w-full text-sm font-normal text-black/90 dark:text-gray-50 md:mb-0 md:inline md:w-auto">Showing
                             <span class="font-semibold text-black/90 dark:text-gray-50">{{ $posts->count() }}</span> of
                             <span
-                                class="font-semibold text-black/90 dark:text-gray-50">{{ getAll('post')->count() }}</span></span>
+                                class="font-semibold text-black/90 dark:text-gray-50">{{ modelGetAll('post')->count() }}</span></span>
                         @if (count($posts->links()->elements[0]) > 1)
                             <ul class="inline-flex h-8 -space-x-px text-sm rtl:space-x-reverse">
                                 @foreach ($posts->links()->elements[0] as $idx => $link)

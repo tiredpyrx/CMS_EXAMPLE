@@ -12,6 +12,7 @@ use Spatie\Enum\Enum;
  * @method static self multifield()
  * @method static self siblingfield()
  * @method static self texteditor()
+ * @method static self select()
  */
 final class FieldTypes extends Enum
 {
