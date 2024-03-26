@@ -34,6 +34,16 @@
                         <span class="ms-3">Panel</span>
                     </a>
                 </li>
+                <li>
+                    <a href="#"
+                        class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        <div
+                            class="flex h-5 w-5 flex-shrink-0 items-center text-xl text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
+                            <i class="fa fa-gear"></i>
+                        </div>
+                        <span class="ms-3">Ayarlar</span>
+                    </a>
+                </li>
             </ul>
             <button id="sidebar-advanced-trigger"
                 class="group flex w-full items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
@@ -48,16 +58,6 @@
             </button>
             <ul id="sidebar-advanced-target" class="ml-2 hidden space-y-2 py-2 text-sm font-medium">
                 <li>
-                    <a href="#"
-                        class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                        <div
-                            class="flex h-5 w-5 flex-shrink-0 items-center text-xl text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
-                            <i class="fa fa-gear"></i>
-                        </div>
-                        <span class="ms-3">Ayarlar</span>
-                    </a>
-                </li>
-                <li>
                     <a href="{{ route('categories.index') }}"
                         class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                         <svg class="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
@@ -69,18 +69,6 @@
                         <span class="ms-3 flex-1 whitespace-nowrap">Kategoriler</span>
                         <span
                             class="ms-3 inline-flex items-center justify-center rounded-full bg-gray-100 px-2 text-sm font-medium text-gray-800 dark:bg-gray-700 dark:text-gray-300">Pro</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="{{ route('blueprints.index') }}"
-                        class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
-                        <svg class="h-5 w-5 flex-shrink-0 text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white"
-                            aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                            viewBox="0 0 18 20">
-                            <path
-                                d="M17 5.923A1 1 0 0 0 16 5h-3V4a4 4 0 1 0-8 0v1H2a1 1 0 0 0-1 .923L.086 17.846A2 2 0 0 0 2.08 20h13.84a2 2 0 0 0 1.994-2.153L17 5.923ZM7 9a1 1 0 0 1-2 0V7h2v2Zm0-5a2 2 0 1 1 4 0v1H7V4Zm6 5a1 1 0 1 1-2 0V7h2v2Z" />
-                        </svg>
-                        <span class="ms-3 flex-1 whitespace-nowrap">Alan Planları</span>
                     </a>
                 </li>
                 <li>
@@ -132,7 +120,7 @@
                     </a>
                 </li>
             </ul>
-            <ul class="flex-1 overflow-y-scroll">
+            <ul class="flex-1 overflow-y-scroll pt-4 mt-4 border-t border-gray-500">
                 <li>
                     <ul class="hide-scrollbar max-h-72 space-y-2 overflow-y-scroll font-medium">
                         @foreach (modelGetAll('category')->where('active', 1) as $category)

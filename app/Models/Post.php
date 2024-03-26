@@ -126,11 +126,6 @@ class Post extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public function blueprints()
-    {
-        return $this->hasMany(Blueprint::class);
-    }
-
     public function getAuthorNameAttribute()
     {
         return User::find($this->user_id)->name;

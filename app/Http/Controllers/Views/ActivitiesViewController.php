@@ -27,7 +27,6 @@ class ActivitiesViewController extends Controller
                     $action['is_trashed'] = $action['subject_model']->deleted_at ? true : false;
                     $action['subject_route_prefix'] = match ($action['subject_class']) {
                         'Category' => 'categories',
-                        'Blueprint' => 'blueprints',
                         'Post' => 'posts',
                         'Field' => 'fields',
                         'Comment' => 'comments',

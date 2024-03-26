@@ -42,18 +42,32 @@
         <div class="grid grid-cols-12 gap-x-4">
             <div class="col-span-9">
                 <x-document-panel>
-                    <div class="grid grid-cols-12 gap-4">
+                    <ul id="document-grid" class="grid grid-cols-12 gap-4">
                         @foreach ($fields as $field)
-                            <div class="{{ 'col-span-' . $field->column }}">
-                                <div>
-                                    <label default data-description="{{ $field->description }}" for="{{ $field->handler }}">
-                                        {{ $field->required ? $field->label . '*' : $field->label }}
-                                    </label>
-                                    @includeWhen($field->active, 'admin.partials.fields.' . $field->type)
+                            <li class="{{ 'col-span-' . $field->column }}">
+                                <div class="document-item">
+                                    <header class="flex items-center justify-between">
+                                        <label class="cursor-copy" default data-handler="{{ $field->handler }}"
+                                            data-description="{{ $field->description }}" for="{{ $field->handler }}">
+                                            {{ $field->required ? $field->label . '*' : $field->label }}
+                                        </label>
+                                        <span class="text-xs">
+                                            @if (isset($field->min_value))
+                                                Min: {{ $field->min_value }}
+                                            @endif
+                                            @if (isset($field->max_value))
+                                                Max: {{ $field->max_value }}
+                                            @endif
+                                            @if ($field->type === 'text' || $field->type === 'longtext')
+                                                Char: <p class="char-show inline"></p>
+                                            @endif
+                                        </span>
+                                    </header>
+                                    @include('admin.partials.fields.' . $field->type)
                                 </div>
-                            </div>
+                            </li>
                         @endforeach
-                    </div>
+                    </ul>
                 </x-document-panel>
             </div>
             <div class="col-span-3">

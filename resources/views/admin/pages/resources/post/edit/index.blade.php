@@ -43,18 +43,32 @@
         <div class="grid grid-cols-12 gap-x-4">
             <div class="col-span-9">
                 <x-document-panel>
-                    <div class="grid grid-cols-12 gap-4">
+                    <ul id="document-grid" class="grid grid-cols-12 gap-4">
                         @foreach ($fields as $field)
-                            <div class="{{ 'col-span-' . $field->column }}">
-                                <div>
-                                    <label default data-description="{{ $field->description }}" for="{{ $field->handler }}">
-                                        {{ $field->required ? $field->label . '*' : $field->label }}
-                                    </label>
-                                    @includeWhen($field->active, 'admin.partials.fields.' . $field->type)
+                            <li class="{{ 'col-span-' . $field->column }}">
+                                <div class="document-item">
+                                    <header class="flex items-center justify-between">
+                                        <label class="cursor-copy" default data-handler="{{ $field->handler }}"
+                                            data-description="{{ $field->description }}" for="{{ $field->handler }}">
+                                            {{ $field->required ? $field->label . '*' : $field->label }}
+                                        </label>
+                                        <span class="text-xs">
+                                            @if (isset($field->min_value))
+                                                Min: {{ $field->min_value }}
+                                            @endif
+                                            @if (isset($field->max_value))
+                                                Max: {{ $field->max_value }}
+                                            @endif
+                                            @if ($field->type === 'text' || $field->type === 'longtext')
+                                                Char: <p class="char-show inline"></p>
+                                            @endif
+                                        </span>
+                                    </header>
+                                    @include('admin.partials.fields.' . $field->type)
                                 </div>
-                            </div>
+                            </li>
                         @endforeach
-                    </div>
+                    </ul>
                 </x-document-panel>
             </div>
             <div class="col-span-3">
@@ -69,8 +83,7 @@
                                 </svg>
                             </div>
                             <div>
-                                <input name="publish_date" type="date"
-                                    value="{{ $post->publish_date }}"
+                                <input name="publish_date" type="date" value="{{ $post->publish_date }}"
                                     class="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:text-white dark:placeholder-gray-400 dark:focus:border-blue-500 dark:focus:ring-blue-500">
                             </div>
                         </div>
@@ -177,7 +190,7 @@
                 },
                 // https://ckeditor.com/docs/ckeditor5/latest/features/editor-placeholder.html#using-the-editor-configuration
                 placeholder: 'Welcome to CKEditor 5!',
-                
+
                 // https://ckeditor.com/docs/ckeditor5/latest/features/font.html#configuring-the-font-family-feature
                 fontFamily: {
                     options: [

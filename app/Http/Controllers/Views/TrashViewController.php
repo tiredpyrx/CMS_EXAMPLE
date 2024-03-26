@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Views;
 
 use App\Http\Controllers\Controller;
-use App\Models\Blueprint;
 use App\Models\Category;
 use App\Models\Field;
 use App\Models\Post;
@@ -21,11 +20,6 @@ class TrashViewController extends Controller
             'category' => [
                 'primary_text' => 'kategoriler',
                 'route_prefix' => 'categories',
-                'image' => 'https://i.redd.it/nf59c1x7m2l91.jpg'
-            ],
-            'blueprint' => [
-                'primary_text' => 'alan planları',
-                'route_prefix' => 'blueprints',
                 'image' => 'https://i.redd.it/nf59c1x7m2l91.jpg'
             ],
             'post' => [

@@ -4,12 +4,10 @@ namespace App\Providers;
 
 use App\Listeners\LogUserLogin;
 use App\Listeners\LogUserLogout;
-use App\Models\Blueprint;
 use App\Models\Category;
 use App\Models\Field;
 use App\Models\Post;
 use App\Models\User;
-use App\Observers\BlueprintObserver;
 use App\Observers\CategoryObserver;
 use App\Observers\FieldObserver;
 use App\Observers\PostObserver;
@@ -47,7 +45,6 @@ class EventServiceProvider extends ServiceProvider
     {
         User::observe(UserObserver::class);
         Category::observe(CategoryObserver::class);
-        Blueprint::observe(BlueprintObserver::class);
         Post::observe(PostObserver::class);
         Field::observe(FieldObserver::class);
     }

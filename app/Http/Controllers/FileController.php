@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Http\Controllers\Resources;
+namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreBlueprintRequest;
-use App\Http\Requests\UpdateBlueprintRequest;
-use App\Models\Blueprint;
+use App\Http\Requests\StoreFileRequest;
+use App\Http\Requests\UpdateFileRequest;
+use App\Models\File;
 
-class BlueprintController extends Controller
+class FileController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,7 +27,7 @@ class BlueprintController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreBlueprintRequest $request)
+    public function store(StoreFileRequest $request)
     {
         //
     }
@@ -36,7 +35,7 @@ class BlueprintController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Blueprint $blueprint)
+    public function show(File $file)
     {
         //
     }
@@ -44,7 +43,7 @@ class BlueprintController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Blueprint $blueprint)
+    public function edit(File $file)
     {
         //
     }
@@ -52,7 +51,7 @@ class BlueprintController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateBlueprintRequest $request, Blueprint $blueprint)
+    public function update(UpdateFileRequest $request, File $file)
     {
         //
     }
@@ -60,7 +59,7 @@ class BlueprintController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Blueprint $blueprint)
+    public function destroy(File $file)
     {
         //
     }

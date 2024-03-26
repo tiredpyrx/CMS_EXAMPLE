@@ -11,13 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('blueprints', function (Blueprint $table) {
+        Schema::create('files', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id');
-            $table->foreignId('parent_id')->nullable();
-            $table->foreignId('category_id')->nullable();
-            $table->string('title')->unique();
-            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -27,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('blueprints');
+        Schema::dropIfExists('files');
     }
 };

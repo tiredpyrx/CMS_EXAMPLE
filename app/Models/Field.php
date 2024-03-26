@@ -103,7 +103,6 @@ class Field extends Model
 
     protected $fillable = [
         'user_id',
-        'blueprint_id',
         'category_id',
         'post_id',
         'field_id',
@@ -136,11 +135,6 @@ class Field extends Model
     public function user()
     {
         return $this->belongsTo(User::class);
-    }
-
-    public function blueprint()
-    {
-        return $this->belongsTo(Blueprint::class);
     }
 
     public function category()
@@ -212,40 +206,15 @@ class Field extends Model
      */
     public static function getTypesWithLabels(): array
     {
-        return [
-            [
-                'label' => 'Text',
-                'value' => FieldTypes::text(),
-            ],
-            [
-                'label' => 'Number',
-                'value' => FieldTypes::number(),
-            ],
-            [
-                'label' => 'Color',
-                'value' => FieldTypes::color(),
-            ],
-            [
-                'label' => 'Range',
-                'value' => FieldTypes::range(),
-            ],
-            [
-                'label' => 'Multi Fields',
-                'value' => FieldTypes::multifield(),
-            ],
-            [
-                'label' => 'Sibling Fields',
-                'value' => FieldTypes::siblingfield(),
-            ],
-            [
-                'label' => 'Text Editor',
-                'value' => FieldTypes::texteditor(),
-            ],
-            [
-                'label' => 'Select',
-                'value' => FieldTypes::select(),
-            ],
-        ];
+        $result = [];
+        foreach (FieldTypes::values() as $value) {
+            $result[] = [
+                'label' => ucfirst($value),
+                'value' => $value
+            ];
+        }
+
+        return $result;
     }
 
     public static function getDefaultValues(): array

@@ -33,6 +33,18 @@
                     <input default id="suffix" name="suffix" />
                 </div>
                 <div class="col-span-6">
+                    <label default for="min_value">Minimum Değer</label>
+                    <input default id="min_value" type="number" name="min_value" />
+                </div>
+                <div class="col-span-6">
+                    <label default for="max_value">Maksimum Değer</label>
+                    <input default id="max_value" type="number" name="max_value" />
+                </div>
+                <div class="col-span-6">
+                    <label default for="step">Artış Aralığı</label>
+                    <input default id="step" type="number" name="step" />
+                </div>
+                <div class="col-span-6">
                     <label default for="type">Alan Tipi</label>
                     <select default name="type" id="type">
                         @foreach ($typesWithLabels as $typeWithLabel)
@@ -42,11 +54,10 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-span-12">
-                    <div class="field-options-container">
-                        this is select options can be created as many as needed
+                {{-- <div class="col-span-12">
+                    <div id="field_options_container" data-option_handler="options[]">
                     </div>
-                </div>
+                </div> --}}
                 <div class="col-span-6 flex flex-col justify-start gap-y-6">
                     <label for="column" class="block text-sm font-medium text-gray-900 dark:text-white">
                         Sütun Uzunluğu
@@ -55,8 +66,8 @@
                             <span class="tracking-tighter">/ 12</span>
                         </div>
                     </label>
-                    <input name="column" id="field-column-range" type="range"
-                        value="{{ $defaultColumnValue }}" min="3" max="12"
+                    <input name="column" id="field-column-range" type="range" value="{{ $defaultColumnValue }}"
+                        min="3" max="12"
                         class="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700">
                 </div>
                 <div class="col-span-12">
@@ -89,12 +100,16 @@
     </x-document-panel>
 @endsection
 
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-        document.getElementById("field-column-range-display").innerText = document.getElementById(
-            "field-column-range").value;
-        document.getElementById("field-column-range").addEventListener("input", (e) => {
-            document.getElementById("field-column-range-display").innerText = e.target.value;
+
+@push('js')
+    <script src="{{ mix('./resources/admin/js/pages/field/index.js') }}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            document.getElementById("field-column-range-display").innerText = document.getElementById(
+                "field-column-range").value;
+            document.getElementById("field-column-range").addEventListener("input", (e) => {
+                document.getElementById("field-column-range-display").innerText = e.target.value;
+            })
         })
-    })
-</script>
+    </script>
+@endpush

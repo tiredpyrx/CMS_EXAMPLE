@@ -7,7 +7,6 @@ use App\Http\Controllers\Views\DashboardViewController;
 use App\Http\Controllers\Views\LoginViewController;
 use App\Http\Controllers\Resources\UserController;
 use App\Http\Controllers\Resources\CategoryController;
-use App\Http\Controllers\Resources\BlueprintController;
 use App\Http\Controllers\Resources\PostController;
 use App\Http\Controllers\Resources\FieldController;
 use App\Http\Controllers\Views\ActivitiesViewController;
@@ -79,7 +78,6 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resources([
             'users' => UserController::class,
             'categories' => CategoryController::class,
-            'blueprints' => BlueprintController::class,
         ]);
         Route::resource('posts', PostController::class)->except(['create', 'store']);
         Route::resource('fields', FieldController::class)->except(['create', 'store']);

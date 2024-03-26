@@ -9,6 +9,7 @@ use App\Models\Field;
 use App\Models\Post;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class PostService
 {
@@ -58,6 +59,9 @@ class PostService
                             'value' => $value,
                         ]);
                     });
+                    break;
+                case 'image':
+                    // File
                     break;
                 default:
                     $post->fields()->create([
@@ -109,16 +113,22 @@ class PostService
         return $this->deleteMany($ids);
     }
 
-    public function create(Request $request, array $safeRequest, Category $category)
+    public function create(Request $request, Category $category)
     {
-        $active = $request->has('active');
-        $additional = [
+        $this->validateRequiredFields($request, $category);
+        return $post = Post::create([
+            'title' => $request->input('title'),
             'user_id' => auth()->id(),
             'category_id' => $category->id,
-            'active' => $active
-        ];
-        $merged = array_merge($safeRequest, $additional);
-        return $post = Post::create($merged);
+            'active' => $request->has('active')
+        ]);
+    }
+
+    public function update(Request $request, Post $post)
+    {
+        $this->validateRequiredFields($request, $post);
+        $safeRequest = $this->getSafeRequest($request);
+        return $this->updateChangedDatas($safeRequest, $post);
     }
 
     // can go to sitemap.xml
@@ -132,6 +142,7 @@ class PostService
     {
         return $post->update(['published', false]);
     }
+
 
     /**
      * @var Category $category
@@ -155,12 +166,6 @@ class PostService
             foreach (Field::DETAILED_HANDLERS as $prHandler) {
                 $rules[$prHandler] = 'required';
             }
-    }
-
-    public function update(Request $request, Post $post)
-    {
-        $safeRequest = $this->getSafeRequest($request);
-        return $this->updateChangedDatas($safeRequest, $post);
     }
 
     public function getSafeRequest(Request $request)
@@ -192,18 +197,17 @@ class PostService
 
     public function updateMultiField(Request $request, Post $post)
     {
-        // dd($request->all());
         $post->fields()->where('type', 'multifield')->each(fn ($field) => $field->fields()->forceDelete());
         foreach ($post->fields()->where('type', 'multifield')->get() as $field) {
             $fValue = $request->input($field->handler);
             collect($fValue)->each(function ($value) use ($field, $post) {
                 if (is_array($value)) $value = $value[0];
-                    $field->fields()->create([
-                        'user_id' => auth()->id(),
-                        'field_id' => $post->id,
-                        'handler' => hexdec(uniqid($field->handler)),
-                        'value' => $value,
-                    ]);
+                $field->fields()->create([
+                    'user_id' => auth()->id(),
+                    'field_id' => $post->id,
+                    'handler' => hexdec(uniqid($field->handler)),
+                    'value' => $value,
+                ]);
             });
         }
     }
@@ -222,6 +226,16 @@ class PostService
                     'value' => $value,
                 ]);
             });
+        }
+    }
+
+    public function validateRequiredFields(Request $request, Category|Post $parent)
+    {
+        foreach ($parent->fields as $field) {
+            if ($field->required && is_null($request->input($field->handler))) {
+                session()->flash('error', $field->label . ' alanı zorunludur!');
+                throw ValidationException::withMessages([])->redirectTo(back()->getTargetUrl());
+            }
         }
     }
 }

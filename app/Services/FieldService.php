@@ -3,18 +3,22 @@
 namespace App\Services;
 
 use App\Actions\GetUpdatedDatas;
+use App\Models\Category;
 use App\Models\Field;
 use App\Models\Post;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Validation\ValidationException;
 
 class FieldService
 {
-    public function create(array $filtered, Model $model): Field
+    public function create(array $safeRequest, Model $model): Field
     {
-        $additional = ['user_id' => auth()->id(), strtolower(class_basename($model)) . '_id' => $model->id];
-        $merged = array_merge($filtered, $additional);
-        if ($filtered['type'] === 'select')
-            $filtered['as_page'] = true;
+        $this->validate($safeRequest, $model->id);
+        $additional = ['user_id' => auth()->id(), 'category_id' => $model->id];
+        $merged = array_merge($safeRequest, $additional);
+        if ($safeRequest['type'] === 'select')
+            $safeRequest['as_option'] = true;
+
 
         return Field::create($merged);
     }
@@ -32,6 +36,7 @@ class FieldService
 
     public function updateFields(Field $field, array $safeRequest): bool
     {
+        $this->validate($safeRequest, $field->category_id, $field);
         $updated = (new GetUpdatedDatas())->execute($safeRequest, 'field', $field->id);
         $posts = Post::where('category_id', $field->category_id)->get();
         $actionsDummy = [];
@@ -60,8 +65,20 @@ class FieldService
         return !array_search(false, $actions);
     }
 
-    public function isFieldHandlerAlreadyExistsOnParentCategory($safeRequest, $category_id)
+    public function validate($safeRequest, $category_id, $field = new Field)
     {
-        //
+        $isFieldHandlerAlreadyExistsOnParentCategory = Category::find($category_id)
+            ->fields()
+            ->where('handler', $safeRequest['handler'])
+            ->exists();
+
+        if ($isFieldHandlerAlreadyExistsOnParentCategory && $field->handler != $safeRequest['handler']) {
+            session()->flash('error', 'Kategorinin alanlarında ' . $safeRequest['handler'] . ' işeyicisine sahip bir alan var!');
+            throw ValidationException::withMessages([])
+                ->redirectTo(
+                    back()->getTargetUrl()
+                );
+        }
+        return 1;
     }
 }

@@ -12,6 +12,7 @@ use App\Services\PostService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\ValidationException;
 
 class PostController extends Controller
 {
@@ -30,15 +31,15 @@ class PostController extends Controller
 
     public function create(Category $category)
     {
-        $fields = Field::where('category_id', $category->id)->get();
+        $fields = Field::where('category_id', $category->id)->getActives();
         $changeFrequencyOptions = Post::getChangeFrequencyValues();
         return view('admin.pages.resources.post.create.index', compact('category', 'fields', 'changeFrequencyOptions'));
     }
 
     public function store(StorePostRequest $request, Category $category)
     {
-        $safeRequest = $request->only('title');
-        $post = $this->postService->create($request, $safeRequest, $category);
+        
+        $post = $this->postService->create($request, $category);
         $this->postService->registerFields($post, $request);
         return to_route('categories.show', $category->id)->with('success', 'Gönderi başarıyla eklendi!');
     }
@@ -50,7 +51,7 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
-        $fields = Field::where('post_id', $post->id)->get();
+        $fields = Field::where('post_id', $post->id)->getActives();
         $category = Category::find($post->category_id);
         $changeFrequencyOptions = Post::getChangeFrequencyValues();
         return view('admin.pages.resources.post.edit.index', compact('post', 'category', 'fields', 'changeFrequencyOptions'));

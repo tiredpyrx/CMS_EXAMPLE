@@ -7,19 +7,28 @@ export function toggleResourcesActive() {
                 let primaryValue = i.dataset.value;
                 let modelName = i.dataset.modelname;
                 let checked = i.checked;
-                console.log(primaryValue);
                 let prefix = i.dataset.modelname_plural;
                 const DATA = { primaryKey, primaryValue, checked };
                 let parent = i;
                 while (parent.nodeName != "TR") parent = parent.parentElement;
                 await axios
                     .patch(route(prefix + ".active", modelName), DATA)
-                    .then(_ => {
-                        toastr.success(
-                            `${ucfirst(modelName)} aktif özelliği düzenlendi`
-                        );
-                        if (!i.checked) parent.classList.add("disabled");
-                        else parent.classList.remove("disabled");
+                    .then((res) => {
+                        if (res.data) {
+                            console.info(res.data);
+                            toastr.success(
+                                `${ucfirst(
+                                    modelName
+                                )} aktif özelliği düzenlendi`
+                            );
+                            if (!i.checked) parent.classList.add("disabled");
+                            else parent.classList.remove("disabled");
+                        } else
+                            toastr.error(
+                                `${ucfirst(
+                                    modelName
+                                )} aktif özelliğini düzenlenlerken bir sorun çıktı!`
+                            );
                     })
                     .catch((e) => e && location.reload());
             });

@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Blueprint;
+use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateBlueprintRequest extends AppFormRequest
+class UpdateFileRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.

@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Eloquent\Model;
 
-function getModelClass(string $modelClassName)
+function getModelClass(string $modelClassName): Model
 {
     $modelClassName = ucfirst($modelClassName[0] . substr($modelClassName, 1, strlen($modelClassName)));
     $modelClass = "App\Models\\{$modelClassName}";

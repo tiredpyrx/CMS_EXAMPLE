@@ -29,7 +29,10 @@ class FieldObserver
             return;
         }
 
-        collect($field->category->posts)->each(fn ($post) => $post->fields()->save($field));
+        collect($field->category->posts)->each(function ($post) use ($field) {
+            $pField = $field->replicate(['category_id']);
+            $post->fields()->save($pField);
+        });
     }
 
     public function updated(Field $field): void
@@ -42,8 +45,10 @@ class FieldObserver
                 foreach ($activity->changes['old'] as $key => $oldValue) {
                     foreach (Field::where('post_id', $post->id) as $field) {
                         $newAttrs = $activity->changes['attributes'];
-                        if ($field->getAttribute($key) == $oldValue)
+                        if ($field->getAttribute($key) == $oldValue) {
                             $field->update([$key => $newAttrs[$key]]);
+                            dd($key, $newAttrs[$key]);
+                        }
                     }
                 }
         });
@@ -51,7 +56,12 @@ class FieldObserver
 
     public function deleted(Field $field): void
     {
-        //
+        collect($field->category->posts)->each(
+            fn ($post) => $post->fields()
+                ->where('handler', $field->handler)
+                ->first()
+                ->delete()
+        );
     }
 
     public function restored(Field $field): void

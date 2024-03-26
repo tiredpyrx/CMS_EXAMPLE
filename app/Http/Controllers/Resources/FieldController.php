@@ -55,7 +55,7 @@ class FieldController extends Controller
     public function show(Field $field)
     {
         $infos = $field->getMassAssignableAttributes();
-        $infos = array_filter($infos, fn($d) => $d);
+        $infos = array_filter($infos, fn ($d) => $d);
         $infos = array_combine(
             array_map('ucfirst', array_keys($infos)),
             array_values($infos)
@@ -80,20 +80,24 @@ class FieldController extends Controller
 
     public function destroy(Field $field): bool
     {
-        $field->fields()->each(fn($field) => $field->delete());
+        $field->fields()->each(fn ($field) => $field->delete());
         foreach (Post::where('category_id', $field->category_id) as $post) {
             foreach (Field::where('post_id', $post->id) as $pField) {
-                $pField->fields()->each(fn($field) => $field->delete());
+                $pField->fields()->each(fn ($field) => $field->delete());
                 $pField->delete();
             }
         }
-        $field->fields()->each(fn($field) => $field->delete());
+        $field->fields()->each(fn ($field) => $field->delete());
         return $field->delete();
     }
 
     public function updateActive(UpdateFieldActiveRequest $request, ToggleActive $toggleActive, string $modelName)
     {
         $success = $toggleActive->execute($request, $modelName);
+
+        $field = getModelClass($modelName)::where($request->get('primaryKey'), $request->get('primaryValue'))->first();
+
+        
 
         if ($request->expectsJson() || $request->ajax())
             return 1;

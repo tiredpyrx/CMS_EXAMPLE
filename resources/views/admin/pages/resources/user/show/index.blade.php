@@ -22,13 +22,6 @@
                 </div>
                 <ul class="mb-2 mt-3 flex gap-x-4">
                     <li class="text-lg">
-                        <a href="user_posts">
-                            <span class="font-semibold">
-                                {{ limitNumber(getRelationsCount($user, 'post', 'user_id'), 50) }}
-                            </span> Posts
-                        </a>
-                    </li>
-                    <li class="text-lg">
                         <a href="user_categories">
                             <span class="font-semibold">
                                 {{ limitNumber(getRelationsCount($user, 'category', 'user_id'), 50) }}
@@ -36,10 +29,10 @@
                         </a>
                     </li>
                     <li class="text-lg">
-                        <a href="user_blueprints">
+                        <a href="user_posts">
                             <span class="font-semibold">
-                                {{ limitNumber(getRelationsCount($user, 'blueprint', 'user_id'), 50) }}
-                            </span> Blueprints
+                                {{ limitNumber(getRelationsCount($user, 'post', 'user_id'), 50) }}
+                            </span> Posts
                         </a>
                     </li>
                     <li class="text-lg">

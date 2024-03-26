@@ -84,11 +84,6 @@ class User extends Authenticatable
         return $this->hasMany(Field::class);
     }
 
-    public function blueprints(): HasMany
-    {
-        return $this->hasMany(Blueprint::class);
-    }
-
     public function getRoleNameAttribute(): string
     {
         return $this->role->name;

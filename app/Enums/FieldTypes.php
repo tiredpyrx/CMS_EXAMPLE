@@ -12,7 +12,6 @@ use Spatie\Enum\Enum;
  * @method static self multifield()
  * @method static self siblingfield()
  * @method static self texteditor()
- * @method static self select()
  */
 final class FieldTypes extends Enum
 {
@@ -20,9 +19,16 @@ final class FieldTypes extends Enum
     {
         return [
             'text' => 'text',
+            'longtext' => 'longtext',
             'number' => 'number',
             'color' => 'color',
             'range' => 'range',
+            'image' => 'image',
+            'images' => 'images',
+            'video' => 'video',
+            'videos' => 'videos',
+            'file' => 'file',
+            'files' => 'files',
             'multifield' => 'multifield',
             'siblingfield' => 'siblingfield',
             'texteditor' => 'texteditor',
