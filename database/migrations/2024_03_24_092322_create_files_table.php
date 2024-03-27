@@ -13,6 +13,13 @@ return new class extends Migration
     {
         Schema::create('files', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->constrained();
+            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('field_id')->constrained()->cascadeOnDelete();
+            $table->string('title')->nullable();
+            $table->text('description')->nullable();
+            $table->string('source')->nullable();
+            $table->string('handler');
             $table->timestamps();
         });
     }

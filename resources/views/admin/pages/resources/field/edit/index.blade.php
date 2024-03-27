@@ -2,12 +2,15 @@
 
 @section('content')
     <x-document-header title="{{ $category->title . ' Alan ' . $field->title . ' Düzenle' }}">
+        <a href="{{ route('categories.edit', $field->category_id) }}" class="btn-secondary">
+            Kategoriyi Düzenle
+        </a>
         <a href="{{ route('fields.show', $field->id) }}" class="btn-secondary">
             Alanı Gör
         </a>
     </x-document-header>
     <x-document-panel>
-        <form class="app-form" action="{{ route('fields.update', $field->id) }}" method="POST">
+        <form class="app-form" action="{{ route('fields.update', $field->id) }}" method="POST" enctype="multipart/form-data">
             @csrf
             @method('PUT')
             <div class="grid grid-cols-12 gap-4">
@@ -72,7 +75,7 @@
                 </div> --}}
                 <div class="grid-item col-span-6">
                     <label default for="image">Görsel</label>
-                    <input default id="image" type="file" accept=".jpg,.jpeg,.png,.webp,.svg" name="image" />
+                    <input default id="image" type="file" accept=".jpg,.jpeg,.png,.webp,.avif,.svg" name="image" />
                 </div>
                 <div class="grid-item col-span-12">
                     <div class="grid grid-cols-2 gap-4">

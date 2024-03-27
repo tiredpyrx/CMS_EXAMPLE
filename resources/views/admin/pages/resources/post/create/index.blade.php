@@ -37,7 +37,7 @@
             Tüm Gönderiler
         </a>
     </x-document-header>
-    <form class="app-form" action="{{ route('posts.store', $category->id) }}" method="POST">
+    <form class="app-form" action="{{ route('posts.store', $category->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="grid grid-cols-12 gap-x-4">
             <div class="col-span-9">

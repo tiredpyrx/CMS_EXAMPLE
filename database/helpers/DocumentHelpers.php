@@ -33,3 +33,8 @@ function getCategory(string $categoryTitle)
 {
     return Category::where('title', $categoryTitle)->firstOrFail();
 }
+
+function getCategoryPosts(string $categoryTitle)
+{
+    return Category::where('title', $categoryTitle)->firstOrFail()->posts;
+}

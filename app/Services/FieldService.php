@@ -3,10 +3,13 @@
 namespace App\Services;
 
 use App\Actions\GetUpdatedDatas;
+use App\Actions\SaveUploadedFileToPublicDir;
 use App\Enums\FieldTypes;
 use App\Models\Category;
 use App\Models\Field;
+use App\Models\File;
 use App\Models\Post;
+use App\Observers\FieldObserver;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\ValidationException;
 
@@ -15,13 +18,20 @@ class FieldService
     public function create(array $safeRequest, Model $model): Field
     {
         $this->validate($safeRequest, $model->id);
+
         $additional = ['user_id' => auth()->id(), 'category_id' => $model->id];
         $merged = array_merge($safeRequest, $additional);
         if ($safeRequest['type'] === 'select')
             $safeRequest['as_option'] = true;
 
+        $field = Field::create($merged);
 
-        return Field::create($merged);
+        if ($safeRequest['type'] === 'image')
+            $this->tryToUploadImage($safeRequest, $field, $model->id);
+
+        (new FieldObserver())->customCreated($field);
+
+        return $field;
     }
 
     public function getDetailedArray(int $user_id, string $parent_key, int $parent_id): array
@@ -38,6 +48,11 @@ class FieldService
     public function updateFields(Field $field, array $safeRequest): bool
     {
         $this->validate($safeRequest, $field->category_id, $field);
+
+        $isImageExists = $this->validateImage($safeRequest);
+        if ($isImageExists)
+            $this->tryToUploadImage($safeRequest, $field, $field->category_id);
+
         $updated = (new GetUpdatedDatas())->execute($safeRequest, 'field', $field->id);
         $posts = Post::where('category_id', $field->category_id)->get();
         $actionsDummy = [];
@@ -48,11 +63,6 @@ class FieldService
                 $keyIsTypeAttribute = ($key === 'type');
                 $pFieldDoesntHaveValueYet = !$pField->getAttribute('value');
                 $keyIsValueAttribute = ($key === 'value');
-                $pFieldDataIsEqualToOriginalFieldsData = $pField->getAttribute($key) === $field->getAttribute($key);
-                $pFieldDoesntAlreadyHaveThisKeyValue = $pField->getAttribute($key) !== $value;
-                // if ($pFieldDataIsEqualToOriginalFieldsData && $pFieldDoesntAlreadyHaveThisKeyValue) {
-
-                // }
                 if ($keyIsValueAttribute) {
                     if ($pFieldDoesntHaveValueYet)
                         $actionsDummy[] = $pField->update(['value' => $value]);
@@ -83,7 +93,13 @@ class FieldService
         return !array_search(false, $actions);
     }
 
-    public function validate($safeRequest, $category_id, $field = new Field)
+    public function validate(array $safeRequest, int $category_id, ?Field $field = new Field)
+    {
+        $this->validateHandleruUiqueness($safeRequest, $category_id, $field);
+        return 1;
+    }
+
+    public function validateHandleruUiqueness(array $safeRequest, int $category_id, Field $field = new Field)
     {
         $isFieldHandlerAlreadyExistsOnParentCategory = Category::find($category_id)
             ->fields()
@@ -97,6 +113,35 @@ class FieldService
                     back()->getTargetUrl()
                 );
         }
+    }
+
+    public function validateImage(array $safeRequest)
+    {
+        if (!isset($safeRequest['image'])) return null;
+
+        // validation of mimetypes
+
         return 1;
+    }
+
+    public function tryToUploadImage(array $safeRequest, Field $field, int $categoryId)
+    {
+        $image = $safeRequest['image'];
+        $imagePath = $this->getImageDirPath();
+        $imageSource = (new SaveUploadedFileToPublicDir())->execute($image, $imagePath);
+        $file = $field->files()->create([
+            'user_id' => auth()->id(),
+            'category_id' => $categoryId,
+            'title' => isset($safeRequest['image_title']) ? $safeRequest['image_title'] : '',
+            'description' => isset($safeRequest['image_description']) ? $safeRequest['image_description'] : '',
+            'source' => $imageSource,
+            'handler' => $field->handler,
+        ]);
+        return $file;
+    }
+
+    public function getImageDirPath()
+    {
+        return 'assets/fields/images/';
     }
 }

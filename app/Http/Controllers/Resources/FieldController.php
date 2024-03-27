@@ -41,15 +41,10 @@ class FieldController extends Controller
 
     public function store(StoreFieldRequest $request, string $modelName, int $modelId, FilterRequest $filterRequest)
     {
-        $instance = getModelClass($modelName);
-        $model = $instance->find($modelId);
+        $category = Category::find($modelId);
         $filtered = $filterRequest->execute($request, 'field');
-        $this->fieldService->create($filtered, $model);
-        $modelName = match ($modelName) {
-            'category' => 'categories',
-            'blueprint' => 'blueprints'
-        };
-        return to_route($modelName . '.edit', $model->id)->with('success', 'Alan başarıyla eklendi!');
+        $this->fieldService->create($filtered, $category);
+        return to_route('categories.edit', $category->id)->with('success', 'Alan başarıyla eklendi!');
     }
 
     public function show(Field $field)

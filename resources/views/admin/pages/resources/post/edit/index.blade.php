@@ -37,7 +37,7 @@
             Tüm Gönderiler
         </a>
     </x-document-header>
-    <form class="app-form" action="{{ route('posts.update', $post->id) }}" method="POST">
+    <form class="app-form" action="{{ route('posts.update', $post->id) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="grid grid-cols-12 gap-x-4">

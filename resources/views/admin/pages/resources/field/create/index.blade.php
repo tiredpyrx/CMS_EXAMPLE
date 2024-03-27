@@ -5,6 +5,7 @@
     <x-document-panel>
         <form class="app-form"
             action="{{ route('fields.store', ['modelName' => strtolower(class_basename($model)), 'modelId' => $model->id]) }}"
+            enctype="multipart/form-data"
             method="POST">
             @csrf
             <div class="grid grid-cols-12 gap-4">
@@ -60,7 +61,7 @@
                 </div> --}}
                 <div class="col-span-6 grid-item">
                     <label default for="image">Görsel</label>
-                    <input default id="image" type="file" accept=".jpg,.jpeg,.png,.webp,.svg" name="image" />
+                    <input default id="image" type="file" accept=".jpg,.jpeg,.png,.webp,.avif,.svg" name="image" />
                 </div>
                 <div class="col-span-12 grid-item ">
                     <div class="grid grid-cols-2 gap-4">

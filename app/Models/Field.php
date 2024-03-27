@@ -6,6 +6,7 @@ use App\Enums\FieldDefaultValues;
 use App\Enums\FieldTypes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
 
@@ -26,6 +27,8 @@ class Field extends Model
         'prefix' => 'prefix',
         'suffix' => 'suffix',
         'column' => 'column',
+
+        'image' => 'image',
 
 
         'as_option' => 'as_option',
@@ -57,6 +60,7 @@ class Field extends Model
         'as_option' => ['nullable', 'string'],
         'required' => ['nullable', 'string'],
         'active' => ['nullable', 'string'],
+        'image' => 'image'
     ];
 
     public const PRIMARY_HANDLERS = [
@@ -256,5 +260,15 @@ class Field extends Model
     public function onlyOptionFields()
     {
         return $this->fields()->where('as_option', 1)->get();
+    }
+
+    public function files(): HasMany
+    {
+        return $this->hasMany(File::class);
+    }
+
+    public function file()
+    {
+        return $this->files()->count() ? $this->files()->first() : null;
     }
 }

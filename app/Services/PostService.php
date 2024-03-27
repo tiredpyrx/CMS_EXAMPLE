@@ -4,11 +4,14 @@ namespace App\Services;
 
 use App\Actions\FilterRequest;
 use App\Actions\GetUpdatedDatas;
+use App\Actions\SaveUploadedFileToPublicDir;
 use App\Models\Category;
 use App\Models\Field;
 use App\Models\Post;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
 use Illuminate\Validation\ValidationException;
 
 class PostService
@@ -16,6 +19,7 @@ class PostService
     public function registerFields(Post $post, Request $request)
     {
         $category = Category::find($post->category_id);
+        /** @var \App\Models\Field $field */
         foreach ($category->fields as $field) {
             $fieldName = $field->handler;
             $fieldValue = $request->input($fieldName);
@@ -64,7 +68,30 @@ class PostService
                     // option children
                     break;
                 case 'image':
-                    // File
+                    $uploadedImage = $request->file($field->handler);
+                    $newField = $post->fields()->create([
+                        'user_id' => auth()->id(),
+                        'post_id' => $post->id,
+                        'label' => $field->label,
+                        'handler' => $fieldName,
+                        'column' => $field->column,
+                        'type' => $field->type,
+                        'description' => $field->description,
+                    ]);
+                    $imageSource =
+                        (new SaveUploadedFileToPublicDir())->execute(
+                            $uploadedImage,
+                            $this->getImageDirPath()
+                        );
+
+                    $newField->files()->create([
+                        'user_id' => auth()->id(),
+                        'category_id' => $post->category_id,
+                        'title' => $request->input('image_title'),
+                        'description' => $request->input('image_description'),
+                        'source' => $imageSource,
+                        'handler' => $field->handler,
+                    ]);
                     break;
                 case 'images':
                     // Files
@@ -104,6 +131,8 @@ class PostService
                     break;
             }
         }
+
+        $this::tryToLogToSitemap();
     }
 
     public function destroy(Post $post)
@@ -111,7 +140,11 @@ class PostService
         foreach ($post->fields as $field) {
             $field->delete();
         }
-        return $post->delete();
+
+        $success = $post->delete();
+        $this::tryToLogToSitemap();
+
+        return $success;
     }
 
     public function deleteMany(array $ids)
@@ -128,13 +161,15 @@ class PostService
 
     public function deleteAllSelected(array $ids)
     {
-        return $this->deleteMany($ids);
+        $success = $this->deleteMany($ids);
+        $this::tryToLogToSitemap();
+        return $success;
     }
 
     public function create(Request $request, Category $category)
     {
         $this->validateRequiredFields($request, $category);
-        return $post = Post::create([
+        return Post::create([
             'title' => $request->input('title'),
             'user_id' => auth()->id(),
             'category_id' => $category->id,
@@ -146,7 +181,9 @@ class PostService
     {
         $this->validateRequiredFields($request, $post);
         $safeRequest = $this->getSafeRequest($request);
-        return $this->updateChangedDatas($safeRequest, $post);
+        $success = $this->updateChangedDatas($safeRequest, $post);
+        $this::tryToLogToSitemap();
+        return $success;
     }
 
     // can go to sitemap.xml
@@ -199,8 +236,29 @@ class PostService
 
     public function updateFields(Request $request, Post $post): bool
     {
+        $actions = [];
+        $this->updateMultiField($request, $post);
+        $this->updateSiblingField($request, $post);
+        $this->updateImageFields($request, $post);
         return $this->updateChangedFields($request, $post);
     }
+
+    public function updateImageFields(Request $request, Post $post)
+    {
+        $post->fields()->where('type', 'image')->each(function ($field) use ($request) {
+            $oldImage = $field->file();
+            $oldImageSource = $oldImage?->source;
+            $newImage = $request->file($field->handler);
+            if ($newImage) {
+                if ($oldImageSource && File::exists($oldImageSource))
+                    File::delete($oldImageSource);
+                $imageSource = (new SaveUploadedFileToPublicDir())->execute($newImage, $this->getImageDirPath());
+                if ($imageSource)
+                    $oldImage->update(['source' => $imageSource]);
+            }
+        });
+    }
+
 
     public function updateChangedFields(Request $request, Post $post): bool
     {
@@ -255,5 +313,15 @@ class PostService
                 throw ValidationException::withMessages([])->redirectTo(back()->getTargetUrl());
             }
         }
+    }
+
+    public function getImageDirPath()
+    {
+        return 'assets/posts/images/';
+    }
+
+    private static function tryToLogToSitemap()
+    {
+        Artisan::call('app:log-to-sitemap');
     }
 }

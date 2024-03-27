@@ -97,6 +97,7 @@ class Post extends Model
         $value = match ($field->type) {
             'multifield' => $field->fields()->pluck('value'),
             'siblingfield' => array_chunk($field->fields()->pluck('value')->toArray(), 2),
+            'image' => $field->files()->first()?->only('title', 'description', 'source'),
             default => $field->value
         };
 

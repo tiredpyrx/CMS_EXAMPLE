@@ -37,7 +37,7 @@ class CategoryService
     {
         $content = $content ?: $this->getDefaultViewContent();
         $view = $this->getViewFullPath($fileName);
-        if (View::exists($view)) return false;
+        if (File::exists(base_path($view))) return false;
 
         return File::put(base_path($view), $content);
     }

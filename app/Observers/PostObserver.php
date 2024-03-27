@@ -9,9 +9,7 @@ use Illuminate\Support\Facades\Artisan;
 
 class PostObserver
 {
-    /**
-     * Handle the Post "created" event.
-     */
+
     public function created(Post $post): void
     {
         $publishDate = request()->input('publish_date');
@@ -28,38 +26,46 @@ class PostObserver
                 'published' => true
             ]);
         }
-        // Artisan::call('app:log-to-sitemap');
     }
 
-    /**
-     * Handle the Post "updated" event.
-     */
     public function updated(Post $post): void
     {
-        //
+        $publishDate = request()->input('publish_date');
+        $now = now();
+        if ($publishDate) {
+            $publishDate = Carbon::parse($publishDate);
+            $post->updateQuietly([
+                'publish_date' => $publishDate,
+                'published' => ($publishDate <= $now)
+            ]);
+        } else {
+            $post->updateQuietly([
+                'publish_date' => $now,
+                'published' => true
+            ]);
+        }
+
+        if ($post->slug)
+            $this::tryToLogToSitemap();
     }
 
-    /**
-     * Handle the Post "deleted" event.
-     */
     public function deleted(Post $post): void
     {
-        // Artisan::call('app:log-to-sitemap');
+        $this::tryToLogToSitemap();
     }
 
-    /**
-     * Handle the Post "restored" event.
-     */
     public function restored(Post $post): void
     {
-        //
+        $this::tryToLogToSitemap();
     }
 
-    /**
-     * Handle the Post "force deleted" event.
-     */
     public function forceDeleted(Post $post): void
     {
-        //
+        $this::tryToLogToSitemap();
+    }
+
+    private static function tryToLogToSitemap()
+    {
+        Artisan::call('app:log-to-sitemap');
     }
 }

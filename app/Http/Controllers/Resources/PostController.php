@@ -63,9 +63,6 @@ class PostController extends Controller
         $result[] = $this->postService->update($request, $post);
         $result[] = $this->postService->updateFields($request, $post);
 
-        $this->postService->updateMultiField($request, $post);
-        $this->postService->updateSiblingField($request, $post);
-
         if (in_array(false, $result))
             return back()->with('error', 'Gönderiyi güncellerken bir şeyler ters gitti, lütfen güncellenmemiş olabilen alanlara bakınız!');
         return back()->with('success', 'Gönderi başarıyla güncellendi!');

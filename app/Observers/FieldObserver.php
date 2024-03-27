@@ -5,11 +5,12 @@ namespace App\Observers;
 use App\Models\Category;
 use App\Models\Field;
 use App\Models\Post;
+use App\Services\FieldService;
 use Spatie\Activitylog\Models\Activity;
 
 class FieldObserver
 {
-    public function created(Field $field): void
+    public function customCreated(Field $field): void
     {
         if (!$field->category_id) return;
 
@@ -31,26 +32,18 @@ class FieldObserver
 
         collect($field->category->posts)->each(function ($post) use ($field) {
             $pField = $field->replicate(['category_id']);
-            $post->fields()->save($pField);
+            $pField = $post->fields()->save($pField);
+            if ($field->type === 'image') {
+                foreach ($field->files as $file) {
+                    $pField->files()->save($file);
+                }
+            }
         });
     }
 
     public function updated(Field $field): void
     {
         if (!$field->category_id || $field->wasRecentlyCreated) return;
-
-        // Category::find($field->category_id)->posts()->each(function ($post) {
-        //     $activity = Activity::all()->last();
-        //     if (isset($activity->changes['old']))
-        //         foreach ($activity->changes['old'] as $key => $oldValue) {
-        //             foreach (Field::where('post_id', $post->id)->get() as $field) {
-        //                 $newAttrs = $activity->changes['attributes'];
-        //                 if ($field->getAttribute($key) == $oldValue) {
-        //                     $field->update([$key => $newAttrs[$key]]);
-        //                 }
-        //             }
-        //         }
-        // });
     }
 
     public function deleted(Field $field): void
@@ -71,5 +64,10 @@ class FieldObserver
     public function forceDeleted(Field $field): void
     {
         //
+    }
+
+    public function tryToUploadImageAfterCreate(array $safeRequest, Field $field, int $modelId)
+    {
+        return (new FieldService())->tryToUploadImage($safeRequest, $field, $modelId);;
     }
 }
