@@ -60,8 +60,26 @@ class PostService
                         ]);
                     });
                     break;
+                case 'select':
+                    // option children
+                    break;
                 case 'image':
                     // File
+                    break;
+                case 'images':
+                    // Files
+                    break;
+                case 'video':
+                    // File
+                    break;
+                case 'videos':
+                    // Files
+                    break;
+                case 'file':
+                    // File
+                    break;
+                case 'files':
+                    // Files
                     break;
                 default:
                     $post->fields()->create([

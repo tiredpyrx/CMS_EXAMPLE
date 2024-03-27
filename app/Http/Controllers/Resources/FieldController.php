@@ -66,16 +66,19 @@ class FieldController extends Controller
     public function edit(Field $field)
     {
         $category = $field->category;
-        return view('admin.pages.resources.field.edit.index', compact('field', 'category'));
+        $typesWithLabels = Field::getTypesWithLabels();
+        return view('admin.pages.resources.field.edit.index', compact('field', 'category', 'typesWithLabels'));
     }
 
     public function update(UpdateFieldRequest $request, Field $field, FilterRequest $filterRequest, GetUpdatedDatas $getUpdatedDatas)
     {
         $safeRequest = $filterRequest->execute($request, 'field');
         $success = $this->fieldService->updateFields($field, $safeRequest);
-        if (!$success)
-            return back()->with('error', 'Bir şeyler ters gitti!');
-        return to_route('categories.edit', $field->category->id)->with('success', 'Alan başarıyla güncellendi!');
+        $flashMessage = match ($success) {
+            true => ['success', 'Alan başarıyla güncellendi!'],
+            false => ['error', 'Bir şeyler ters gitti!']
+        };
+        return back()->with($flashMessage[0], $flashMessage[1]);
     }
 
     public function destroy(Field $field): bool
@@ -96,8 +99,6 @@ class FieldController extends Controller
         $success = $toggleActive->execute($request, $modelName);
 
         $field = getModelClass($modelName)::where($request->get('primaryKey'), $request->get('primaryValue'))->first();
-
-        
 
         if ($request->expectsJson() || $request->ajax())
             return 1;

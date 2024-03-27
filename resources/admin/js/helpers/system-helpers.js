@@ -27,7 +27,7 @@ export function toggleResourcesActive() {
                             toastr.error(
                                 `${ucfirst(
                                     modelName
-                                )} aktif özelliğini düzenlenlerken bir sorun çıktı!`
+                                )} aktif özelliğini düzenlenlerken bir sorun oluştu!`
                             );
                     })
                     .catch((e) => e && location.reload());

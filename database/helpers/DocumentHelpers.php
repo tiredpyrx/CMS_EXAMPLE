@@ -1,12 +1,13 @@
 <?php
 
+use App\Models\Category;
 use App\Models\User;
 use Carbon\Carbon;
 
 function shortenText($text, $length = 150)
 {
     if (strlen($text) > $length)
-        return substr($text, 0, $length). '...';
+        return substr($text, 0, $length) . '...';
     return $text;
 }
 
@@ -23,7 +24,12 @@ function humanDate(Carbon $date)
 
 function findUserWithNickname(string $nickname): User
 {
-    return User::where('nickname', $nickname)->firstOr("*", function() {
+    return User::where('nickname', $nickname)->firstOr("*", function () {
         throw new BadFunctionCallException('User cannot be founded!');
     });
+}
+
+function getCategory(string $categoryTitle)
+{
+    return Category::where('title', $categoryTitle)->firstOrFail();
 }

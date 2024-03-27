@@ -98,10 +98,10 @@ class CategoryController extends Controller
 
     public function forceDelete(Request $request, Category $category)
     {
-        $category->forceDelete();
+        $flashMessage = $this->categoryService->forceDelete($category);
         if ($request->routeIs('trash.*'))
-            return to_route('categories.index')->with('success', 'Kategori başarıyla silindi!');
-        return back()->with('success', 'Kategori başarıyla silindi!');
+            return back()->with($flashMessage[0], $flashMessage[1]);
+        return to_route('categories.index')->with($flashMessage[0], $flashMessage[1]);
     }
 
     public function updateActive(Request $request, ToggleActive $toggleActive, string $modelName)

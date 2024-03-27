@@ -102,10 +102,10 @@ let selectActionDeleteAllSelected = async (prefix) => {
             },
         })
         .then((_) =>
-            toastrAlert("success", "Seçilen kaynaklar başarıyla silindi")
+            toastrAlert("success", "Seçilen kaynaklar başarıyla silindi!")
         )
         .catch((_) =>
-            toastrAlert("error", "Seçilen kaynakları silerken bir sorun oluştu")
+            toastrAlert("error", "Seçilen kaynakları silerken bir sorun oluştu!")
         );
 };
 
@@ -297,6 +297,7 @@ APP_SIDEBAR.querySelectorAll("[edit-icon-trigger]").forEach((trigger) => {
             APP_BODY.style.overflow = "inital";
             APP_CONTENT.style.filter = "";
             APP_SIDEBAR.style.filter = "";
+            reloadAfter(300);
         };
 
         $(APP_CATEGORY_EDIT_ICON_MODAL).on("click", (e) => {
@@ -329,3 +330,10 @@ APP_SIDEBAR.querySelectorAll("[edit-icon-trigger]").forEach((trigger) => {
         });
     });
 });
+
+
+function reloadAfter(msTime) {
+    setTimeout(() => {
+        location.reload();
+    }, msTime);
+}

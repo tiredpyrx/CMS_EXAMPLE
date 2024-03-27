@@ -38,7 +38,6 @@ class PostController extends Controller
 
     public function store(StorePostRequest $request, Category $category)
     {
-        
         $post = $this->postService->create($request, $category);
         $this->postService->registerFields($post, $request);
         return to_route('categories.show', $category->id)->with('success', 'Gönderi başarıyla eklendi!');
@@ -46,7 +45,8 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
-        //
+        // $category = $post->category;
+        // return view('admin.pages.resources.category.show.index', compact('post', 'category'));
     }
 
     public function edit(Post $post)

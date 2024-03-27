@@ -19,7 +19,7 @@
             </div>
             <div class="relative border border-gray-100 shadow-md sm:rounded-lg">
                 <div class="relative">
-                    <div class="relative">
+                    <div class="relative overflow-x-auto">
                         <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
                             <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>

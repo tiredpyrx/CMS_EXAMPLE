@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Actions\GetUpdatedDatas;
+use App\Enums\FieldTypes;
 use App\Models\Category;
 use App\Models\Field;
 use App\Models\Post;
@@ -40,23 +41,40 @@ class FieldService
         $updated = (new GetUpdatedDatas())->execute($safeRequest, 'field', $field->id);
         $posts = Post::where('category_id', $field->category_id)->get();
         $actionsDummy = [];
+
         foreach ($posts as $post) {
-            foreach ($post->fields as $pField) {
-                foreach ($updated as $key => $value) {
-                    $pFieldDoesntHaveValueYet = !$pField->getAttribute('value');
-                    $keyIsValueAttribute = ($key === 'value');
-                    $pFieldDataIsEqualToOriginalFieldsData = $pField->getAttribute($key) === $field->getAttribute($key);
-                    $pFieldDoesntAlreadyHaveThisKeyValue = $pField->getAttribute($key) !== $value;
-                    if ($pFieldDataIsEqualToOriginalFieldsData && $pFieldDoesntAlreadyHaveThisKeyValue) {
-                        if ($keyIsValueAttribute) {
-                            if ($pFieldDoesntHaveValueYet)
-                                $actionsDummy[] = $pField->update(['value' => $value]);
-                        } else
-                            $actionsDummy[] = $pField->update([$key => $value]);
+            $pField = $post->fields()->where('handler', $safeRequest['handler'])->first();
+            foreach ($safeRequest as $key => $value) {
+                $keyIsTypeAttribute = ($key === 'type');
+                $pFieldDoesntHaveValueYet = !$pField->getAttribute('value');
+                $keyIsValueAttribute = ($key === 'value');
+                $pFieldDataIsEqualToOriginalFieldsData = $pField->getAttribute($key) === $field->getAttribute($key);
+                $pFieldDoesntAlreadyHaveThisKeyValue = $pField->getAttribute($key) !== $value;
+                // if ($pFieldDataIsEqualToOriginalFieldsData && $pFieldDoesntAlreadyHaveThisKeyValue) {
+
+                // }
+                if ($keyIsValueAttribute) {
+                    if ($pFieldDoesntHaveValueYet)
+                        $actionsDummy[] = $pField->update(['value' => $value]);
+                } else if ($keyIsTypeAttribute) {
+                    $featuresFieldCannotHave = array_diff(FieldTypes::getFeaturesForType($pField->type), FieldTypes::getFeaturesForType($value));
+                    foreach ($featuresFieldCannotHave as $feature) {
+                        $actionsDummy[] = $field->update([$feature => null]);
+                        $actionsDummy[] = $pField->update([$feature => null]);
                     }
+                    if (in_array($pField->type, Field::TYPES_WITH_CHILDREN)) {
+                        $pField->fields()->each(fn ($f) => ($f->forceDelete()));
+                        $field->fields()->each(fn ($pf) => ($pf->forceDelete()));
+                    }
+                    $actionsDummy[] = $pField->update(['type' => $value]);
+                } else {
+                    $pField->update([$key => $value]);
                 }
             }
         }
+        if (isset($featuresFieldCannotHave))
+            $safeRequest = collect($safeRequest)->except($featuresFieldCannotHave)->toArray();
+
         $actionsDummy[] = $field->update($safeRequest);
         $actions = [];
         foreach ($actionsDummy as $key => $value) {

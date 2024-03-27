@@ -1,1 +1,1 @@
-{{ $page->field('title') }}
+{{ $page->field('title') }} 

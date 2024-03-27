@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\File;
 
 function getModelClass(string $modelClassName): Model
 {
@@ -31,4 +32,9 @@ function getTypeUpper(mixed $variable): string
 function isType(mixed $variable, string $type): bool
 {
     return getTypeUpper($variable) === strtoupper($type);
+}
+
+function isFileExists($path)
+{
+    return File::exists(base_path($path));
 }

@@ -101,6 +101,17 @@ class Field extends Model
 
     public const AS_PAGE_RECORDS = [];
 
+    public const TYPES_WITH_CHILDREN = [
+        'multifield',
+        'siblingfield',
+        'select'
+    ];
+
+    public const TYPES_WITH_STEPS = [
+        'number',
+        'range'
+    ];
+
     protected $fillable = [
         'user_id',
         'category_id',

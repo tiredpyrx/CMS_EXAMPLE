@@ -16,7 +16,6 @@ return new class extends Migration
             $table->id();
 
             $table->foreignId('user_id');
-            $table->foreignId('blueprint_id')->nullable()->cascadeOnDelete();
             $table->foreignId('category_id')->nullable()->cascadeOnDelete();
             $table->foreignId('post_id')->nullable()->cascadeOnDelete();
             $table->foreignId('field_id')->nullable()->cascadeOnDelete();

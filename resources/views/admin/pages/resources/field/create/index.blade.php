@@ -8,43 +8,43 @@
             method="POST">
             @csrf
             <div class="grid grid-cols-12 gap-4">
-                <div class="col-span-6">
+                <div class="col-span-6 grid-item">
                     <label default for="label">Etiket</label>
                     <input default id="label" name="label" type="text" />
                 </div>
-                <div class="col-span-6">
+                <div class="col-span-6 grid-item">
                     <label default for="handler">İşleyici*</label>
                     <input default id="handler" name="handler" type="text" />
                 </div>
-                <div class="col-span-6">
+                <div class="col-span-6 grid-item">
                     <label default for="placeholder">Hayalet Yazı</label>
                     <input default id="placeholder" name="placeholder" />
                 </div>
-                <div class="col-span-6">
+                <div class="col-span-6 grid-item">
                     <label default for="value">Varsayılan Değer</label>
                     <input default id="value" name="value" />
                 </div>
-                <div class="col-span-6">
+                <div class="col-span-6 grid-item">
                     <label default for="prefix">Önek</label>
                     <input default id="prefix" name="prefix" />
                 </div>
-                <div class="col-span-6">
+                <div class="col-span-6 grid-item">
                     <label default for="suffix">Sonek</label>
                     <input default id="suffix" name="suffix" />
                 </div>
-                <div class="col-span-6">
+                <div class="col-span-6 grid-item">
                     <label default for="min_value">Minimum Değer</label>
                     <input default id="min_value" type="number" name="min_value" />
                 </div>
-                <div class="col-span-6">
+                <div class="col-span-6 grid-item">
                     <label default for="max_value">Maksimum Değer</label>
                     <input default id="max_value" type="number" name="max_value" />
                 </div>
-                <div class="col-span-6">
+                <div class="col-span-6 grid-item">
                     <label default for="step">Artış Aralığı</label>
                     <input default id="step" type="number" name="step" />
                 </div>
-                <div class="col-span-6">
+                <div class="col-span-6 grid-item">
                     <label default for="type">Alan Tipi</label>
                     <select default name="type" id="type">
                         @foreach ($typesWithLabels as $typeWithLabel)
@@ -54,11 +54,27 @@
                         @endforeach
                     </select>
                 </div>
-                {{-- <div class="col-span-12">
+                {{-- <div class="col-span-12 grid-item">
                     <div id="field_options_container" data-option_handler="options[]">
                     </div>
                 </div> --}}
-                <div class="col-span-6 flex flex-col justify-start gap-y-6">
+                <div class="col-span-6 grid-item">
+                    <label default for="image">Görsel</label>
+                    <input default id="image" type="file" accept=".jpg,.jpeg,.png,.webp,.svg" name="image" />
+                </div>
+                <div class="col-span-12 grid-item ">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label default for="image_width">Görsel Genişlik</label>
+                            <input default id="image_width" type="number" name="image_width" />
+                        </div>
+                        <div>
+                            <label default for="image_height">Görsel Yükseklik</label>
+                            <input default id="image_height" type="number" name="image_height" />
+                        </div>
+                    </div>
+                </div>
+                <div class="col-span-6 grid-item flex flex-col justify-start gap-y-6 ">
                     <label for="column" class="block text-sm font-medium text-gray-900 dark:text-white">
                         Sütun Uzunluğu
                         <div class="inline-flex gap-x-0.5 text-sm font-semibold">
@@ -70,7 +86,7 @@
                         min="3" max="12"
                         class="h-2 w-full cursor-pointer appearance-none rounded-lg bg-gray-200 dark:bg-gray-700">
                 </div>
-                <div class="col-span-12">
+                <div class="col-span-12 grid-item">
                     <label default for="description">Açıklama</label>
                     <textarea default id="description" name="description"></textarea>
                 </div>
@@ -102,7 +118,7 @@
 
 
 @push('js')
-    <script src="{{ mix('./resources/admin/js/pages/field/index.js') }}"></script>
+    <script type="module" src="{{ mix('./resources/admin/js/pages/field/index.js') }}"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             document.getElementById("field-column-range-display").innerText = document.getElementById(

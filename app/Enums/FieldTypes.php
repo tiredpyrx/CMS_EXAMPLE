@@ -6,6 +6,14 @@ use Spatie\Enum\Enum;
 
 /**
  * @method static self text()
+ * @method static self longtext()
+ * @method static self image()
+ * @method static self images()
+ * @method static self video()
+ * @method static self videos()
+ * @method static self file()
+ * @method static self files()
+ * @method static self select()
  * @method static self number()
  * @method static self color()
  * @method static self range()
@@ -35,4 +43,68 @@ final class FieldTypes extends Enum
             'select' => 'select',
         ];
     }
+
+    public static function typesAndFeatures(): array
+    {
+        $responseSet = [
+            'text' => [
+                'placeholder',
+                'value',
+                'prefix',
+                'suffix',
+                'min_value',
+                'max_value',
+            ],
+            'longtext' => [
+                'placeholder',
+                'value',
+                'prefix',
+                'suffix',
+                'min_value',
+                'max_value',
+            ],
+            'number' => [
+                'value',
+                'step',
+                'min_value',
+                'max_value',
+            ],
+            'range' => [
+                'value',
+                'step',
+                'min_value',
+                'max_value',
+            ],
+            'color' => [
+                'value'
+            ]
+        ];
+        foreach ($responseSet as &$response) {
+            foreach (FieldTypes::typesAndFeaturesSharedDatas() as $sharedData) {
+                $response[] = $sharedData;
+            }
+        }
+
+        return $responseSet;
+    }
+
+    public static function getFeaturesForType(string $type): array
+    {
+        $type = strtolower($type);
+        return FieldTypes::typesAndFeatures()[$type];
+    }
+
+    private static function typesAndFeaturesSharedDatas(): array
+    {
+        return [
+            'label',
+            'handler',
+            'type',
+            'column',
+            'description',
+            'active',
+            'required',
+        ];
+    }
+
 }

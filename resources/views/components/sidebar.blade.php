@@ -144,6 +144,26 @@
             </ul>
             <ul class="mt-4 space-y-2 font-medium">
                 <li>
+                    <a href="/menus"
+                        class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        <div
+                            class="flex h-5 w-5 flex-shrink-0 items-center text-xl text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
+                            <i class="fa fa-m"></i>
+                        </div>
+                        <span class="ms-3">Menüler</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="/special-links"
+                        class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                        <div
+                            class="flex h-5 w-5 flex-shrink-0 items-center text-xl text-gray-500 transition duration-75 group-hover:text-gray-900 dark:text-gray-400 dark:group-hover:text-white">
+                            <i class="fa fa-pen"></i>
+                        </div>
+                        <span class="ms-3">Özel Linkler</span>
+                    </a>
+                </li>
+                <li>
                     <a href="{{ route('users.show', auth()->id()) }}"
                         class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
                         <div
