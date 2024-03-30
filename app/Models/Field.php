@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Collection;
+use Illuminate\Validation\Rule;
 
 class Field extends Model
 {
@@ -29,10 +30,12 @@ class Field extends Model
         'column' => 'column',
 
         'image' => 'image',
+        'images' => 'images',
 
 
         'as_option' => 'as_option',
         'required' => 'required',
+        'slugify' => 'slugify',
         'active' => 'active',
 
         'deleted_at' => 'deleted_at'
@@ -41,6 +44,7 @@ class Field extends Model
     public const MASS_ASSIGNABLE_BOOLS = [
         'as_option' => 'as_option',
         'required' => 'required',
+        'slugify' => 'slugify',
         'active' => 'active',
     ];
 
@@ -56,11 +60,20 @@ class Field extends Model
         'step' => ['nullable'],
         'prefix' => ['string', 'nullable'],
         'suffix' => ['string', 'nullable'],
-        'column' => ['nullable', 'string', 'max: 2'],
+        'column' => ['nullable', 'string'],
         'as_option' => ['nullable', 'string'],
         'required' => ['nullable', 'string'],
+        'slugify' => ['nullable', 'string', 'slug'],
         'active' => ['nullable', 'string'],
-        'image' => 'image'
+
+        'image' => ['nullable', 'image'],
+
+        'images' => ['nullable'],
+        'images.*' => 'image',
+
+        'image_width' => ['nullable', 'numeric'],
+        'image_height' => ['nullable', 'numeric']
+
     ];
 
     public const PRIMARY_HANDLERS = [
@@ -142,6 +155,7 @@ class Field extends Model
 
         'as_option',
         'required',
+        'slugify',
         'active',
 
         'deleted_at',
@@ -252,6 +266,11 @@ class Field extends Model
         return FieldDefaultValues::required();
     }
 
+    public static function getDefaultSlugifyValue(): string
+    {
+        return FieldDefaultValues::slugify();
+    }
+
     public static function getDefaultActiveValue(): string
     {
         return FieldDefaultValues::active();
@@ -267,8 +286,19 @@ class Field extends Model
         return $this->hasMany(File::class);
     }
 
-    public function file()
+    public function firstFile()
     {
         return $this->files()->count() ? $this->files()->first() : null;
+    }
+
+    public function getMediaTypes()
+    {
+        return FieldTypes::getMediaTypes();
+    }
+
+    public static function onlyWithTypes(array $types)
+    {
+        $response = Field::all()->filter(fn ($field) => in_array($field->type, $types));
+        return $response->count() ? $response : false;
     }
 }

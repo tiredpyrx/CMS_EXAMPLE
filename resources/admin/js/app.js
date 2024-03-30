@@ -105,7 +105,10 @@ let selectActionDeleteAllSelected = async (prefix) => {
             toastrAlert("success", "Seçilen kaynaklar başarıyla silindi!")
         )
         .catch((_) =>
-            toastrAlert("error", "Seçilen kaynakları silerken bir sorun oluştu!")
+            toastrAlert(
+                "error",
+                "Seçilen kaynakları silerken bir sorun oluştu!"
+            )
         );
 };
 
@@ -164,6 +167,7 @@ function tableResourceAction(el) {
     axios[method](route(rPrefix + "." + rSuffix, id))
         .then((res) => {
             if (parentNodeName) parent?.remove();
+            console.info(res);
             if (!res.data) {
                 toastrAlert("error", errorMessage);
                 return 0;
@@ -171,7 +175,10 @@ function tableResourceAction(el) {
             toastrAlert("success", successMessage);
             return 1;
         })
-        .catch((_) => toastrAlert("error", errorMessage));
+        .catch((_) => {
+            toastrAlert("error", errorMessage);
+            console.warn(_.message);
+        });
 }
 
 window.tableResourceAction = tableResourceAction;
@@ -250,8 +257,8 @@ if (route().current("posts.create") || route().current("posts.edit")) {
                 });
 
                 if (t.dataset.max_value && tVal >= t.dataset.max_value)
-                        cs.style.color = "red";
-                    else cs.style.color = "inherit";
+                    cs.style.color = "red";
+                else cs.style.color = "inherit";
             }
         });
 }
@@ -331,9 +338,25 @@ APP_SIDEBAR.querySelectorAll("[edit-icon-trigger]").forEach((trigger) => {
     });
 });
 
-
 function reloadAfter(msTime) {
     setTimeout(() => {
         location.reload();
     }, msTime);
 }
+
+async function deleteFile(file_id) {
+    await axios
+        .delete(route("files.destroy", file_id))
+        .then((res) => {
+            // ? cant validate res, data returns empty string
+            return toastrAlert("success", "Medya başarıyla silindi!");
+        })
+        .catch((_) => {
+            return toastrAlert(
+                "error",
+                "Medyayı silmeyi denerken bir sorun oluştu!"
+            );
+        });
+}
+
+window.deleteFile = deleteFile;

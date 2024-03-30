@@ -1,7 +1,7 @@
 @extends('templates.admin')
 
 @section('content')
-    <x-document-header title="{{ $field->label . ' Alan' }}" >
+    <x-document-header title="{{ $field->label . ' Alan' }}">
         <a href="{{ route('categories.show', $field->category_id) }}" class="btn-secondary">
             Kategoriyi Gör
         </a>
@@ -25,4 +25,14 @@
             @endforeach
         </ul>
     </x-document-panel>
+    @if (strtolower($field->type) === 'image')
+        <x-document-panel>
+            <div>
+                <span class="mb-2 block text-sm font-semibold">Alan Görseli</span>
+                <div class="grid">
+                    <img class="max-h-[400px] w-full object-cover" src="{{ url($field->firstFile()->source) }}">
+                </div>
+            </div>
+        </x-document-panel>
+    @endif
 @endsection

@@ -81,7 +81,7 @@ class PostService
                     $imageSource =
                         (new SaveUploadedFileToPublicDir())->execute(
                             $uploadedImage,
-                            $this->getImageDirPath()
+                            $this->getImagesDirPath()
                         );
 
                     $newField->files()->create([
@@ -94,7 +94,28 @@ class PostService
                     ]);
                     break;
                 case 'images':
-                    // Files
+                    $uploadedImages = $request->allFiles();
+                    $newField = $post->fields()->create([
+                        'user_id' => auth()->id(),
+                        'post_id' => $post->id,
+                        'label' => $field->label,
+                        'handler' => $fieldName,
+                        'column' => $field->column,
+                        'type' => $field->type,
+                        'description' => $field->description,
+                    ]);
+                    $imageFileRecords = [];
+                    foreach ($uploadedImages as $newImage) {
+                        $imageFileRecords[] = [
+                            'user_id' => auth()->id(),
+                            'category_id' => $post->category_id,
+                            'title' => $request->input('image_title'),
+                            'description' => $request->input('image_description'),
+                            'source' => (new SaveUploadedFileToPublicDir())->execute($newImage, $this->getImagesDirPath()),
+                            'handler' => $field->handler,
+                        ];
+                    }
+                    $newField->files()->createMany($imageFileRecords);
                     break;
                 case 'video':
                     // File
@@ -246,13 +267,13 @@ class PostService
     public function updateImageFields(Request $request, Post $post)
     {
         $post->fields()->where('type', 'image')->each(function ($field) use ($request) {
-            $oldImage = $field->file();
+            $oldImage = $field->firstFile();
             $oldImageSource = $oldImage?->source;
             $newImage = $request->file($field->handler);
             if ($newImage) {
                 if ($oldImageSource && File::exists($oldImageSource))
                     File::delete($oldImageSource);
-                $imageSource = (new SaveUploadedFileToPublicDir())->execute($newImage, $this->getImageDirPath());
+                $imageSource = (new SaveUploadedFileToPublicDir())->execute($newImage, $this->getImagesDirPath());
                 if ($imageSource)
                     $oldImage->update(['source' => $imageSource]);
             }
@@ -315,7 +336,7 @@ class PostService
         }
     }
 
-    public function getImageDirPath()
+    public function getImagesDirPath()
     {
         return 'assets/posts/images/';
     }

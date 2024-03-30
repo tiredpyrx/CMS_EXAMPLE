@@ -101,6 +101,27 @@
             <button type="submit" class="btn-primary">Güncelle</button>
         </div>
     </form>
+    @if (count($mediaFields))
+        <x-document-panel class="mt-6">
+            <h2 class="mb-4 text-sm font-semibold">Gönderi Medyaları</h2>
+            @foreach ($mediaFields as $mediaField)
+                @if ($mediaField->type === 'image')
+                    <x-document-panel>
+                        <img class="max-h-[400px] w-full object-cover" src="{{ url($mediaField->firstFile()->source) }}">
+                    </x-document-panel>
+                @elseif ($mediaField->type === 'images' && $mediaField->files->count())
+                    <x-document-panel class="grid grid-cols-4 gap-4">
+                        @foreach ($mediaField->files as $image)
+                            <x-document-panel class="h-full">
+                                <img class="h-full w-full object-cover" src="{{ url($image->source) }}"
+                                    alt="{{ $image->title }}" aria-describedby="{{ $image->description }}">
+                            </x-document-panel>
+                        @endforeach
+                    </x-document-panel>
+                @endif
+            @endforeach
+        </x-document-panel>
+    @endif
 @endsection
 
 @push('js')
@@ -303,7 +324,6 @@
                     console.info(feedField);
                 });
             });
-
         })
     </script>
 @endpush

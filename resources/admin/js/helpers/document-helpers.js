@@ -35,11 +35,8 @@ export function fadeToggle({ trigger_class = "", target_class = "" }) {
         return 0;
     }
 
-    $(`.${trigger_class}`).on("click touchstart", e => {
-        $(e.target)
-            .siblings(`.${target_class}`)
-            .first()
-            .fadeToggle();
+    $(`.${trigger_class}`).on("click touchstart", (e) => {
+        $(e.target).siblings(`.${target_class}`).first().fadeToggle();
     });
 }
 
@@ -48,3 +45,28 @@ export function ucfirst(anyText) {
 }
 
 window.ucfirst = ucfirst;
+
+// credits https://gist.github.com/4lun/c92affc5ef53cab047dd#file-str-slug-js
+export function slugify(title, separator) {
+    if (typeof separator == "undefined") separator = "-";
+
+    // Convert all dashes/underscores into separator
+    var flip = separator == "-" ? "_" : "-";
+    title = title.replace(flip, separator);
+
+    // Remove all characters that are not the separator, letters, numbers, or whitespace.
+    title = title
+        .toLowerCase()
+        .replace(new RegExp("[^a-z0-9" + separator + "\\s]", "g"), "");
+
+    // Replace all separator characters and whitespace by a single separator
+    title = title.replace(
+        new RegExp("[" + separator + "\\s]+", "g"),
+        separator
+    );
+
+    return title.replace(
+        new RegExp("^[" + separator + "\\s]+|[" + separator + "\\s]+$", "g"),
+        ""
+    );
+}

@@ -77,7 +77,9 @@ final class FieldTypes extends Enum
             ],
             'color' => [
                 'value'
-            ]
+            ],
+            'image' => [],
+            'images' => [],
         ];
         foreach ($responseSet as &$response) {
             foreach (FieldTypes::typesAndFeaturesSharedDatas() as $sharedData) {
@@ -107,4 +109,15 @@ final class FieldTypes extends Enum
         ];
     }
 
+    public static function getMediaTypes(): array
+    {
+        return [
+            FieldTypes::image(),
+            FieldTypes::images(),
+            FieldTypes::video(),
+            FieldTypes::videos(),
+            FieldTypes::file(),
+            FieldTypes::files(),
+        ];
+    }
 }

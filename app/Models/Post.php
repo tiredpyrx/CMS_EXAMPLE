@@ -7,6 +7,7 @@ use App\Pipes\ActivityPreventAttributePipe;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Collection;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
 
@@ -94,10 +95,18 @@ class Post extends Model
         if ($field->exists()) $field = $field->first();
         else return $default;
 
+        $originalField = Field::where([
+            ['handler', $handler],
+            ['id', '!=', $field->id],
+            ['category_id', '!=' ,null],
+            ['active', 1]
+        ])->first();
+
         $value = match ($field->type) {
             'multifield' => $field->fields()->pluck('value'),
             'siblingfield' => array_chunk($field->fields()->pluck('value')->toArray(), 2),
-            'image' => $field->files()->first()?->only('title', 'description', 'source'),
+            'image' => collect($field->files()->first()?->only(File::FRONTED_DATAS)),
+            'images' => collect($field->files)->map(fn($file) => $file->only(File::FRONTED_DATAS)),
             default => $field->value
         };
 
@@ -194,5 +203,16 @@ class Post extends Model
     {
         $bools = Post::MASS_ASSIGNABLE_BOOLS;
         return Post::getMassAssignables()->filter(fn ($d) => in_array($d, $bools));
+    }
+
+    public function getFieldsWhenTypes(array $types): Collection|array
+    {
+        $response = $this->getActiveFields()->filter(fn($field) => in_array($field->type, $types));
+        return $response->count() ? $response : [];
+    }
+
+    public function getActiveFields(): Collection
+    {
+        return collect(Field::where('post_id', $this->id)->getActives());
     }
 }

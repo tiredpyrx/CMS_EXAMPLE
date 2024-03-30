@@ -26,8 +26,10 @@ const SUB_FIELDS = [
     document.querySelector("#min_value"),
     document.querySelector("#step"),
     document.querySelector("#image"),
+    document.querySelector("#images"),
     document.querySelector("#image_width"),
     document.querySelector("#image_height"),
+    document.querySelector("#slugify"),
 ];
 
 const SUB_FIELDS_OBJECT = {
@@ -38,9 +40,14 @@ const SUB_FIELDS_OBJECT = {
     max_value: document.querySelector("#max_value"),
     min_value: document.querySelector("#min_value"),
     step: document.querySelector("#step"),
+
     image: document.querySelector("#image"),
     image_width: document.querySelector("#image_width"),
     image_height: document.querySelector("#image_height"),
+
+    images: document.querySelector("#images"),
+
+    slugify: document.querySelector("#slugify"),
 };
 
 const SUB_FEILDS_TREE = {
@@ -51,6 +58,7 @@ const SUB_FEILDS_TREE = {
         SUB_FIELDS_OBJECT.value,
         SUB_FIELDS_OBJECT.min_value,
         SUB_FIELDS_OBJECT.max_value,
+        SUB_FIELDS_OBJECT.slugify,
     ],
     longtext: [
         SUB_FIELDS_OBJECT.prefix,
@@ -75,7 +83,10 @@ const SUB_FEILDS_TREE = {
     image: [
         SUB_FIELDS_OBJECT.image,
         SUB_FIELDS_OBJECT.image_width,
-        SUB_FIELDS_OBJECT.image_height
+        SUB_FIELDS_OBJECT.image_height,
+    ],
+    images: [
+        SUB_FIELDS_OBJECT.images,
     ],
 };
 
@@ -84,9 +95,18 @@ function getType() {
 }
 
 function takeActionOnTypes() {
-    const UPCOMING_FIELDS = getSubFieldsForType(getType());
+    const TYPE = getType();
+    const UPCOMING_FIELDS = getSubFieldsForType(TYPE);
     resetFields(SUB_FIELDS);
     bootFields(UPCOMING_FIELDS);
+
+    if (route().current("fields.edit")) {
+        if (TYPE === "image") bootImageContainer();
+        else resetImageContainer();
+
+        if (TYPE === "images") bootImagesContainer();
+        else resetImagesContainer();
+    }
 }
 
 function resetFields(fields = []) {
@@ -95,7 +115,7 @@ function resetFields(fields = []) {
         while (!gridItem.classList.contains("grid-item"))
             gridItem = gridItem.parentElement;
         gridItem.style.display = "none";
-        field.value = field.dataset?.value || null;
+        field.value = null;
     });
 }
 
@@ -105,7 +125,24 @@ function bootFields(fields = []) {
         while (!gridItem.classList.contains("grid-item"))
             gridItem = gridItem.parentElement;
         gridItem.style.display = "block";
+        field.value = field.dataset?.value || null;
     });
+}
+
+function bootImageContainer() {
+    document.querySelector("#image-container").style.display = "block";
+}
+
+function resetImageContainer() {
+    document.querySelector("#image-container").style.display = "none";
+}
+
+function bootImagesContainer() {
+    document.querySelector("#images-container").style.display = "block";
+}
+
+function resetImagesContainer() {
+    document.querySelector("#images-container").style.display = "none";
 }
 
 function getSubFieldsForType(type) {
@@ -124,6 +161,9 @@ function getSubFieldsForType(type) {
             break;
         case "image":
             return SUB_FEILDS_TREE.image;
+            break;
+        case "images":
+            return SUB_FEILDS_TREE.images;
             break;
         default:
             break;

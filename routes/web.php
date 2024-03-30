@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticationController;
+use App\Http\Controllers\FileController;
 use App\Http\Controllers\FrontController;
 use App\Http\Controllers\Others\TrashController;
 use App\Http\Controllers\Views\DashboardViewController;
@@ -57,8 +58,8 @@ Route::group(['middleware' => 'auth'], function () {
         });
 
         Route::group(['prefix' => 'fields', 'controller' => FieldController::class], function () {
-            Route::get('{modelName}/{modelId}/create', 'create')->name('fields.create');
-            Route::post('{modelName}/{modelId}/store', 'store')->name('fields.store');
+            Route::get('{category}/create', 'create')->name('fields.create');
+            Route::post('{category}/store', 'store')->name('fields.store');
 
             Route::patch('/{modelName}/active', 'updateActive')->name('fields.active');
         });
@@ -78,6 +79,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resources([
             'users' => UserController::class,
             'categories' => CategoryController::class,
+            'files' => FileController::class,
         ]);
         Route::resource('posts', PostController::class)->except(['create', 'store']);
         Route::resource('fields', FieldController::class)->except(['create', 'store']);

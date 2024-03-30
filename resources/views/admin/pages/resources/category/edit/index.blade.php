@@ -278,7 +278,7 @@
                 </div>
             </div>
             <div class="mt-6 flex justify-end">
-                <a href="{{ route('fields.create', ['modelName' => strtolower(class_basename($category)), 'modelId' => $category->id]) }}"
+                <a href="{{ route('fields.create', $category->id) }}"
                     class="btn-secondary">
                     Alan Ekle
                 </a>
@@ -288,7 +288,7 @@
         <p class="mt-6 text-center font-semibold text-red-600">Bu kategorinin alanı yok</p>
         <div class="flex justify-center">
             <div class="mt-2 flex justify-end">
-                <a href="{{ route('fields.create', ['modelName' => strtolower(class_basename($category)), 'modelId' => $category->id]) }}"
+                <a href="{{ route('fields.create', $category->id) }}"
                     class="btn-secondary">
                     Alan Ekle
                 </a>

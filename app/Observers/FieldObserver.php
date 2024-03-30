@@ -10,6 +10,13 @@ use Spatie\Activitylog\Models\Activity;
 
 class FieldObserver
 {
+    private $service;
+
+    public function __construct()
+    {
+        $this->service = (new FieldService());
+    }
+
     public function customCreated(Field $field): void
     {
         if (!$field->category_id) return;
@@ -34,6 +41,9 @@ class FieldObserver
             $pField = $field->replicate(['category_id']);
             $pField = $post->fields()->save($pField);
             if ($field->type === 'image') {
+                $file = $field->firstFile();
+                $pField->files()->save($file);
+            } else if ($field->type === 'images') {
                 foreach ($field->files as $file) {
                     $pField->files()->save($file);
                 }
@@ -44,16 +54,13 @@ class FieldObserver
     public function updated(Field $field): void
     {
         if (!$field->category_id || $field->wasRecentlyCreated) return;
+
+        if ($field->type === 'images')
+            $this->service->syncImages($field);
     }
 
     public function deleted(Field $field): void
     {
-        collect($field->category->posts)->each(
-            fn ($post) => $post->fields()
-                ->where('handler', $field->handler)
-                ->first()
-                ->delete()
-        );
     }
 
     public function restored(Field $field): void
@@ -64,10 +71,5 @@ class FieldObserver
     public function forceDeleted(Field $field): void
     {
         //
-    }
-
-    public function tryToUploadImageAfterCreate(array $safeRequest, Field $field, int $modelId)
-    {
-        return (new FieldService())->tryToUploadImage($safeRequest, $field, $modelId);;
     }
 }

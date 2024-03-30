@@ -9,10 +9,6 @@ use App\Models\Field;
 use App\Models\Post;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\View;
-use Illuminate\Validation\ValidationException;
-use PHPUnit\TextUI\XmlConfiguration\RemoveCoverageElementProcessUncoveredFilesAttribute;
-use Spatie\Activitylog\Facades\LogBatch;
 
 class CategoryService
 {
@@ -36,18 +32,23 @@ class CategoryService
     public function tryToCreateViewFile(string $fileName, $content = null)
     {
         $content = $content ?: $this->getDefaultViewContent();
-        $view = $this->getViewFullPath($fileName);
-        if (File::exists(base_path($view))) return false;
+        $viewPath = $this->getViewFullPath($fileName);
+        if ($this->isViewExists($viewPath)) return false;
 
-        return File::put(base_path($view), $content);
+        return File::put(base_path($viewPath), $content);
     }
 
     public function tryToDeleteViewFile(string $fileName)
     {
         $viewPath = $this->getViewFullPath($fileName);
-        if (!File::exists(base_path($viewPath))) return false;
+        if (!$this->isViewExists($viewPath)) return false;
 
         return File::delete(base_path($viewPath));
+    }
+
+    public function isViewExists($viewPath)
+    {
+        return File::exists(base_path($viewPath));
     }
 
     public function tryToChangeView($oldFileName, $newFileName)

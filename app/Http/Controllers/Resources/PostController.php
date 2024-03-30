@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Resources;
 
+use App\Enums\FieldTypes;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StorePostRequest;
 use App\Http\Requests\UpdatePostRequest;
@@ -54,7 +55,8 @@ class PostController extends Controller
         $fields = Field::where('post_id', $post->id)->getActives();
         $category = Category::find($post->category_id);
         $changeFrequencyOptions = Post::getChangeFrequencyValues();
-        return view('admin.pages.resources.post.edit.index', compact('post', 'category', 'fields', 'changeFrequencyOptions'));
+        $mediaFields = $post->getFieldsWhenTypes(FieldTypes::getMediaTypes());
+        return view('admin.pages.resources.post.edit.index', compact('post', 'category', 'fields', 'changeFrequencyOptions', 'mediaFields'));
     }
 
     public function update(UpdatePostRequest $request, Post $post)

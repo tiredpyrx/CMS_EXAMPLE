@@ -5,9 +5,17 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreFileRequest;
 use App\Http\Requests\UpdateFileRequest;
 use App\Models\File;
+use App\Services\FileService;
 
 class FileController extends Controller
 {
+
+    private $service;
+
+    public function __construct(FileService $fileService) {
+        $this->service = $fileService;
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -61,6 +69,6 @@ class FileController extends Controller
      */
     public function destroy(File $file)
     {
-        //
+        return $this->service->deleteFile($file);
     }
 }

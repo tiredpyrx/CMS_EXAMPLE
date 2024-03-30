@@ -13,7 +13,5 @@
 </nav> --}}
 
 @section('content')
-    <section>
-        @yield('page')
-    </section>
+    @yield('page')
 @endsection

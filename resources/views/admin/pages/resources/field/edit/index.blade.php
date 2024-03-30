@@ -16,8 +16,8 @@
             <div class="grid grid-cols-12 gap-4">
                 <div class="grid-item col-span-6">
                     <label default for="label">Etiket</label>
-                    <input data-value="{{ $field->label }}" value="{{ $field->label }}" default id="label" name="label"
-                        type="text" />
+                    <input data-value="{{ $field->label }}" value="{{ $field->label }}" default id="label"
+                        name="label" type="text" />
                 </div>
                 <div class="grid-item col-span-6">
                     <label default for="handler">İşleyici*</label>
@@ -77,6 +77,11 @@
                     <label default for="image">Görsel</label>
                     <input default id="image" type="file" accept=".jpg,.jpeg,.png,.webp,.avif,.svg" name="image" />
                 </div>
+                <div class="grid-item col-span-6">
+                    <label default for="images">Görseller</label>
+                    <input default id="images" type="file" accept=".jpg,.jpeg,.png,.webp,.avif,.svg" name="images[]"
+                        multiple />
+                </div>
                 <div class="grid-item col-span-12">
                     <div class="grid grid-cols-2 gap-4">
                         <div>
@@ -90,7 +95,7 @@
                     </div>
                 </div>
                 <div class="grid-item col-span-6 flex flex-col justify-start gap-y-6">
-                    <label for="column" class="block text-sm font-medium text-gray-900 dark:text-white">
+                    <label for="field-column-range" class="block text-sm font-medium text-gray-900 dark:text-white">
                         Sütun Uzunluğu
                         <div class="inline-flex gap-x-0.5 text-sm font-semibold">
                             <span id="field-column-range-display">{{ $field->column }}</span>
@@ -121,6 +126,13 @@
                             <label for="required"
                                 class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Zorunlu</label>
                         </div>
+                        <div class="grid-item flex items-center">
+                            <input @checked($field->slugify) name="slugify" id="slugify" type="checkbox"
+                                value=""
+                                class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
+                            <label for="slugify" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Slug
+                                Alanı</label>
+                        </div>
                     </div>
                 </div>
                 <div class="col-span-12">
@@ -131,6 +143,33 @@
             </div>
         </form>
     </x-document-panel>
+    {{-- <div id="image-container">
+        <x-document-panel>
+            <span class="mb-4 block text-sm font-semibold">Alan Görseli</span>
+            <div class="grid">
+                <img class="max-h-[400px] w-full object-cover" src="{{ url($field->firstFile()?->source) }}">
+            </div>
+        </x-document-panel>
+    </div> --}}
+    @if ($field->files->count())
+        <div id="images-container">
+            <x-document-panel>
+                <span class="mb-4 block text-sm font-semibold">Alan Görselleri</span>
+                <div class="grid grid-cols-4 gap-4">
+                    @foreach ($field->files as $image)
+                        <x-document-panel class="relative">
+                            <button onclick="deleteFile('{{ $image->id }}')"
+                                class="absolute right-2 top-2 h-6 w-6 rounded-full text-gray-800 hover:bg-gray-50"><i
+                                    class="fa fa-xmark"></i></button>
+                            <div class="mt-1">
+                                <img class="max-h-[400px] w-full object-cover" src="{{ url($image->source) }}">
+                            </div>
+                        </x-document-panel>
+                    @endforeach
+                </div>
+            </x-document-panel>
+        </div>
+    @endif
 @endsection
 
 @push('js')

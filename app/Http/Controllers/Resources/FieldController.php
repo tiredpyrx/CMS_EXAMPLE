@@ -29,19 +29,16 @@ class FieldController extends Controller
         //
     }
 
-    public function create(string $modelName, int $modelId)
+    public function create(Category $category)
     {
-        $instance = getModelClass($modelName);
-        $model = $instance->find($modelId);
         $defaultColumnValue = Field::getDefaultColumnValue();
         $defaultTypeValue = Field::getDefaultTypeValue();
         $typesWithLabels = Field::getTypesWithLabels();
-        return view('admin.pages.resources.field.create.index', compact('model', 'typesWithLabels', 'defaultTypeValue', 'defaultColumnValue'));
+        return view('admin.pages.resources.field.create.index', compact('category', 'typesWithLabels', 'defaultTypeValue', 'defaultColumnValue'));
     }
 
-    public function store(StoreFieldRequest $request, string $modelName, int $modelId, FilterRequest $filterRequest)
+    public function store(StoreFieldRequest $request, Category $category, FilterRequest $filterRequest)
     {
-        $category = Category::find($modelId);
         $filtered = $filterRequest->execute($request, 'field');
         $this->fieldService->create($filtered, $category);
         return to_route('categories.edit', $category->id)->with('success', 'Alan başarıyla eklendi!');
@@ -76,17 +73,9 @@ class FieldController extends Controller
         return back()->with($flashMessage[0], $flashMessage[1]);
     }
 
-    public function destroy(Field $field): bool
+    public function destroy(Field $field)
     {
-        $field->fields()->each(fn ($field) => $field->delete());
-        foreach (Post::where('category_id', $field->category_id) as $post) {
-            foreach (Field::where('post_id', $post->id) as $pField) {
-                $pField->fields()->each(fn ($field) => $field->delete());
-                $pField->delete();
-            }
-        }
-        $field->fields()->each(fn ($field) => $field->delete());
-        return $field->delete();
+        return $this->fieldService->appendToTrash($field);
     }
 
     public function updateActive(UpdateFieldActiveRequest $request, ToggleActive $toggleActive, string $modelName)
