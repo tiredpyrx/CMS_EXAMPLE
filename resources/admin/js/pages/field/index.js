@@ -29,7 +29,7 @@ const SUB_FIELDS = [
     document.querySelector("#images"),
     document.querySelector("#image_width"),
     document.querySelector("#image_height"),
-    document.querySelector("#slugify"),
+    document.querySelector("#sluggable"),
 ];
 
 const SUB_FIELDS_OBJECT = {
@@ -47,7 +47,7 @@ const SUB_FIELDS_OBJECT = {
 
     images: document.querySelector("#images"),
 
-    slugify: document.querySelector("#slugify"),
+    sluggable: document.querySelector("#sluggable"),
 };
 
 const SUB_FEILDS_TREE = {
@@ -58,7 +58,7 @@ const SUB_FEILDS_TREE = {
         SUB_FIELDS_OBJECT.value,
         SUB_FIELDS_OBJECT.min_value,
         SUB_FIELDS_OBJECT.max_value,
-        SUB_FIELDS_OBJECT.slugify,
+        SUB_FIELDS_OBJECT.sluggable,
     ],
     longtext: [
         SUB_FIELDS_OBJECT.prefix,
@@ -87,6 +87,8 @@ const SUB_FEILDS_TREE = {
     ],
     images: [
         SUB_FIELDS_OBJECT.images,
+        SUB_FIELDS_OBJECT.image_width,
+        SUB_FIELDS_OBJECT.image_height,
     ],
 };
 

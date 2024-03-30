@@ -9,6 +9,8 @@ class Role extends Model
 {
     use HasFactory;
 
+    // ? its better to use spatie permissions to create a complex role system
+
     protected $fillable = [
         'name',
     ];

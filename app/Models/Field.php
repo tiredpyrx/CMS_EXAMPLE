@@ -35,7 +35,7 @@ class Field extends Model
 
         'as_option' => 'as_option',
         'required' => 'required',
-        'slugify' => 'slugify',
+        'sluggable' => 'sluggable',
         'active' => 'active',
 
         'deleted_at' => 'deleted_at'
@@ -44,7 +44,7 @@ class Field extends Model
     public const MASS_ASSIGNABLE_BOOLS = [
         'as_option' => 'as_option',
         'required' => 'required',
-        'slugify' => 'slugify',
+        'sluggable' => 'sluggable',
         'active' => 'active',
     ];
 
@@ -52,28 +52,13 @@ class Field extends Model
         'label' => ['nullable', 'string', 'max:60'],
         'handler' => ['required', 'string', 'max:60'],
         'value' => ['nullable', 'string'],
-        'placeholder' => ['nullable', 'string'],
         'description' => ['nullable', 'string', 'max:160'],
         'type' => ['nullable', 'string'],
-        'min_value' => ['nullable'],
-        'max_value' => ['nullable'],
-        'step' => ['nullable'],
-        'prefix' => ['string', 'nullable'],
-        'suffix' => ['string', 'nullable'],
         'column' => ['nullable', 'string'],
         'as_option' => ['nullable', 'string'],
         'required' => ['nullable', 'string'],
-        'slugify' => ['nullable', 'string', 'slug'],
+        'sluggable' => ['nullable', 'string', 'slug'],
         'active' => ['nullable', 'string'],
-
-        'image' => ['nullable', 'image'],
-
-        'images' => ['nullable'],
-        'images.*' => 'image',
-
-        'image_width' => ['nullable', 'numeric'],
-        'image_height' => ['nullable', 'numeric']
-
     ];
 
     public const PRIMARY_HANDLERS = [
@@ -155,7 +140,7 @@ class Field extends Model
 
         'as_option',
         'required',
-        'slugify',
+        'sluggable',
         'active',
 
         'deleted_at',
@@ -266,9 +251,9 @@ class Field extends Model
         return FieldDefaultValues::required();
     }
 
-    public static function getDefaultSlugifyValue(): string
+    public static function getDefaultsluggableValue(): string
     {
-        return FieldDefaultValues::slugify();
+        return FieldDefaultValues::sluggable();
     }
 
     public static function getDefaultActiveValue(): string

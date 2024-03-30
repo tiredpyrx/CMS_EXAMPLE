@@ -37,7 +37,7 @@ return new class extends Migration
 
             $table->boolean('as_option')->nullable()->default(false);
             $table->boolean('required')->nullable()->default(Field::getDefaultRequiredValue());
-            $table->boolean('slugify')->nullable()->default(Field::getDefaultSlugifyValue());
+            $table->boolean('sluggable')->nullable()->default(Field::getDefaultsluggableValue());
             $table->boolean('active')->nullable()->default(Field::getDefaultActiveValue());
 
             $table->softDeletes();

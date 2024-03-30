@@ -6,7 +6,7 @@
             Kategoriyi Düzenle
         </a>
         <a href="{{ route('fields.show', $field->id) }}" class="btn-secondary">
-            Alanı Gör
+            Alan Bilgileri
         </a>
     </x-document-header>
     <x-document-panel>
@@ -127,10 +127,10 @@
                                 class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Zorunlu</label>
                         </div>
                         <div class="grid-item flex items-center">
-                            <input @checked($field->slugify) name="slugify" id="slugify" type="checkbox"
+                            <input @checked($field->sluggable) name="sluggable" id="sluggable" type="checkbox"
                                 value=""
                                 class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
-                            <label for="slugify" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Slug
+                            <label for="sluggable" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Slug
                                 Alanı</label>
                         </div>
                     </div>

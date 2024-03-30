@@ -9,6 +9,7 @@
         '!rounded-l-none' => $field->prefix,
         '!rounded-r-none' => $field->suffix,
     ]) @required($field->required) min="{{ $field->min_value }}"
+        sluggable="{{ $field->sluggable }}"
         max="{{ $field->max_value }}" name="{{ $field->handler }}" id="{{ $field->handler }}" value="{{ $field->value ?? old($field->handler) }}"
         type="{{ $field->type }}" />
     @if ($field->suffix)

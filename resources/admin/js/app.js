@@ -3,6 +3,7 @@
 import "./bootstrap";
 import * as DH from "./helpers/document-helpers";
 import * as SH from "./helpers/system-helpers";
+import slugify from "slugify";
 
 DH.replaceToIcon();
 SH.toggleResourcesActive();
@@ -338,12 +339,20 @@ APP_SIDEBAR.querySelectorAll("[edit-icon-trigger]").forEach((trigger) => {
     });
 });
 
+/**
+ * Reload after given time on miliseconds
+ * @param {int} msTime
+ */
 function reloadAfter(msTime) {
     setTimeout(() => {
         location.reload();
     }, msTime);
 }
 
+/**
+ * Send DELETE request to FileController destroy method with given file id
+ * @param {string} file_id
+ */
 async function deleteFile(file_id) {
     await axios
         .delete(route("files.destroy", file_id))
@@ -360,3 +369,17 @@ async function deleteFile(file_id) {
 }
 
 window.deleteFile = deleteFile;
+
+// CHANGE SLUGGABLE FIELD VALUES TO SLUGS
+document.querySelectorAll("input[sluggable='1']").forEach(function (input) {
+    input.addEventListener("keyup", () => {
+        input.value = slugify(input.value, {
+            strict: false,
+            lower: true,
+            trim: false,
+        }).trim();
+        input.addEventListener("blur", () => {
+            input.value = input.value.replace(new RegExp("-" + "$"), "");
+        });
+    });
+});

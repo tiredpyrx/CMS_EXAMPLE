@@ -120,4 +120,66 @@ final class FieldTypes extends Enum
             FieldTypes::files(),
         ];
     }
+
+    public static function getRulesForTypes()
+    {
+        return [
+            'text' => [
+                'placeholder' => ['nullable', 'string', 'max:32'],
+                'prefix' => ['nullable', 'string', 'max:24'],
+                'suffix' => ['nullable', 'string', 'max:24'],
+                'min_value' => ['nullable', 'numeric'],
+                'max_value' => ['nullable', 'numeric'],
+            ],
+            'longtext' => [
+                'placeholder' => ['nullable', 'string', 'max:32'],
+                'prefix' => ['nullable', 'string', 'max:24'],
+                'suffix' => ['nullable', 'string', 'max:24'],
+                'min_value' => ['nullable', 'numeric'],
+                'max_value' => ['nullable', 'numeric'],
+            ],
+            'number' => [
+                'step' => ['nullable', 'numeric'],
+                'min_value' => ['nullable', 'numeric'],
+                'max_value' => ['nullable', 'numeric'],
+            ],
+            'range' => [
+                'step' => ['nullable', 'numeric'],
+                'min_value' => ['nullable', 'numeric'],
+                'max_value' => ['nullable', 'numeric'],
+            ],
+            'image' => [
+                'image' => ['nullable', 'image'],
+                'image_width' => ['nullable', 'numeric'],
+                'image_height' => ['nullable', 'numeric'],
+            ],
+            'images' => [
+                'images' => ['nullable', 'array'],
+                'images.*' => ['image'],
+                'image_width' => ['nullable', 'numeric'],
+                'image_height' => ['nullable', 'numeric'],
+            ],
+        ];
+    }
+
+    private static function isTypeHaveAdditionalRules(string $type)
+    {
+        return isset(FieldTypes::getRulesForTypes()[$type]);
+    }
+
+    public static function getRulesForType(string $type)
+    {
+        if (!FieldTypes::isTypeAllowed($type))
+            throw new \BadMethodCallException("Given type value $type is not present in allowed field types!");
+
+        if (!FieldTypes::isTypeHaveAdditionalRules($type))
+            return [];
+
+        return FieldTypes::getRulesForTypes()[$type];
+    }
+
+    private static function isTypeAllowed(string $type)
+    {
+        return in_array($type, FieldTypes::values());
+    }
 }

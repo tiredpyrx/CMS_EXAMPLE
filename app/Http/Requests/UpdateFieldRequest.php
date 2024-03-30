@@ -2,13 +2,11 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\FieldTypes;
 use App\Models\Field;
 
 class UpdateFieldRequest extends AppFormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         return true;
@@ -21,6 +19,7 @@ class UpdateFieldRequest extends AppFormRequest
      */
     public function rules(): array
     {
-        return Field::RULES;
+        $rulesForUpcomingType = FieldTypes::getRulesForType($this->input('type'));
+        return array_merge(Field::RULES, $rulesForUpcomingType);
     }
 }
