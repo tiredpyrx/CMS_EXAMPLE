@@ -24,7 +24,6 @@ class LogUserLogout
                 'platform' => $agent->platform(),
                 'platform_version' => $agent->version($agent->platform()),
                 'device' => $agent->device(),
-                'device_version' => $agent->platform($agent->device()),
             ])
             ->log(':causer.nickname logged out!');
     }

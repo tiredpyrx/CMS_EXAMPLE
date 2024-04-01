@@ -56,7 +56,8 @@ class PostController extends Controller
         $category = Category::find($post->category_id);
         $changeFrequencyOptions = Post::getChangeFrequencyValues();
         $mediaFields = $post->getFieldsWhenTypes(FieldTypes::getMediaTypes());
-        return view('admin.pages.resources.post.edit.index', compact('post', 'category', 'fields', 'changeFrequencyOptions', 'mediaFields'));
+        $isMediaFilesHasAnySource = $mediaFields->map(fn ($field) => $field->files)->flatten()->pluck('source')->count() > 0;
+        return view('admin.pages.resources.post.edit.index', compact('post', 'category', 'fields', 'changeFrequencyOptions', 'mediaFields', 'isMediaFilesHasAnySource'));
     }
 
     public function update(UpdatePostRequest $request, Post $post)

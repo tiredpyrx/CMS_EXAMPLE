@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\PostChangeFrequencyOptions;
 use App\Pipes\ActivityPreventAttributePipe;
+use App\Traits\AdvancedModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -13,7 +14,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Post extends Model
 {
-    use HasFactory, SoftDeletes, LogsActivity;
+    use HasFactory, SoftDeletes, LogsActivity, AdvancedModel;
 
     protected static $ignoreChangedAttributes = ['updated_at'];
 
@@ -95,17 +96,10 @@ class Post extends Model
         if ($field->exists()) $field = $field->first();
         else return $default;
 
-        $originalField = Field::where([
-            ['handler', $handler],
-            ['id', '!=', $field->id],
-            ['category_id', '!=' ,null],
-            ['active', 1]
-        ])->first();
-
         $value = match ($field->type) {
             'multifield' => $field->fields()->pluck('value'),
             'siblingfield' => array_chunk($field->fields()->pluck('value')->toArray(), 2),
-            'image' => collect($field->files()->first()?->only(File::FRONTED_DATAS)),
+            'image' => collect($field->firstFile()->only(File::FRONTED_DATAS)),
             'images' => collect($field->files)->map(fn($file) => $file->only(File::FRONTED_DATAS)),
             default => $field->value
         };
@@ -192,17 +186,6 @@ class Post extends Model
     public static function getChangeFrequencyNeverValue(): string
     {
         return PostChangeFrequencyOptions::never();
-    }
-
-    public static function getMassAssignables()
-    {
-        return collect(Post::MASS_ASSIGNABLES);
-    }
-
-    public static function getMassAssignableBools()
-    {
-        $bools = Post::MASS_ASSIGNABLE_BOOLS;
-        return Post::getMassAssignables()->filter(fn ($d) => in_array($d, $bools));
     }
 
     public function getFieldsWhenTypes(array $types): Collection|array

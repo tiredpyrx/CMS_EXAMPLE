@@ -59,7 +59,9 @@ class FieldController extends Controller
     {
         $category = $field->category;
         $typesWithLabels = Field::getTypesWithLabels();
-        return view('admin.pages.resources.field.edit.index', compact('field', 'category', 'typesWithLabels'));
+        $fieldFilesCount = $field->files->count();
+        $fieldHasAnyFileWithSource = $field->files->pluck('source')->filter(fn($source) => !is_null($source))->count();
+        return view('admin.pages.resources.field.edit.index', compact('field', 'category', 'typesWithLabels', 'fieldFilesCount', 'fieldHasAnyFileWithSource'));
     }
 
     public function update(UpdateFieldRequest $request, Field $field, FilterRequest $filterRequest, GetUpdatedDatas $getUpdatedDatas)

@@ -18,19 +18,19 @@ class TrashViewController extends Controller
         // gate is user authorized to view trash?
         $resources = [
             'category' => [
-                'primary_text' => 'kategoriler',
+                'all_count' => Category::count(),
+                'title' => 'Kategoriler',
                 'route_prefix' => 'categories',
-                'image' => 'https://i.redd.it/nf59c1x7m2l91.jpg'
             ],
             'post' => [
-                'primary_text' => 'gönderiler',
+                'all_count' => Post::count(),
+                'title' => 'Gönderiler',
                 'route_prefix' => 'posts',
-                'image' => 'https://i.redd.it/nf59c1x7m2l91.jpg'
             ],
             'field' => [
-                'primary_text' => 'alanlar',
+                'all_count' => Field::count(),
+                'title' => 'Alanlar',
                 'route_prefix' => 'fields',
-                'image' => 'https://i.redd.it/nf59c1x7m2l91.jpg'
             ]
         ];
         return view('admin.pages.trash.index', compact('resources'));

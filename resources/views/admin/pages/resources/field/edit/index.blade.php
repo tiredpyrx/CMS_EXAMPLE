@@ -31,13 +31,13 @@
                 </div>
                 <div class="grid-item col-span-6">
                     <label default for="value">Varsayılan Değer</label>
-                    <input data-value="{{ $field->value }}" value="{{ $field->value }}" default id="value"
-                        name="value" />
+                    <input sluggable="{{ $field->sluggable }}" data-value="{{ $field->value }}"
+                        value="{{ $field->value }}" default id="value" name="value" />
                 </div>
                 <div class="grid-item col-span-6">
                     <label default for="prefix">Önek</label>
-                    <input data-value="{{ $field->prefix }}" value="{{ $field->prefix }}" default id="prefix"
-                        name="prefix" />
+                    <input @readonly($field->url) @class(['disabled' => $field->url]) data-value="{{ $field->prefix }}"
+                        value="{{ $field->prefix }}" default id="prefix" name="prefix" />
                 </div>
                 <div class="grid-item col-span-6">
                     <label default for="suffix">Sonek</label>
@@ -127,6 +127,13 @@
                                 class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Zorunlu</label>
                         </div>
                         <div class="grid-item flex items-center">
+                            <input @checked($field->url) name="url" id="url" type="checkbox"
+                                value=""
+                                class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
+                            <label for="yrl" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">URL
+                                Alanı</label>
+                        </div>
+                        <div class="grid-item flex items-center">
                             <input @checked($field->sluggable) name="sluggable" id="sluggable" type="checkbox"
                                 value=""
                                 class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
@@ -143,32 +150,35 @@
             </div>
         </form>
     </x-document-panel>
-    {{-- <div id="image-container">
-        <x-document-panel>
-            <span class="mb-4 block text-sm font-semibold">Alan Görseli</span>
-            <div class="grid">
-                <img class="max-h-[400px] w-full object-cover" src="{{ url($field->firstFile()?->source) }}">
+    @if ($fieldFilesCount && $fieldHasAnyFileWithSource)
+        @if ($field->type === 'image')
+            <div id="image-container">
+                <x-document-panel>
+                    <span class="mb-4 block text-sm font-semibold">Alan Görseli</span>
+                    <div class="grid">
+                        <img class="max-h-[400px] w-full object-cover" src="{{ url($field->firstFile()?->source) }}">
+                    </div>
+                </x-document-panel>
             </div>
-        </x-document-panel>
-    </div> --}}
-    @if ($field->files->count())
-        <div id="images-container">
-            <x-document-panel>
-                <span class="mb-4 block text-sm font-semibold">Alan Görselleri</span>
-                <div class="grid grid-cols-4 gap-4">
-                    @foreach ($field->files as $image)
-                        <x-document-panel class="relative">
-                            <button onclick="deleteFile('{{ $image->id }}')"
-                                class="absolute right-2 top-2 h-6 w-6 rounded-full text-gray-800 hover:bg-gray-50"><i
-                                    class="fa fa-xmark"></i></button>
-                            <div class="mt-1">
-                                <img class="max-h-[400px] w-full object-cover" src="{{ url($image->source) }}">
-                            </div>
-                        </x-document-panel>
-                    @endforeach
-                </div>
-            </x-document-panel>
-        </div>
+        @elseif ($field->type === 'images')
+            <div id="images-container">
+                <x-document-panel>
+                    <span class="mb-4 block text-sm font-semibold">Alan Görselleri</span>
+                    <div class="grid grid-cols-4 gap-4">
+                        @foreach ($field->files as $image)
+                            <x-document-panel class="relative">
+                                <button onclick="deleteFile('{{ $image->id }}')"
+                                    class="absolute right-2 top-2 h-6 w-6 rounded-full text-gray-800 hover:bg-gray-50"><i
+                                        class="fa fa-xmark"></i></button>
+                                <div class="mt-1">
+                                    <img class="max-h-[400px] w-full object-cover" src="{{ url($image->source) }}">
+                                </div>
+                            </x-document-panel>
+                        @endforeach
+                    </div>
+                </x-document-panel>
+            </div>
+        @endif
     @endif
 @endsection
 

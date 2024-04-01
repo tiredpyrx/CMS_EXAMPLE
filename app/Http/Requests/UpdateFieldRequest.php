@@ -4,6 +4,7 @@ namespace App\Http\Requests;
 
 use App\Enums\FieldTypes;
 use App\Models\Field;
+use App\Services\FieldService;
 
 class UpdateFieldRequest extends AppFormRequest
 {
@@ -19,7 +20,6 @@ class UpdateFieldRequest extends AppFormRequest
      */
     public function rules(): array
     {
-        $rulesForUpcomingType = FieldTypes::getRulesForType($this->input('type'));
-        return array_merge(Field::RULES, $rulesForUpcomingType);
+        return FieldService::getRequestRules($this);
     }
 }

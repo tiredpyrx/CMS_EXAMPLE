@@ -4,46 +4,28 @@ namespace App\Observers;
 
 use App\Models\Category;
 use App\Models\Post;
+use App\Services\PostService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 
 class PostObserver
 {
 
+    private $service;
+
+    public function __construct()
+    {
+        $this->service = (new PostService());
+    }
+
     public function created(Post $post): void
     {
-        $publishDate = request()->input('publish_date');
-        $now = now();
-        if ($publishDate) {
-            $publishDate = Carbon::parse($publishDate);
-            $post->update([
-                'publish_date' => $publishDate,
-                'published' => ($publishDate <= $now)
-            ]);
-        } else {
-            $post->update([
-                'publish_date' => $now,
-                'published' => true
-            ]);
-        }
+        $this->service->handlePublish($post);
     }
 
     public function updated(Post $post): void
     {
-        $publishDate = request()->input('publish_date');
-        $now = now();
-        if ($publishDate) {
-            $publishDate = Carbon::parse($publishDate);
-            $post->updateQuietly([
-                'publish_date' => $publishDate,
-                'published' => ($publishDate <= $now)
-            ]);
-        } else {
-            $post->updateQuietly([
-                'publish_date' => $now,
-                'published' => true
-            ]);
-        }
+        $this->service->handlePublish($post);
 
         if ($post->slug)
             $this::tryToLogToSitemap();

@@ -38,3 +38,9 @@ function getCategoryPosts(string $categoryTitle)
 {
     return Category::where('title', $categoryTitle)->firstOrFail()->posts;
 }
+
+function dateHuman(string $carbon, $format = '') {
+    if ($format)
+        return Carbon::createFromFormat($format, $carbon)->diffForHumans();
+    return Carbon::parse($carbon)->diffForHumans();
+}

@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Enums\FieldDefaultValues;
 use App\Enums\FieldTypes;
+use App\Traits\AdvancedModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,7 +14,7 @@ use Illuminate\Validation\Rule;
 
 class Field extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, AdvancedModel;
 
     public const MASS_ASSIGNABLES = [
         'label' => 'label',
@@ -36,6 +37,7 @@ class Field extends Model
         'as_option' => 'as_option',
         'required' => 'required',
         'sluggable' => 'sluggable',
+        'url' => 'url',
         'active' => 'active',
 
         'deleted_at' => 'deleted_at'
@@ -45,6 +47,7 @@ class Field extends Model
         'as_option' => 'as_option',
         'required' => 'required',
         'sluggable' => 'sluggable',
+        'url' => 'url',
         'active' => 'active',
     ];
 
@@ -57,7 +60,8 @@ class Field extends Model
         'column' => ['nullable', 'string'],
         'as_option' => ['nullable', 'string'],
         'required' => ['nullable', 'string'],
-        'sluggable' => ['nullable', 'string', 'slug'],
+        'sluggable' => ['nullable', 'string'],
+        'url' => ['nullable', 'string'],
         'active' => ['nullable', 'string'],
     ];
 
@@ -79,7 +83,8 @@ class Field extends Model
             'required' => true,
             'label' => 'Slug',
             'handler' => 'slug',
-            'column' => '6'
+            'column' => '6',
+            'sluggable' => true
         ],
         [
             'required' => true,
@@ -140,6 +145,7 @@ class Field extends Model
 
         'as_option',
         'required',
+        'url',
         'sluggable',
         'active',
 
@@ -176,11 +182,6 @@ class Field extends Model
         return User::find($this->user_id)->name;
     }
 
-    public static function getMassAssignables()
-    {
-        return collect(Field::MASS_ASSIGNABLES);
-    }
-
     public function getMassAssignableAttributes()
     {
         return $this->getAttributesOnly(Field::getMassAssignables()->keys());
@@ -195,11 +196,6 @@ class Field extends Model
             ->filter(
                 fn ($d, $k) => in_array($k, array_values($keyArray->toArray()))
             )->toArray();
-    }
-
-    public static function getMassAssignableBools()
-    {
-        return Field::getMassAssignables()->filter(fn ($d) => in_array($d, Field::MASS_ASSIGNABLE_BOOLS));
     }
 
     public function getPrimaryTextAttribute()
@@ -251,9 +247,14 @@ class Field extends Model
         return FieldDefaultValues::required();
     }
 
-    public static function getDefaultsluggableValue(): string
+    public static function getDefaultSluggableValue(): string
     {
         return FieldDefaultValues::sluggable();
+    }
+    
+    public static function getDefaultUrlValue(): string
+    {
+        return FieldDefaultValues::url();
     }
 
     public static function getDefaultActiveValue(): string

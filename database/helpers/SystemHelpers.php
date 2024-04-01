@@ -33,8 +33,3 @@ function isType(mixed $variable, string $type): bool
 {
     return getTypeUpper($variable) === strtoupper($type);
 }
-
-function isFileExists($path)
-{
-    return File::exists(base_path($path));
-}

@@ -9,6 +9,7 @@ use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
 {
+
     /**
      * Register any application services.
      */
@@ -23,8 +24,19 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Validator::extend('slug', function ($attribute, $value, $parameters, $validator) {
+            if (isset($parameters[0]))
+                $subject = $parameters[0];
+            else $subject = $attribute;
+
+            $validator->addReplacer(
+                'slug',
+                function ($message, $attribute, $rule, $parameters) use ($subject) {
+                    return str_replace(':subject', $subject, $message);
+                }
+            );
+
             return Str::slug($value) == $value;
-        });
+        }, ":subject değeri slug formatında olmak zorundadır!");
 
         // Model::shouldBeStrict();
     }

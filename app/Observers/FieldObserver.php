@@ -40,12 +40,16 @@ class FieldObserver
         collect($field->category->posts)->each(function ($post) use ($field) {
             $pField = $field->replicate(['category_id']);
             $pField = $post->fields()->save($pField);
-            if ($field->type === 'image') {
-                $file = $field->firstFile();
-                $pField->files()->save($file);
+            $file = $field->firstFile();
+            if ($field->type === 'image' && $file) {
+                $fileReplicate = $file->replicate(['field_id']);
+                $fileReplicate->updateQuietly(['field_id' => $pField->id]);
+                $pField->files()->save($fileReplicate);
             } else if ($field->type === 'images') {
                 foreach ($field->files as $file) {
-                    $pField->files()->save($file);
+                    $fileReplicate = $file->replicate(['field_id']);
+                    $fileReplicate->updateQuietly(['field_id' => $pField->id]);
+                    $pField->files()->save($fileReplicate);
                 }
             }
         });
@@ -54,6 +58,20 @@ class FieldObserver
     public function updated(Field $field): void
     {
         if (!$field->category_id || $field->wasRecentlyCreated) return;
+
+        if (!$field->url && $field->prefix == url('')) {
+            $field->updateQuietly(['prefix' => null]);
+            foreach ($field->category->posts as $post) {
+                $pField = $post->fields()->where('handler', $field->handler)->first();
+                $pField->updateQuietly(['prefix' => null]);;
+            }
+        } else if ($field->url && $field->prefix != url('')) {
+            $field->updateQuietly(['prefix' => url('')]);
+            foreach ($field->category->posts as $post) {
+                $pField = $post->fields()->where('handler', $field->handler)->first();
+                $pField->updateQuietly(['prefix' => url('')]);
+            }
+        }
 
         if ($field->type === 'images')
             $this->service->syncImages($field);

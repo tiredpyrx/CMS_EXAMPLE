@@ -1,7 +1,11 @@
 @extends('templates.admin')
 
 @section('content')
-    <x-document-header title="{{ $category->title . ' - Alan Ekle' }}" />
+    <x-document-header title="{{ $category->title . ' - Alan Ekle' }}">
+        <a href="{{ route('categories.edit', $category->id) }}" class="btn-secondary">
+            Kategoriyi Düzenle
+        </a>
+    </x-document-header>
     <x-document-panel>
         <form class="app-form" action="{{ route('fields.store', $category->id) }}" enctype="multipart/form-data" method="POST">
             @csrf
@@ -106,6 +110,12 @@
                                 class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                             <label for="required"
                                 class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">Zorunlu</label>
+                        </div>
+                        <div class="grid-item flex items-center">
+                            <input name="url" id="url" type="checkbox" value=""
+                                class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
+                            <label for="yrl" class="ms-2 text-sm font-medium text-gray-900 dark:text-gray-300">URL
+                                Alanı</label>
                         </div>
                         <div class="grid-item flex items-center">
                             <input name="sluggable" id="sluggable" type="checkbox" value=""

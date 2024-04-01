@@ -3,7 +3,9 @@
 import "./bootstrap";
 import * as DH from "./helpers/document-helpers";
 import * as SH from "./helpers/system-helpers";
-import slugify from "slugify";
+
+const APP_URL = location.host;
+window.APP_URL = APP_URL;
 
 DH.replaceToIcon();
 SH.toggleResourcesActive();
@@ -184,7 +186,10 @@ function tableResourceAction(el) {
 
 window.tableResourceAction = tableResourceAction;
 
-if (route().current("categories.create")) {
+if (
+    route().current("categories.create") ||
+    route().current("categories.edit")
+) {
     tippy("[for='title']", {
         content: "Kategori başlık, zorunlu, en fazla 60 karakter",
     });
@@ -208,9 +213,18 @@ if (route().current("categories.create")) {
     tippy("[for='active']", {
         content: "Kategorinin aktif durumu",
     });
-}
 
-if (route().current("posts.create") || route().current("posts.edit")) {
+    // FORCE VİEW FİELD TO BE SLUGGED
+    let viewField = document.getElementById("view");
+    viewField.addEventListener(
+        "input",
+        () => (viewField.value = DH.transformToSlug(viewField))
+    );
+    viewField.addEventListener(
+        "blur",
+        () => (viewField.value = DH.trimGiven(viewField, "-"))
+    );
+} else if (route().current("posts.create") || route().current("posts.edit")) {
     document.querySelectorAll("label").forEach((label) => {
         // COPY HANDLERS VIA LABEL CLICK
         label.addEventListener("click", () => {
@@ -262,6 +276,31 @@ if (route().current("posts.create") || route().current("posts.edit")) {
                 else cs.style.color = "inherit";
             }
         });
+
+    // PASTE TITLE VALUE TO SLUG FIELD AS SLUG FORMAT
+    let titleField = document.getElementById("title");
+    let slugField = document.getElementById("slug");
+    titleField.addEventListener("input", function () {
+        slugField.value = DH.transformToSlug(this);
+    });
+    titleField.addEventListener(
+        "blur",
+        () => (slugField.value = DH.trimGiven(slugField, "-"))
+    );
+    slugField.addEventListener(
+        "blur",
+        () => (slugField.value = DH.trimGiven(slugField, "-"))
+    );
+} else if (route().current("fields.edit")) {
+    let preifxCannotBeChangedBecauseURLFeatureUsingIt =
+        document.querySelector("input[name='prefix']").readOnly &&
+        document.querySelector("input[type='checkbox'][name='url']").checked;
+    if (preifxCannotBeChangedBecauseURLFeatureUsingIt) {
+        tippy(document.querySelector("label[for='prefix']"), {
+            content:
+                "Alanın önek özelliği, alanın URL özelliği tarafından kullanılıyor. Önek değerini değiştirmek için alanın URL özelliğini devre dışı bırakın.",
+        });
+    }
 }
 
 APP_SIDEBAR.querySelectorAll("[edit-icon-trigger]").forEach((trigger) => {
@@ -372,14 +411,20 @@ window.deleteFile = deleteFile;
 
 // CHANGE SLUGGABLE FIELD VALUES TO SLUGS
 document.querySelectorAll("input[sluggable='1']").forEach(function (input) {
-    input.addEventListener("keyup", () => {
-        input.value = slugify(input.value, {
-            strict: false,
-            lower: true,
-            trim: false,
-        }).trim();
+    const replaceLastSpace = (input) => {
+        return input.value.replace(new RegExp("-" + "$"), "");
+    };
+
+    let inputHasDefaultValue = input.value;
+    let inputDefaultValueIsNotASlug = input.value != DH.transformToSlug(input);
+
+    if (inputHasDefaultValue && inputDefaultValueIsNotASlug) {
+        input.value = DH.transformToSlug(input);
+    }
+    input.addEventListener("input", () => {
+        input.value = DH.transformToSlug(input);
         input.addEventListener("blur", () => {
-            input.value = input.value.replace(new RegExp("-" + "$"), "");
+            input.value = replaceLastSpace(input);
         });
     });
 });

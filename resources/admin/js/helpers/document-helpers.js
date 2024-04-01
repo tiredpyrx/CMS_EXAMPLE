@@ -2,6 +2,7 @@
 
 import { library, icon } from "@fortawesome/fontawesome-svg-core";
 import * as Icons from "@fortawesome/free-solid-svg-icons";
+import slugify from "slugify";
 
 const iconList = Object.keys(Icons)
     .filter((key) => key !== "fas" && key !== "prefix")
@@ -46,27 +47,15 @@ export function ucfirst(anyText) {
 
 window.ucfirst = ucfirst;
 
-// // credits https://gist.github.com/4lun/c92affc5ef53cab047dd#file-str-slug-js
-// export function slugify(title, separator) {
-//     if (typeof separator == "undefined") separator = "-";
+export function transformToSlug(input) {
+    return slugify(input.value, {
+        strict: false,
+        lower: true,
+        trim: false,
+    }).trim();
+}
 
-//     // Convert all dashes/underscores into separator
-//     var flip = separator == "-" ? "_" : "-";
-//     title = title.replace(flip, separator);
-
-//     // Remove all characters that are not the separator, letters, numbers, or whitespace.
-//     title = title
-//         .toLowerCase()
-//         .replace(new RegExp("[^a-z0-9" + separator + "\\s]", "g"), "");
-
-//     // Replace all separator characters and whitespace by a single separator
-//     title = title.replace(
-//         new RegExp("[" + separator + "\\s]+", "g"),
-//         separator
-//     );
-
-//     return title.replace(
-//         new RegExp("^[" + separator + "\\s]+|[" + separator + "\\s]+$", "g"),
-//         ""
-//     );
-// }
+export function trimGiven(input, char) {
+    let val = input.value.replace(new RegExp(char + "$"), "");
+    return val.replace(new RegExp("^" + char), "");
+}

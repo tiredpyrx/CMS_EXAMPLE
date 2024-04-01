@@ -5,6 +5,9 @@ namespace App\Services;
 use App\Actions\GetUpdatedDatas;
 use App\Actions\SaveUploadedFileToPublicDir;
 use App\Enums\FieldTypes;
+use App\Http\Requests\StoreFieldRequest;
+use App\Http\Requests\UpdateFieldRequest;
+use App\Http\Requests\UpdateFileRequest;
 use App\Models\Category;
 use App\Models\Field;
 use App\Models\File;
@@ -22,10 +25,7 @@ class FieldService
     {
         $this->validate($safeRequest, $model->id);
 
-        $additional = ['user_id' => auth()->id(), 'category_id' => $model->id];
-        $merged = array_merge($safeRequest, $additional);
-        if ($safeRequest['type'] === 'select')
-            $safeRequest['as_option'] = true;
+        $merged = $this->getMergedOnCreate($safeRequest, $model);
 
         $field = Field::create($merged);
 
@@ -37,6 +37,17 @@ class FieldService
         (new FieldObserver())->customCreated($field);
 
         return $field;
+    }
+
+    public function getMergedOnCreate(array $safeRequest, Model $model): array
+    {
+        $additional = ['user_id' => auth()->id(), 'category_id' => $model->id];
+        if ($safeRequest['type'] === 'select')
+            $safeRequest['as_option'] = true;
+        if ($safeRequest['url'] === true)
+            $safeRequest['prefix'] = url('');
+        $merged = array_merge($safeRequest, $additional);
+        return $merged;
     }
 
     public function getDetailedArray(int $user_id, string $parent_key, int $parent_id): array
@@ -60,7 +71,10 @@ class FieldService
         else if (isset($safeRequest['images']))
             $this->tryToUploadImages($safeRequest, $field, $field->category_id);
 
-        $updated = (new GetUpdatedDatas())->execute($safeRequest, 'field', $field->id);
+        if ($safeRequest['type'] === 'text')
+            $this->isPrefixAccaptable($safeRequest, $field);
+
+        // $updated = (new GetUpdatedDatas())->execute($safeRequest, 'field', $field->id);
         $posts = Post::where('category_id', $field->category_id)->get();
         $actionsDummy = [];
 
@@ -70,6 +84,7 @@ class FieldService
                 $keyIsTypeAttribute = ($key === 'type');
                 $pFieldDoesntHaveValueYet = !$pField->getAttribute('value');
                 $keyIsValueAttribute = ($key === 'value');
+
                 if ($keyIsValueAttribute) {
                     if ($pFieldDoesntHaveValueYet)
                         $actionsDummy[] = $pField->update(['value' => $value]);
@@ -104,7 +119,19 @@ class FieldService
     {
         $this->isColumnValueAcceptable($safeRequest);
         $this->isUpcomingHandlerUnique($safeRequest, $category_id, $field);
-        return 1;
+        return true;
+    }
+
+    public function isPrefixAccaptable(array $safeRequest, Field $field)
+    {
+        $prefixAllowed = $field->url ? ($safeRequest['prefix'] === url('')) : true;
+        if ($prefixAllowed) return true;
+
+        session()->flash('error', 'URL özelliği aktif olan alan öneğinin değeri uygulamanın URL\'i olmak zorundadır!');
+        throw ValidationException::withMessages([])
+            ->redirectTo(
+                back()->getTargetUrl()
+            );
     }
 
     public function isColumnValueAcceptable(array $safeRequest)
@@ -154,22 +181,23 @@ class FieldService
 
     public function tryToUploadImage(array $safeRequest, Field $field, int $categoryId)
     {
-        if (!isset($safeRequest['image'])) return null;
-
-        $image = $safeRequest['image'];
-        $oldImageFileRecord = $field->firstFile();
-        if ($oldImageFileRecord)
-            return $this->tryToUpdateImage($oldImageFileRecord, $image);
-        $imagePath = $this->getImageDirPath();
-        $imageSource = (new SaveUploadedFileToPublicDir())->execute($image, $imagePath);
+        if (isset($safeRequest['image'])) {
+            $image = $safeRequest['image'];
+            $oldImageFileRecord = $field->firstFile();
+            if ($oldImageFileRecord)
+                return $this->tryToUpdateImage($oldImageFileRecord, $image);
+            $imagePath = $this->getImageDirPath();
+            $imageSource = (new SaveUploadedFileToPublicDir())->execute($image, $imagePath);
+        }
         $file = $field->files()->create([
             'user_id' => auth()->id(),
             'category_id' => $categoryId,
             'title' => isset($safeRequest['image_title']) ? $safeRequest['image_title'] : '',
             'description' => isset($safeRequest['image_description']) ? $safeRequest['image_description'] : '',
-            'source' => $imageSource,
+            'source' => isset($imageSource) ? $imageSource : null,
             'handler' => $field->handler,
         ]);
+
         return $file;
     }
 
@@ -200,8 +228,9 @@ class FieldService
         return $oldImageFileRecord->update(['source' => $newImageSource]);
     }
 
-    public function tryToDeleteOldImageFromPublicDir(string $path): bool
+    public function tryToDeleteOldImageFromPublicDir(?string $path): bool
     {
+        if (is_null($path)) return true;
         if (!$this->isFileExists($path)) return false;
         $path = $this->getPublicPath($path);
         return FacadesFile::delete($path);
@@ -262,5 +291,15 @@ class FieldService
             $pField->delete();
         }
         return $field->delete();
+    }
+
+    public static function getRequestRules(StoreFieldRequest|UpdateFieldRequest $request)
+    {
+        $rulesForUpcomingType = FieldTypes::getRulesForType($request->input('type'));
+        $defaultRules = Field::RULES;
+        if ($request->has('sluggable')) {
+            array_push($defaultRules['value'], 'slug:Sluggable alanına sahip alanların');
+        }
+        return array_merge($defaultRules, $rulesForUpcomingType);
     }
 }

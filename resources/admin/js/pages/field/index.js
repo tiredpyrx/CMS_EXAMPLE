@@ -29,6 +29,7 @@ const SUB_FIELDS = [
     document.querySelector("#images"),
     document.querySelector("#image_width"),
     document.querySelector("#image_height"),
+    document.querySelector("#url"),
     document.querySelector("#sluggable"),
 ];
 
@@ -47,6 +48,7 @@ const SUB_FIELDS_OBJECT = {
 
     images: document.querySelector("#images"),
 
+    url: document.querySelector("#url"),
     sluggable: document.querySelector("#sluggable"),
 };
 
@@ -58,6 +60,7 @@ const SUB_FEILDS_TREE = {
         SUB_FIELDS_OBJECT.value,
         SUB_FIELDS_OBJECT.min_value,
         SUB_FIELDS_OBJECT.max_value,
+        SUB_FIELDS_OBJECT.url,
         SUB_FIELDS_OBJECT.sluggable,
     ],
     longtext: [

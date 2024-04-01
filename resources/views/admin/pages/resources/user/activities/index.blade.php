@@ -129,7 +129,7 @@
                             @endforeach
                         </ul>
                         <div class="absolute right-2 top-1 text-xs font-medium">
-                            {{ $action['properties']['datetime'] }}
+                            {{ $action['properties']['datetime'] }}&nbsp;|&nbsp;{{ dateHuman($action['properties']['datetime'], 'd/m/Y H:i:s') }}
                         </div>
                     </x-document-panel>
                 </li>

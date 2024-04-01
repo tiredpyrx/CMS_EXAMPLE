@@ -9,6 +9,7 @@ use App\Models\Category;
 use App\Models\Field;
 use App\Models\Post;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
@@ -189,7 +190,7 @@ class PostService
 
     public function create(Request $request, Category $category)
     {
-        $this->validateRequiredFields($request, $category);
+        $this::validateFields($request, $category);
         return Post::create([
             'title' => $request->input('title'),
             'user_id' => auth()->id(),
@@ -200,7 +201,7 @@ class PostService
 
     public function update(Request $request, Post $post)
     {
-        $this->validateRequiredFields($request, $post);
+        $this::validateFields($request, $post);
         $safeRequest = $this->getSafeRequest($request);
         $success = $this->updateChangedDatas($safeRequest, $post);
         $this::tryToLogToSitemap();
@@ -326,11 +327,40 @@ class PostService
         }
     }
 
-    public function validateRequiredFields(Request $request, Category|Post $parent)
+    public static function validateFields(Request $request, Category|Post $parent)
+    {
+        PostService::validateRequiredFields($request, $parent);
+        PostService::validateSluggableFeature($request, $parent);
+        PostService::validateURLFeature($request, $parent);
+    }
+
+    public static function validateRequiredFields(Request $request, Category|Post $parent)
     {
         foreach ($parent->fields as $field) {
             if ($field->required && is_null($request->input($field->handler))) {
                 session()->flash('error', $field->label . ' alanı zorunludur!');
+                throw ValidationException::withMessages([])->redirectTo(back()->getTargetUrl());
+            }
+        }
+    }
+
+    public static function validateSluggableFeature(Request $request, Category|Post $parent)
+    {
+        foreach ($parent->fields as $field) {
+            $isFieldValueNotFormattedAsSlug = Str::slug($request->input($field->handler)) != $request->input($field->handler);
+            if ($field->sluggable && $isFieldValueNotFormattedAsSlug) {
+                session()->flash('error', $field->label . ' alan değeri slug formatında olmak zorundadır!');
+                throw ValidationException::withMessages([])->redirectTo(back()->getTargetUrl());
+            }
+        }
+    }
+
+    public static function validateURLFeature(Request $request, Category|Post $parent)
+    {
+        foreach ($parent->fields as $field) {
+            $isFieldPrefixIsNotURL = $field->prefix == url('');
+            if (!$field->url && $isFieldPrefixIsNotURL) {
+                session()->flash('error', $field->label . ' alan öneği uygulamanın URL\'ı olmak zorundadır!');
                 throw ValidationException::withMessages([])->redirectTo(back()->getTargetUrl());
             }
         }
@@ -344,5 +374,23 @@ class PostService
     private static function tryToLogToSitemap()
     {
         Artisan::call('app:log-to-sitemap');
+    }
+
+    public function handlePublish(Post $post)
+    {
+        $publishDate = request()->input('publish_date');
+        $now = now();
+        if ($publishDate) {
+            $publishDate = Carbon::parse($publishDate);
+            $post->updateQuietly([
+                'publish_date' => $publishDate,
+                'published' => ($publishDate <= $now)
+            ]);
+        } else {
+            $post->updateQuietly([
+                'publish_date' => $now,
+                'published' => true
+            ]);
+        }
     }
 }

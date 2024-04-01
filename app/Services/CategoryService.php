@@ -32,7 +32,7 @@ class CategoryService
     public function tryToCreateViewFile(string $fileName, $content = null)
     {
         $content = $content ?: $this->getDefaultViewContent();
-        $viewPath = $this->getViewFullPath($fileName);
+        $viewPath = $this::getViewFullPath($fileName);
         if ($this->isViewExists($viewPath)) return false;
 
         return File::put(base_path($viewPath), $content);
@@ -40,7 +40,7 @@ class CategoryService
 
     public function tryToDeleteViewFile(string $fileName)
     {
-        $viewPath = $this->getViewFullPath($fileName);
+        $viewPath = $this::getViewFullPath($fileName);
         if (!$this->isViewExists($viewPath)) return false;
 
         return File::delete(base_path($viewPath));
@@ -51,10 +51,13 @@ class CategoryService
         return File::exists(base_path($viewPath));
     }
 
-    public function tryToChangeView($oldFileName, $newFileName)
+    public function tryToChangeView(?string $oldFileName, $newFileName)
     {
-        $oldViewPath = $this->getViewFullPath($oldFileName);
-        $isOldViewExists = isFileExists($oldViewPath);
+        if (!$oldFileName)
+            return $this->tryToCreateViewFile($newFileName);
+
+        $oldViewPath = $this::getViewFullPath($oldFileName);
+        $isOldViewExists = $this::isFileExists($oldViewPath);
         if (!$isOldViewExists)
             return $this->tryToCreateViewFile($newFileName);
 
@@ -68,12 +71,18 @@ class CategoryService
 
     public function tryToReadViewContent(string $path): string|null
     {
-        if (isFileExists($path))
+        if ($this::isFileExists($path))
             return File::get(base_path($path));
         return null;
     }
 
-    public function getViewFullPath(string $fileName)
+    private static function isFileExists(?string $path)
+    {
+        if (!$path) return null;
+        return File::exists(base_path($path));
+    }
+
+    private static function getViewFullPath(string $fileName)
     {
         return PageBladeTemplate::path() . $fileName . PageBladeTemplate::extension();
     }

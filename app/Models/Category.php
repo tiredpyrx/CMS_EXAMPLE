@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use AdvancedModelTrait;
 use App\Pipes\ActivityPreventAttributePipe;
+use App\Traits\AdvancedModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
@@ -11,7 +13,7 @@ use Spatie\Activitylog\Traits\LogsActivity;
 
 class Category extends Model
 {
-    use HasFactory, SoftDeletes, LogsActivity;
+    use HasFactory, SoftDeletes, LogsActivity, AdvancedModel;
 
     protected static $ignoreChangedAttributes = ['updated_at'];
 
@@ -41,7 +43,7 @@ class Category extends Model
     public const RULES = [
         'title' => ['required', 'string', 'max:60'],
         'icon' => ['nullable', 'string', 'max:60'],
-        'view' => ['nullable', 'string', 'max:60'],
+        'view' => ['nullable', 'string', 'max:60', 'slug:View'],
         'description' => ['nullable', 'string', 'max:160'],
     ];
 
@@ -113,17 +115,6 @@ class Category extends Model
     public function getPostsCountAttribute()
     {
         return Post::where('category_id', $this->id)->count();
-    }
-
-    public static function getMassAssignables()
-    {
-        return collect(Category::MASS_ASSIGNABLES);
-    }
-
-    public static function getMassAssignableBools()
-    {
-        $bools = Category::MASS_ASSIGNABLE_BOOLS;
-        return Category::getMassAssignables()->filter(fn ($d) => in_array($d, $bools));
     }
 
     public function getPrimaryTextAttribute()

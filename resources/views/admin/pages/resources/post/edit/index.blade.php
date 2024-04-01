@@ -101,13 +101,13 @@
             <button type="submit" class="btn-primary">Güncelle</button>
         </div>
     </form>
-    @if (count($mediaFields))
+    @if (count($mediaFields) && $isMediaFilesHasAnySource)
         <x-document-panel class="mt-6">
             <h2 class="mb-4 text-sm font-semibold">Gönderi Medyaları</h2>
             @foreach ($mediaFields as $mediaField)
-                @if ($mediaField->type === 'image')
+                @if ($mediaField->type === 'image' && $mediaField->firstFile()->source)
                     <x-document-panel>
-                        <img class="max-h-[400px] w-full object-cover" src="{{ url($mediaField->firstFile()->source) }}">
+                        <img class="max-h-[400px] w-full object-cover" src="{{ url($mediaField->firstFile()->source ?? '') }}">
                     </x-document-panel>
                 @elseif ($mediaField->type === 'images' && $mediaField->files->count())
                     <x-document-panel class="grid grid-cols-4 gap-4">
