@@ -154,6 +154,7 @@ class PostService
             }
         }
 
+
         $this::tryToLogToSitemap();
     }
 
@@ -204,7 +205,6 @@ class PostService
         $this::validateFields($request, $post);
         $safeRequest = $this->getSafeRequest($request);
         $success = $this->updateChangedDatas($safeRequest, $post);
-        $this::tryToLogToSitemap();
         return $success;
     }
 
@@ -290,6 +290,7 @@ class PostService
             if ($field->value != $fieldValue)
                 $result[] = $field->update(['value' => $fieldValue]);
         }
+        $this::tryToLogToSitemap();
         return !in_array(false, $result);
     }
 
@@ -334,7 +335,7 @@ class PostService
         PostService::validateURLFeature($request, $parent);
     }
 
-    public static function validateRequiredFields(Request $request, Category|Post $parent)
+    private static function validateRequiredFields(Request $request, Category|Post $parent)
     {
         foreach ($parent->fields as $field) {
             if ($field->required && is_null($request->input($field->handler))) {
@@ -344,7 +345,7 @@ class PostService
         }
     }
 
-    public static function validateSluggableFeature(Request $request, Category|Post $parent)
+    private static function validateSluggableFeature(Request $request, Category|Post $parent)
     {
         foreach ($parent->fields as $field) {
             $isFieldValueNotFormattedAsSlug = Str::slug($request->input($field->handler)) != $request->input($field->handler);
@@ -355,7 +356,7 @@ class PostService
         }
     }
 
-    public static function validateURLFeature(Request $request, Category|Post $parent)
+    private static function validateURLFeature(Request $request, Category|Post $parent)
     {
         foreach ($parent->fields as $field) {
             $isFieldPrefixIsNotURL = $field->prefix == url('');
@@ -366,7 +367,7 @@ class PostService
         }
     }
 
-    public function getImagesDirPath()
+    private function getImagesDirPath()
     {
         return 'assets/posts/images/';
     }
@@ -378,6 +379,7 @@ class PostService
 
     public function handlePublish(Post $post)
     {
+        if (!$post->category->have_details) return false;
         $publishDate = request()->input('publish_date');
         $now = now();
         if ($publishDate) {

@@ -128,7 +128,6 @@
     @livewireScripts
     <script src="https://cdn.ckeditor.com/ckeditor5/41.2.0/super-build/ckeditor.js"></script>
 
-
     <script>
         // This sample still does not showcase all CKEditor&nbsp;5 features (!)
         // Visit https://ckeditor.com/docs/ckeditor5/latest/features/index.html to browse all the features.
@@ -321,9 +320,9 @@
                     let handler = editor.dataset.handler;
                     let feedField = $(editor).siblings(`input[name='${handler}']`).first();
                     $(feedField).val(editorData)
-                    console.info(feedField);
                 });
             });
         })
     </script>
+    <script type="module" src="{{ mix('./resources/admin/js/pages/post/index.js') }}"></script>
 @endpush

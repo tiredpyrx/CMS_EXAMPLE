@@ -6,14 +6,8 @@
         <priority>0.8</priority>
             </url>
     <url>
-        <loc>http://127.0.0.1:8000/new-post-2024</loc>
-        <lastmod>2024-03-31T20:29:57+00:00</lastmod>
-        <changefreq>daily</changefreq>
-        <priority>0.5</priority>
-            </url>
-    <url>
-        <loc>http://127.0.0.1:8000/yenix</loc>
-        <lastmod>2024-04-01T14:58:05+00:00</lastmod>
+        <loc>http://127.0.0.1:8000/home</loc>
+        <lastmod>2024-04-02T17:48:27+00:00</lastmod>
         <changefreq>daily</changefreq>
         <priority>0.5</priority>
             </url>

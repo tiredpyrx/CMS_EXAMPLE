@@ -20,7 +20,16 @@ class Post extends Model
 
     public const DEFAULT_ACTIVE_VALUE = TRUE;
 
-    public const RULES = ['title' => 'required|string'];
+    public const RULES = ['title' => ['required', 'string']];
+
+    public const VALIDATON_ERROR_MESSAGES = [
+        'title.required' => 'Başlık alanı zorunludur!',
+        'title.string' => 'Başlık alanı string formatında olmak zorundadır!',
+        'title.unique' => 'Başlık alanı başka bir gönderi tarafından kullanılıyor!',
+        'slug.required' => 'Slug alanı zorunludur!',
+        'changefreq.required' => 'Sitemap Güncelleme Gıklığı alanı zorunludur!',
+        'priority.required' => 'Sitemap Öncelik alanı zorunludur!',
+    ];
 
     public const MASS_ASSIGNABLES = [
         'title' => 'title',
@@ -191,7 +200,7 @@ class Post extends Model
     public function getFieldsWhenTypes(array $types): Collection|array
     {
         $response = $this->getActiveFields()->filter(fn($field) => in_array($field->type, $types));
-        return $response->count() ? $response : [];
+        return $response->count() ? collect($response) : collect([]);
     }
 
     public function getActiveFields(): Collection

@@ -53,7 +53,7 @@ class Field extends Model
 
     public const RULES = [
         'label' => ['nullable', 'string', 'max:60'],
-        'handler' => ['required', 'string', 'max:60'],
+        'handler' => ['required', 'string', 'slug:Alan işleyici ', 'max:60'],
         'value' => ['nullable', 'string'],
         'description' => ['nullable', 'string', 'max:160'],
         'type' => ['nullable', 'string'],

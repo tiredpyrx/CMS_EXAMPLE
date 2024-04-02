@@ -9,6 +9,7 @@ window.APP_URL = APP_URL;
 
 DH.replaceToIcon();
 SH.toggleResourcesActive();
+DH.changeSluggableFieldsFormat();
 
 DH.slideToggle("sidebar-advanced-trigger", "sidebar-advanced-target");
 
@@ -21,7 +22,7 @@ const APP_CATEGORY_EDIT_ICON_MODAL = document.getElementById("app_icon_modal");
 const MAX_TOASTS = 2;
 toastr.subscribe(function (args) {
     if (args.state === "visible") {
-        var toasts = $("#toast-container > *:not([hidden])");
+        let toasts = $("#toast-container > *:not([hidden])");
         if (toasts && toasts.length > MAX_TOASTS) toasts[0].hidden = true;
     }
 });
@@ -170,138 +171,21 @@ function tableResourceAction(el) {
     axios[method](route(rPrefix + "." + rSuffix, id))
         .then((res) => {
             if (parentNodeName) parent?.remove();
-            console.info(res);
             if (!res.data) {
                 toastrAlert("error", errorMessage);
+                console.error(er.message);
                 return 0;
             }
             toastrAlert("success", successMessage);
             return 1;
         })
-        .catch((_) => {
+        .catch((er) => {
             toastrAlert("error", errorMessage);
-            console.warn(_.message);
+            console.error(er.message);
         });
 }
 
 window.tableResourceAction = tableResourceAction;
-
-if (
-    route().current("categories.create") ||
-    route().current("categories.edit")
-) {
-    tippy("[for='title']", {
-        content: "Kategori başlık, zorunlu, en fazla 60 karakter",
-    });
-    tippy("[for='icon']", {
-        content: "Kategori ikon, en fazla 60 karakter",
-    });
-    tippy("[for='view']", {
-        content: "Kategori dosya ismi, en fazla 60 karakter",
-    });
-    tippy("[for='description']", {
-        content: "Kategori açıklama, en fazla 160 karakter",
-    });
-    tippy("[for='have_details']", {
-        content:
-            "Kategorinin gönderilerine slug alanı aç, her gönderi bir sayfayı temsil eder, gönderinin özel dosya ismi varsa o kullanılır, varsayılan olarak kategorinin dosyası kullanılır",
-    });
-    tippy("[for='as_page']", {
-        content:
-            "Kategorinin kendisine slug alanı açar, gönderi sayısını 1'e sabitler! Kategori sayfa olarak kullanılır",
-    });
-    tippy("[for='active']", {
-        content: "Kategorinin aktif durumu",
-    });
-
-    // FORCE VİEW FİELD TO BE SLUGGED
-    let viewField = document.getElementById("view");
-    viewField.addEventListener(
-        "input",
-        () => (viewField.value = DH.transformToSlug(viewField))
-    );
-    viewField.addEventListener(
-        "blur",
-        () => (viewField.value = DH.trimGiven(viewField, "-"))
-    );
-} else if (route().current("posts.create") || route().current("posts.edit")) {
-    document.querySelectorAll("label").forEach((label) => {
-        // COPY HANDLERS VIA LABEL CLICK
-        label.addEventListener("click", () => {
-            let handler = label.dataset.handler;
-            if (handler.endsWith("[]"))
-                handler = handler.substring(0, handler.lastIndexOf("["));
-            navigator.clipboard.writeText(`->field('${handler}')`);
-        });
-
-        // DISPLAY FIELD DESCRIPTION VIA LABEL HOVER
-        label.addEventListener("mouseover", () => {
-            let description = label?.dataset.description;
-            if (description) tippy(label, { content: description });
-        });
-    });
-
-    document
-        .querySelectorAll("#document-grid .document-item")
-        .forEach((item) => {
-            let i = item.querySelector("input");
-            let t = item.querySelector("textarea");
-            let d = item.querySelector("div");
-            let cs = item.querySelector("header .char-show");
-            if (i) {
-                if (i.type !== "text" && !t) return;
-                let iVal = i.value;
-                cs.textContent = iVal.length;
-                i?.addEventListener("input", (e) => {
-                    iVal = e.target.value;
-                    item.querySelector("header .char-show").textContent =
-                        iVal.length;
-
-                    if (i.dataset.max_value && iVal >= i.dataset.max_value)
-                        cs.style.color = "red";
-                    else cs.style.color = "inherit";
-                });
-            } else if (t) {
-                let tVal = t.value;
-                item.querySelector("header .char-show").textContent =
-                    tVal.length;
-                t?.addEventListener("input", (e) => {
-                    tVal = e.target.value;
-                    item.querySelector("header .char-show").textContent =
-                        tVal.length;
-                });
-
-                if (t.dataset.max_value && tVal >= t.dataset.max_value)
-                    cs.style.color = "red";
-                else cs.style.color = "inherit";
-            }
-        });
-
-    // PASTE TITLE VALUE TO SLUG FIELD AS SLUG FORMAT
-    let titleField = document.getElementById("title");
-    let slugField = document.getElementById("slug");
-    titleField.addEventListener("input", function () {
-        slugField.value = DH.transformToSlug(this);
-    });
-    titleField.addEventListener(
-        "blur",
-        () => (slugField.value = DH.trimGiven(slugField, "-"))
-    );
-    slugField.addEventListener(
-        "blur",
-        () => (slugField.value = DH.trimGiven(slugField, "-"))
-    );
-} else if (route().current("fields.edit")) {
-    let preifxCannotBeChangedBecauseURLFeatureUsingIt =
-        document.querySelector("input[name='prefix']").readOnly &&
-        document.querySelector("input[type='checkbox'][name='url']").checked;
-    if (preifxCannotBeChangedBecauseURLFeatureUsingIt) {
-        tippy(document.querySelector("label[for='prefix']"), {
-            content:
-                "Alanın önek özelliği, alanın URL özelliği tarafından kullanılıyor. Önek değerini değiştirmek için alanın URL özelliğini devre dışı bırakın.",
-        });
-    }
-}
 
 APP_SIDEBAR.querySelectorAll("[edit-icon-trigger]").forEach((trigger) => {
     trigger.addEventListener("click", () => {
@@ -361,7 +245,6 @@ APP_SIDEBAR.querySelectorAll("[edit-icon-trigger]").forEach((trigger) => {
                     },
                 })
                 .then((res) => {
-                    console.info(res);
                     toastrAlert(
                         "success",
                         "Kategorinin ikonu başarıyla güncellendi!"
@@ -408,23 +291,3 @@ async function deleteFile(file_id) {
 }
 
 window.deleteFile = deleteFile;
-
-// CHANGE SLUGGABLE FIELD VALUES TO SLUGS
-document.querySelectorAll("input[sluggable='1']").forEach(function (input) {
-    const replaceLastSpace = (input) => {
-        return input.value.replace(new RegExp("-" + "$"), "");
-    };
-
-    let inputHasDefaultValue = input.value;
-    let inputDefaultValueIsNotASlug = input.value != DH.transformToSlug(input);
-
-    if (inputHasDefaultValue && inputDefaultValueIsNotASlug) {
-        input.value = DH.transformToSlug(input);
-    }
-    input.addEventListener("input", () => {
-        input.value = DH.transformToSlug(input);
-        input.addEventListener("blur", () => {
-            input.value = replaceLastSpace(input);
-        });
-    });
-});

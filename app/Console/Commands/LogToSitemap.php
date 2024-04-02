@@ -32,12 +32,11 @@ class LogToSitemap extends Command
      */
     public function handle()
     {
-        $postsThatWillLogToSitemap = [
-            ...(Post::where([
-                ['published', 1],
-                ['active', 1],
-            ])->get())
-        ];
+        $postsThatWillLogToSitemap = Post::where([
+            ['deleted_at', null],
+            ['published', 1],
+            ['active', 1],
+        ])->get()->filter(fn($post) => $post->field('slug'));
 
         $this::wipeSitemapContent();
 

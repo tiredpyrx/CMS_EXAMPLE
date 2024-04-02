@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\Field;
 use App\Models\Post;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 
 class CategoryService
@@ -114,6 +115,8 @@ class CategoryService
             $field->delete();
         }
         $success = $category->delete();
+        dd($category->posts);
+        Artisan::call('app:log-to-sitemap');
         return $success;
     }
 

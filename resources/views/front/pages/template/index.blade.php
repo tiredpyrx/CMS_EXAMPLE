@@ -1,7 +1,7 @@
 @extends('templates.front')
 
 @section('document-title')
-    {{ $page->title }}
+    {{ $postTitle }}
 @endsection
 
 <!-- Breadcrumb -->

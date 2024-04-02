@@ -123,7 +123,7 @@
             <ul class="flex-1 overflow-y-scroll pt-4 mt-4 border-t border-gray-500">
                 <li>
                     <ul class="hide-scrollbar max-h-72 space-y-2 overflow-y-scroll font-medium">
-                        @foreach (modelGetAll('category')->where('active', 1) as $category)
+                        @foreach (getModelClass('category')::getExceptSpecialCategories() as $category)
                             <li class="group flex items-center gap-x-0.5">
                                 <button
                                     edit-icon-trigger
@@ -143,6 +143,26 @@
                 </li>
             </ul>
             <ul class="mt-4 space-y-2 font-medium">
+                <li>
+                    <ul class="hide-scrollbar max-h-72 space-y-2 overflow-y-scroll font-medium">
+                        @foreach (getModelClass('category')::getSpecialCategories() as $category)
+                            <li class="group flex items-center gap-x-0.5">
+                                <button
+                                    edit-icon-trigger
+                                    data-icon="{{ $category->icon }}"
+                                    data-unique="{{ $category->id }}"
+                                    data-title="{{ $category->title }}"
+                                    class="flex h-8 w-8 items-center justify-center rounded-md text-xl text-gray-500 transition duration-75 hover:bg-gray-100 group-hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-700 dark:group-hover:text-white">
+                                    <i class="{{ $category->icon }}"></i>
+                                </button>
+                                <a href="{{ route('categories.show', $category->id) }}"
+                                    class="flex-1 rounded-md p-2 px-4 text-left text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">
+                                    <span>{{ $category->title }}</span>
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
+                </li>
                 <li>
                     <a href="/menus"
                         class="group flex items-center rounded-lg p-2 text-gray-900 hover:bg-gray-100 dark:text-white dark:hover:bg-gray-700">

@@ -21,6 +21,10 @@ class Category extends Model
     public const DEFAULT_AS_PAGE_VALUE = false;
     public const DEFAULT_ACTIVE_VALUE = true;
 
+
+    // Category titles that application needs to be more convenient
+    public const SPECIAL_TITLES = ['Home Sections', 'Pages'];
+
     public const MASS_ASSIGNABLES = [
         'title' => 'title',
         'icon' => 'icon',
@@ -120,5 +124,20 @@ class Category extends Model
     public function getPrimaryTextAttribute()
     {
         return $this->title;
+    }
+
+    public static function getSpecialTitles()
+    {
+        return self::SPECIAL_TITLES;
+    }
+
+    public static function getSpecialCategories()
+    {
+        return self::whereIn('title', self::getSpecialTitles())->get();
+    }
+
+    public static function getExceptSpecialCategories()
+    {
+        return self::whereNotIn('title', self::getSpecialTitles())->getActives();
     }
 }

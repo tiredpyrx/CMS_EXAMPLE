@@ -59,3 +59,27 @@ export function trimGiven(input, char) {
     let val = input.value.replace(new RegExp(char + "$"), "");
     return val.replace(new RegExp("^" + char), "");
 }
+
+// CHANGE SLUGGABLE FIELD VALUES TO SLUGS
+export function changeSluggableFieldsFormat() {
+    document.querySelectorAll("input[sluggable='1']").forEach(function (input) {
+        let inputHasDefaultValue = input.value;
+        let inputDefaultValueIsNotASlug =
+            input.value != transformToSlug(input);
+
+        if (inputHasDefaultValue && inputDefaultValueIsNotASlug) {
+            input.value = transformToSlug(input);
+        }
+        input.addEventListener("input", () => {
+            input.value = transformToSlug(input);
+        });
+        input.addEventListener("blur", () => {
+            input.value = trimGiven(input, "-");
+        });
+        input.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                input.value = trimGiven(input, "-");
+            }
+        });
+    });
+}

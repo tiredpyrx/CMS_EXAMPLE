@@ -6,6 +6,7 @@ export function toggleResourcesActive() {
                 let primaryKey = i.dataset.key;
                 let primaryValue = i.dataset.value;
                 let modelName = i.dataset.modelname;
+                let modelNameHuman = i.dataset.modelname_human;
                 let checked = i.checked;
                 let prefix = i.dataset.modelname_plural;
                 const DATA = { primaryKey, primaryValue, checked };
@@ -15,11 +16,8 @@ export function toggleResourcesActive() {
                     .patch(route(prefix + ".active", modelName), DATA)
                     .then((res) => {
                         if (res.data) {
-                            console.info(res.data);
                             toastr.success(
-                                `${ucfirst(
-                                    modelName
-                                )} aktif özelliği düzenlendi`
+                                `${modelNameHuman} aktif özelliği düzenlendi`
                             );
                             if (!i.checked) parent.classList.add("disabled");
                             else parent.classList.remove("disabled");

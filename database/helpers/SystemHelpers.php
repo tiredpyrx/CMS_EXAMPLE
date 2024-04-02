@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\File;
 
 function getModelClass(string $modelName): Model
@@ -13,10 +14,17 @@ function getModelClass(string $modelName): Model
     throw new BadFunctionCallException("Model class cannot be founded for model name $modelName!");
 }
 
-function modelGetAll(string $modelName)
+function modelGetAll(string $modelName): Collection
 {
     return getModelClass($modelName)::all();
 }
+
+// function modelGetAllExcept(string $modelName, Collection|array $exceptionals) {
+//     $model = getModelClass($modelName);
+//     $allModels = modelGetAll($modelName);
+//     $primaryArray = $allModels->pluck($model::getPrimaryTextAttribute());
+//     return $allModels->except($exceptionals);
+// }
 
 function getRelationsCount(Model $model, string $foreignModelName, string $primary)
 {

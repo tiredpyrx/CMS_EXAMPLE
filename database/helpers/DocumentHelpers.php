@@ -17,11 +17,6 @@ function limitNumber(int|string $num, int $max = 10): string
     return $num;
 }
 
-function humanDate(Carbon $date)
-{
-    return $date->diffForHumans();
-}
-
 function findUserWithNickname(string $nickname): User
 {
     return User::where('nickname', $nickname)->firstOr("*", function () {
@@ -36,10 +31,14 @@ function getCategory(string $categoryTitle)
 
 function getCategoryPosts(string $categoryTitle)
 {
-    return Category::where('title', $categoryTitle)->firstOrFail()->posts;
+    return Category::where([
+        ['title', $categoryTitle],
+        ['active', 1]
+    ])->firstOrFail()->posts;
 }
 
-function dateHuman(string $carbon, $format = '') {
+function dateHuman(string $carbon, $format = '')
+{
     if ($format)
         return Carbon::createFromFormat($format, $carbon)->diffForHumans();
     return Carbon::parse($carbon)->diffForHumans();

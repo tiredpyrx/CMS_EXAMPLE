@@ -14,14 +14,14 @@ class AuthenticationController extends Controller
     {
         $safeRequest = $request->only('nickname', 'password');
         $remember = $request->input('remember', false);
-        $log = Auth::attempt($safeRequest, $remember);
+        $loggedSuccessfully = Auth::attempt($safeRequest, $remember);
 
         // $user->notify('remember');
 
         $agent = new Agent();
         $nickname = $request->nickname;
 
-        if (!$log) {
+        if (!$loggedSuccessfully) {
             activity()
             ->useLog('authentication_failed')
             ->withProperties([
@@ -39,7 +39,7 @@ class AuthenticationController extends Controller
             ])
             ->log("Authentication failed with username {$nickname}!");
 
-            return back()->withInput()->with('error', 'Hesap bulunamadı!');
+            return back()->withInput()->with('error', 'Kayıtlarımızda böyle bir hesap bulunamadı!');
         }
 
         return to_route('dashboard')->with('success', 'Başarıyla giriş yapıldı!');

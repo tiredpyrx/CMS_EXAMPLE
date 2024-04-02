@@ -73,7 +73,7 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
-        $post->delete();
+        return $post->delete();
     }
 
     public function deleteAllSelected(Request $request)

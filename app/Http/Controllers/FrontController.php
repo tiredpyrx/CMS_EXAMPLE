@@ -17,13 +17,12 @@ class FrontController extends Controller
                 ['active', 1]
             ])->get()->all() as $post) {
                 if ($post->slug == $slug) {
-                    $page = $post;
-                    $pages = $category->posts;
-                    $pageCount = $category->posts_count;
-                    $datas = ['page' => $page, 'pages' => $pages, 'pageCount' => $pageCount, 'pageTitle' => $page->getTitle()];
+                    $posts = $category->posts;
+                    $postsCount = $category->posts_count;
+                    $datas = ['post' => $post, 'posts' => $posts, 'postCount' => $postsCount, 'postTitle' => $post->getTitle()];
                     $datas['viewName'] = match (!is_null($category->view)) {
                         true => $category?->view,
-                        default => $page?->view,
+                        default => $post?->view,
                     };
                     if ($category->view) {
                         $datas['viewName'] = $category->view;

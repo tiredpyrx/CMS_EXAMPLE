@@ -298,9 +298,9 @@
                     let handler = editor.dataset.handler;
                     let feedField = $(editor).siblings(`input[name='${handler}']`).first();
                     $(feedField).val(editorData)
-                    console.info(feedField);
                 });
             });
         })
     </script>
+    <script type="module" src="{{ mix('./resources/admin/js/pages/post/index.js') }}"></script>
 @endpush

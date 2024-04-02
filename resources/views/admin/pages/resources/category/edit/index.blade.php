@@ -183,7 +183,7 @@
                                                         {{ $category->title . ' Aktif Seçim Kutusu' }}
                                                     </label>
                                                     <input data-key="id" data-value="{{ $field->id }}"
-                                                        data-modelname="field" data-modelname_plural="fields"
+                                                        data-modelname_human="Alan" data-modelname="field" data-modelname_plural="fields"
                                                         @checked($field->active)
                                                         id="{{ $field->handler . '-active-togglebox' }}" type="checkbox"
                                                         class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
@@ -297,3 +297,7 @@
         </div>
     @endif
 @endsection
+
+@push('js')
+    <script type="module" src="{{ mix('./resources/admin/js/pages/category/index.js') }}"></script>
+@endpush

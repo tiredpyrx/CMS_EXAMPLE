@@ -5,6 +5,11 @@
         <a href="{{ route('categories.index') }}" class="btn-secondary">Tüm Kategoriler</a>
     </x-document-header>
     <x-document-panel>
-        @include("admin.pages.resources.category.form.index")
+        @include('admin.pages.resources.category.form.index')
     </x-document-panel>
 @endsection
+
+
+@push('js')
+    <script type="module" src="{{ mix('./resources/admin/js/pages/category/index.js') }}"></script>
+@endpush

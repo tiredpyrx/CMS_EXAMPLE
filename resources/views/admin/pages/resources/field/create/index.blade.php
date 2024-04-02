@@ -16,7 +16,7 @@
                 </div>
                 <div class="grid-item col-span-6">
                     <label default for="handler">İşleyici*</label>
-                    <input default id="handler" name="handler" type="text" />
+                    <input sluggable="1" default id="handler" name="handler" type="text" />
                 </div>
                 <div class="grid-item col-span-6">
                     <label default for="placeholder">Hayalet Yazı</label>

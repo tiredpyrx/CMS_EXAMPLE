@@ -118,7 +118,7 @@
                                                     {{ $category->title . ' Aktif Seçim Kutusu' }}
                                                 </label>
                                                 <input data-key="title" data-value="{{ $category->title }}"
-                                                    data-modelname="category" data-modelname_plural="categories"
+                                                    data-modelname_human="Kategori" data-modelname="category" data-modelname_plural="categories"
                                                     @checked($category->active)
                                                     id="{{ $category->title . '-active-togglebox' }}" type="checkbox"
                                                     class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">

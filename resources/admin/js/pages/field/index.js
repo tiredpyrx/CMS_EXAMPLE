@@ -1,3 +1,5 @@
+import tippy from "tippy.js";
+import * as DH from "../../helpers/document-helpers";
 import { route } from "ziggy-js";
 
 const TYPE_FIELD = document.getElementById("type");
@@ -185,3 +187,30 @@ SUB_FIELDS.forEach((field) =>
 );
 
 takeActionOnTypes();
+
+if (route().current("fields.edit")) {
+    let preifxCannotBeChangedBecauseURLFeatureUsingIt =
+        document.querySelector("input[name='prefix']").readOnly &&
+        document.querySelector("input[type='checkbox'][name='url']").checked;
+    if (preifxCannotBeChangedBecauseURLFeatureUsingIt) {
+        tippy(document.querySelector("label[for='prefix']"), {
+            content:
+                "Alanın önek özelliği, alanın URL özelliği tarafından kullanılıyor. Önek değerini değiştirmek için alanın URL özelliğini devre dışı bırakın.",
+        });
+    }
+}
+
+// PASTE TITLE VALUE TO SLUG FIELD AS SLUG FORMAT
+let labelField = document.getElementById("label");
+let handlerField = document.getElementById("handler");
+labelField.addEventListener("input", function () {
+    handlerField.value = DH.transformToSlug(this);
+});
+labelField.addEventListener(
+    "blur",
+    () => (handlerField.value = DH.trimGiven(handlerField, "-"))
+);
+handlerField.addEventListener(
+    "blur",
+    () => (handlerField.value = DH.trimGiven(handlerField, "-"))
+);
