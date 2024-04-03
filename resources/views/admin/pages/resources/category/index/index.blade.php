@@ -15,9 +15,15 @@
 
                 <div class="relative border border-gray-100 shadow-md sm:rounded-lg">
                     <div class="relative">
-                        <table class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
+                        <table id="sortable-table"
+                            class="w-full text-left text-sm text-gray-500 rtl:text-right dark:text-gray-400">
                             <thead class="bg-gray-50 text-xs uppercase text-gray-700 dark:bg-gray-700 dark:text-gray-400">
                                 <tr>
+                                    <th scope="col" class="px-4 py-2">
+                                        <span class="sr-only">
+                                            Sıralamayı değiştir
+                                        </span>
+                                    </th>
                                     <th scope="col" class="px-4 py-2">
                                         Kategori Başlık
                                     </th>
@@ -98,10 +104,15 @@
                             </thead>
                             <tbody>
                                 @foreach ($categories as $category)
-                                    <tr @class([
+                                    <tr data-id="{{ $category->id }}" @class([
                                         'border-b bg-white dark:border-gray-700 dark:bg-gray-800',
                                         'disabled' => !$category->active,
                                     ])>
+                                        <td class="px-6 py-4">
+                                            <div class="handle w-full h-full flex items-center justify-center cursor-grab active:cursor-grabbing">
+                                                <i class="fa-solid fa-up-down-left-right"></i>
+                                            </div>
+                                        </td>
                                         <th scope="row"
                                             class="whitespace-nowrap px-6 py-4 font-medium text-gray-900 dark:text-white">
                                             {{ $category->title }}
@@ -118,8 +129,8 @@
                                                     {{ $category->title . ' Aktif Seçim Kutusu' }}
                                                 </label>
                                                 <input data-key="title" data-value="{{ $category->title }}"
-                                                    data-modelname_human="Kategori" data-modelname="category" data-modelname_plural="categories"
-                                                    @checked($category->active)
+                                                    data-modelname_human="Kategori" data-modelname="category"
+                                                    data-modelname_plural="categories" @checked($category->active)
                                                     id="{{ $category->title . '-active-togglebox' }}" type="checkbox"
                                                     class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                                             </div>
@@ -143,14 +154,12 @@
                                                         <ul class="p-1">
                                                             <li
                                                                 class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                                <a
-                                                                    href="{{ route('categories.show', $category->id) }}"
+                                                                <a href="{{ route('categories.show', $category->id) }}"
                                                                     class="w-full text-left text-green-500">Göster</a>
                                                             </li>
                                                             <li
                                                                 class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                                <a
-                                                                    href="{{ route('categories.edit', $category->id) }}"
+                                                                <a href="{{ route('categories.edit', $category->id) }}"
                                                                     class="w-full text-left text-green-500">Düzenle</a>
                                                             </li>
                                                             <li
@@ -212,3 +221,21 @@
         @endif
     </main>
 @endsection
+
+@push('js')
+    <script script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js"></script>
+    <script>
+        const sortableTable = document.getElementById('sortable-table');
+        const sortable = new Sortable(sortableTable.querySelector('tbody'), {
+            animation: 300,
+            handle: '.handle',
+            onEnd: function() {
+                const rows = Array.from(sortableTable.querySelector('tbody').children);
+                const sortedIds = rows.map(row => row.dataset.id);
+                axios.patch(route("categories.updateOrder"), {
+                    sortedIds: sortedIds,
+                })
+            }
+        });
+    </script>
+@endpush

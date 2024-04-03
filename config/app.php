@@ -170,6 +170,7 @@ return [
         App\Providers\RouteServiceProvider::class,
         Jenssegers\Agent\AgentServiceProvider::class,
         Lavary\Menu\ServiceProvider::class,
+        Spatie\EloquentSortable\EloquentSortableServiceProvider::class,
     ])->toArray(),
 
     /*

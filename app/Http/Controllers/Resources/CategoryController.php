@@ -25,7 +25,7 @@ class CategoryController extends Controller
 
     public function index()
     {
-        $categories = Category::paginate(10, ['*'], 'pag');
+        $categories = Category::ordered()->paginate(10, ['*'], 'pag');
         $paginationArray = $categories->links()->elements[0];
         return view('admin.pages.resources.category.index.index', compact('categories', 'paginationArray'));
     }
@@ -146,5 +146,12 @@ class CategoryController extends Controller
     {
         $icon = $request->json()->all()['data']['icon'];
         return $category->update(['icon' => $icon]);
+    }
+
+    public function updateOrder(Request $request)
+    {
+        $sortedIds = $request->input('sortedIds');
+        Category::setNewOrder($sortedIds);
+        return !empty($sortedIds);
     }
 }

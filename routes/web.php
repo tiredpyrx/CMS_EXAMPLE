@@ -47,6 +47,8 @@ Route::group(['middleware' => 'auth'], function () {
             Route::delete('{category}/unactives/children/delete', 'deleteAllUnactiveChildren')->name('categories.deleteAllUnactiveChildren');
 
             Route::patch('{category}/icon', 'updateIcon')->name('categories.update.icon');
+
+            Route::patch('/order/update', 'updateOrder')->name('categories.updateOrder');
         });
 
         Route::group(['prefix' => 'posts', 'controller' => PostController::class], function () {

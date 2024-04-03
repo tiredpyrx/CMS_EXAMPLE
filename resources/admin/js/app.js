@@ -3,6 +3,8 @@
 import "./bootstrap";
 import * as DH from "./helpers/document-helpers";
 import * as SH from "./helpers/system-helpers";
+import Sortable from "sortablejs";
+window.Sortable = Sortable;
 
 const APP_URL = location.host;
 window.APP_URL = APP_URL;

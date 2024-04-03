@@ -114,11 +114,6 @@ class Field extends Model
         'select'
     ];
 
-    public const TYPES_WITH_STEPS = [
-        'number',
-        'range'
-    ];
-
     protected $fillable = [
         'user_id',
         'category_id',

@@ -137,3 +137,7 @@ select {
     max-height: 400px;
     overflow-y: scroll;
 }
+
+.sortable-ghost {
+    opacity: 0.1 !important;
+  }

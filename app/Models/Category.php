@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use AdvancedModelTrait;
 use App\Pipes\ActivityPreventAttributePipe;
 use App\Traits\AdvancedModel;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -10,10 +9,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Spatie\Activitylog\LogOptions;
 use Spatie\Activitylog\Traits\LogsActivity;
+use Spatie\EloquentSortable\Sortable;
+use Spatie\EloquentSortable\SortableTrait;
 
-class Category extends Model
+class Category extends Model implements Sortable
 {
-    use HasFactory, SoftDeletes, LogsActivity, AdvancedModel;
+    use HasFactory, SoftDeletes, LogsActivity, AdvancedModel, SortableTrait;
 
     protected static $ignoreChangedAttributes = ['updated_at'];
 
@@ -45,7 +46,7 @@ class Category extends Model
     ];
 
     public const RULES = [
-        'title' => ['required', 'string', 'max:60'],
+        'title' => ['required', 'string', 'max:60', 'unique:categories,title'],
         'icon' => ['nullable', 'string', 'max:60'],
         'view' => ['nullable', 'string', 'max:60', 'slug:View'],
         'description' => ['nullable', 'string', 'max:160'],
@@ -133,11 +134,11 @@ class Category extends Model
 
     public static function getSpecialCategories()
     {
-        return self::whereIn('title', self::getSpecialTitles())->get();
+        return self::ordered()->whereIn('title', self::getSpecialTitles())->get();
     }
 
     public static function getExceptSpecialCategories()
     {
-        return self::whereNotIn('title', self::getSpecialTitles())->getActives();
+        return self::ordered()->whereNotIn('title', self::getSpecialTitles())->getActives();
     }
 }
