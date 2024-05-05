@@ -21,6 +21,7 @@
         "@migliori/universal-icon-picker": "^1.1.6",
         "jquery": "^3.7.1",
         "slugify": "^1.6.6",
+        "sortablejs": "^1.15.2",
         "sweetalert2": "^11.10.6",
         "tippy.js": "^6.2.5",
         "toastr": "^2.1.4",

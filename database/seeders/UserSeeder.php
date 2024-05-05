@@ -16,8 +16,6 @@ class UserSeeder extends Seeder
     {
         User::factory()->count(10)->create();
 
-        // $user = User::latest()->first();
-
         $user = User::create([
             'role_id' => 3,
             'name' => 'Doga Korkmaz',

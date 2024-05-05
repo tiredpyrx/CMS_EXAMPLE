@@ -139,6 +139,6 @@ class Category extends Model implements Sortable
 
     public static function getExceptSpecialCategories()
     {
-        return self::ordered()->whereNotIn('title', self::getSpecialTitles())->getActives();
+        return self::ordered()->whereNotIn('title', self::getSpecialTitles())->where('active', 1)->get();
     }
 }

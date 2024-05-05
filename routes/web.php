@@ -14,17 +14,6 @@ use App\Http\Controllers\Views\ActivitiesViewController;
 use App\Http\Controllers\Views\TrashViewController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
-|
-*/
-
 Route::group(['middleware' => 'guest'], function () {
     Route::get('/login', LoginViewController::class)->name('login');
     Route::post('/login', AuthenticationController::class)->name('user.log');
@@ -32,7 +21,6 @@ Route::group(['middleware' => 'guest'], function () {
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', DashboardViewController::class)->name('dashboard');
-
     Route::prefix('dashboard')->group(function () {
 
         Route::get('/logout', [UserController::class, 'logout'])->name('logout');
@@ -87,6 +75,5 @@ Route::group(['middleware' => 'auth'], function () {
         Route::resource('fields', FieldController::class)->except(['create', 'store']);
     });
 });
-
 
 Route::get('{slug}', FrontController::class);

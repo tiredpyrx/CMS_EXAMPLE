@@ -17,6 +17,6 @@ class SpecialLink extends Model implements Sortable
         'name',
         'link',
         'view'
-    ]
+    ];
 
 }
