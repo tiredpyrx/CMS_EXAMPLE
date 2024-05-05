@@ -205,6 +205,6 @@ class Post extends Model
 
     public function getActiveFields(): Collection
     {
-        return collect(Field::where('post_id', $this->id)->getActives());
+        return collect(Field::where('post_id', $this->id)->where('active', 1)->get());
     }
 }

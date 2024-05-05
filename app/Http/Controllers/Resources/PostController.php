@@ -32,7 +32,7 @@ class PostController extends Controller
 
     public function create(Category $category)
     {
-        $fields = Field::where('category_id', $category->id)->getActives();
+        $fields = Field::where('category_id', $category->id)->where('active', 1)->get();
         $changeFrequencyOptions = Post::getChangeFrequencyValues();
         return view('admin.pages.resources.post.create.index', compact('category', 'fields', 'changeFrequencyOptions'));
     }
@@ -52,7 +52,7 @@ class PostController extends Controller
 
     public function edit(Post $post)
     {
-        $fields = Field::where('post_id', $post->id)->getActives();
+        $fields = Field::where('post_id', $post->id)->where('active', 1)->get();
         $category = Category::find($post->category_id);
         $changeFrequencyOptions = Post::getChangeFrequencyValues();
         $mediaFields = $post->getFieldsWhenTypes(FieldTypes::getMediaTypes());
