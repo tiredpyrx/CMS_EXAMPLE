@@ -34,7 +34,9 @@ function getCategoryPosts(string $categoryTitle)
     return Category::where([
         ['title', $categoryTitle],
         ['active', 1]
-    ])->firstOrFail()->posts;
+    ])->firstOr(function() {
+        return (new Category);
+    })->posts;
 }
 
 function dateHuman(string $carbon, $format = '')

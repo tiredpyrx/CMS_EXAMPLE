@@ -9,8 +9,11 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class FrontController extends Controller
 {
-    public function __invoke(string $slug)
+    public function __invoke(string $slug = '')
     {
+        if (!$slug) {
+            return view('front.pages.index');
+        }
         foreach (Category::where('have_details', 1)->get()->all() as $category) {
             foreach (Post::where([
                 ['category_id', $category->id],
@@ -21,8 +24,8 @@ class FrontController extends Controller
                     $postsCount = $category->posts_count;
                     $datas = ['post' => $post, 'posts' => $posts, 'postCount' => $postsCount, 'postTitle' => $post->getTitle()];
                     $datas['viewName'] = match (!is_null($category->view)) {
-                        true => $category?->view,
-                        default => $post?->view,
+                        true => $category->view,
+                        default => $post->field('view'),
                     };
                     if ($category->view) {
                         $datas['viewName'] = $category->view;

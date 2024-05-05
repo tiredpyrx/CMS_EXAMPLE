@@ -33,9 +33,6 @@
         <a href="{{ route('categories.show', $category->id) }}" class="btn-secondary">
             Kategoriyi Gör
         </a>
-        <a href="{{ route('posts.index') }}" class="btn-secondary">
-            Tüm Gönderiler
-        </a>
     </x-document-header>
     <form class="app-form" action="{{ route('posts.store', $category->id) }}" method="POST" enctype="multipart/form-data">
         @csrf

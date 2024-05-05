@@ -8,7 +8,9 @@ use App\Actions\SaveUploadedFileToPublicDir;
 use App\Models\Category;
 use App\Models\Field;
 use App\Models\Post;
+use BadMethodCallException;
 use Carbon\Carbon;
+use GuzzleHttp\Exception\ServerException;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -39,6 +41,7 @@ class PostService
                     collect($fieldValue)->each(function ($value) use ($newField, $post) {
                         $newField->fields()->create([
                             'user_id' => auth()->id(),
+                            // ? why field_id is $post->id
                             'field_id' => $post->id,
                             'handler' => hexdec(uniqid($newField->handler)),
                             'value' => $value,
@@ -395,4 +398,36 @@ class PostService
             ]);
         }
     }
+
+    public function handleSpecialCategoryPostFeaturesOnCreate(Post $post)
+    {
+        
+        if (Category::find($post->category_id)->title == 'Home Sections')
+            $this::tryToCreateNewSection($post);
+    }
+
+    public static function tryToCreateNewSection(Post $post)
+    {
+        $post_view = $post->field('view');
+        if (!$post_view) throw new BadMethodCallException;
+        $file_path = 'resources/views/front/partials/sections/' . $post_view . '.blade.php';
+        if (!File::exists($file_path))
+            File::put(base_path('resources/views/front/partials/sections/' . $post->field('view') . '.blade.php'), '{{ $section->field("view") }}');
+    }
+
+    public function handleSpecialCategoryPostFeaturesOnDelete(Post $post)
+    {
+        if (Category::find($post->category_id)->title == 'Home Sections')
+            $this::tryToDeleteSection($post);
+    }
+
+    public static function tryToDeleteSection(Post $post)
+    {
+        $post_view = $post->field('view');
+        if (!$post_view) throw new BadMethodCallException;
+        $file_path = 'resources/views/front/partials/sections/' . $post_view . '.blade.php';
+        if (File::exists($file_path))
+            File::delete(base_path('resources/views/front/partials/sections/' . $post->field('view') . '.blade.php'));
+    }
+
 }

@@ -21,6 +21,7 @@ Route::group(['middleware' => 'guest'], function () {
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', DashboardViewController::class)->name('dashboard');
+
     Route::prefix('dashboard')->group(function () {
 
         Route::get('/logout', [UserController::class, 'logout'])->name('logout');
@@ -76,4 +77,5 @@ Route::group(['middleware' => 'auth'], function () {
     });
 });
 
-Route::get('{slug}', FrontController::class);
+
+Route::get('{slug?}', FrontController::class);

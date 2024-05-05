@@ -53,6 +53,9 @@ class CategoryController extends Controller
 
     public function edit(Category $category)
     {
+        if ($category->isSpecial()) {
+            return '403';
+        }
         $fields = $category->fields()->paginate(10);
         $paginationArray  = $fields->links()->elements[0];
         $notEditableFields = Field::PRIMARY_HANDLERS;

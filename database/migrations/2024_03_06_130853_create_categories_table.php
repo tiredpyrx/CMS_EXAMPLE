@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('view')->nullable();
             $table->text('description')->nullable();
 
-            $table->bigInteger('order');
+            $table->bigInteger('order')->nullable();
 
             $table->boolean('have_details')->nullable()->default(Category::DEFAULT_HAVE_DETAILS_VALUE);
             $table->boolean('as_page')->nullable()->default(Category::DEFAULT_AS_PAGE_VALUE);

@@ -1,1 +1,0 @@
-{{ $section->field('section-view') }}

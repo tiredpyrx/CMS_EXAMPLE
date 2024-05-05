@@ -38,6 +38,10 @@ class CategoryObserver
         }
 
         $category->fields()->createMany($fieldRecords);
+
+        $category->updateQuietly([
+            'order' => Category::count() + 1
+        ]);
     }
 
     /**

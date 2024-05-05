@@ -5,9 +5,11 @@
         @if (auth()->user()->role == 'admin' || auth()->user()->role == 'editor')
             {{-- add button here --}}
         @endif
-        <a href="{{ route('categories.edit', $category->id) }}" class="btn-secondary">
-            Kategoriyi Düzenle
-        </a>
+        @if ($category->isOrdinary())
+            <a href="{{ route('categories.edit', $category->id) }}" class="btn-secondary">
+                Kategoriyi Düzenle
+            </a>
+        @endif
         <a href="{{ route('posts.create', $category->id) }}" class="btn-secondary">
             Gönderi Ekle
         </a>
@@ -40,57 +42,57 @@
                                     </span>
                                     <div
                                         class="flex-column z-20 flex flex-wrap items-center justify-end space-y-4 dark:bg-gray-900 md:flex-row md:space-y-0">
-                                        <div class="flex relative">
+                                        <div class="relative flex">
 
                                             <div
                                                 class="document_dropdown_trigger flex h-9 w-9 items-center justify-center rounded-full duration-200 hover:bg-black/25">
                                                 <i class="fa fa-ellipsis-vertical"></i>
                                             </div>
                                             <div
-                                                    class="document_dropdown close-on-outside-click absolute bottom-1/2 right-full hidden translate-y-3/4 bg-gray-50 text-sm shadow">
-                                                    <ul class="p-1">
-                                                        <li
-                                                            class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                            <form action="" method="POST">
-                                                                @csrf
-                                                                @method('PUT')
-                                                                <button class="text-gray-800">Seçilenlerin
-                                                                    aktifini
-                                                                    aç</button>
-                                                            </form>
-                                                        </li>
-                                                        <li
-                                                            class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                            <form action="" method="POST">
-                                                                @csrf
-                                                                @method('PUT')
-                                                                <button class="text-gray-800">Seçilenlerin
-                                                                    aktifini
-                                                                    kapa</button>
-                                                            </form>
-                                                        </li>
-                                                        <li
-                                                            class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                            <form action="" method="POST">
-                                                                @csrf
-                                                                @method('PUT')
-                                                                <button class="text-gray-800">Sırala</button>
-                                                            </form>
-                                                        </li>
-                                                        <li
-                                                            class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                            <button
-                                                                onclick="deleteAllUnactivesGlobal('categories', 'post', '{{ $category->id }}')"
-                                                                class="text-red-500">Aktif olmayanları sil</button>
-                                                        </li>
-                                                        <li
-                                                            class="whitespace-nowrap rounded-sm px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                            <button onclick="selectActionDeleteAllSelected('posts')"
-                                                                class="w-full text-left text-red-500">Seçilenleri
-                                                                sil</button>
-                                                        </li>
-                                                    </ul>
-                                                </div>
+                                                class="document_dropdown close-on-outside-click absolute bottom-1/2 right-full hidden translate-y-3/4 bg-gray-50 text-sm shadow">
+                                                <ul class="p-1">
+                                                    <li
+                                                        class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                        <form action="" method="POST">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <button class="text-gray-800">Seçilenlerin
+                                                                aktifini
+                                                                aç</button>
+                                                        </form>
+                                                    </li>
+                                                    <li
+                                                        class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                        <form action="" method="POST">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <button class="text-gray-800">Seçilenlerin
+                                                                aktifini
+                                                                kapa</button>
+                                                        </form>
+                                                    </li>
+                                                    <li
+                                                        class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                        <form action="" method="POST">
+                                                            @csrf
+                                                            @method('PUT')
+                                                            <button class="text-gray-800">Sırala</button>
+                                                        </form>
+                                                    </li>
+                                                    <li
+                                                        class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                        <button
+                                                            onclick="deleteAllUnactivesGlobal('categories', 'post', '{{ $category->id }}')"
+                                                            class="text-red-500">Aktif olmayanları sil</button>
+                                                    </li>
+                                                    <li
+                                                        class="whitespace-nowrap rounded-sm px-4 py-1 font-medium text-black/95 hover:bg-black/20">
+                                                        <button onclick="selectActionDeleteAllSelected('posts')"
+                                                            class="w-full text-left text-red-500">Seçilenleri
+                                                            sil</button>
+                                                    </li>
+                                                </ul>
+                                            </div>
                                         </div>
                                     </div>
                                 </th>
@@ -123,8 +125,8 @@
                                                 {{ $post->title . ' Aktif Seçim Kutusu' }}
                                             </label>
                                             <input data-key="title" data-value="{{ $post->title }}"
-                                                data-modelname_human="Gönderi" data-modelname="post" data-modelname_plural="categories"
-                                                @checked($post->active)
+                                                data-modelname_human="Gönderi" data-modelname="post"
+                                                data-modelname_plural="categories" @checked($post->active)
                                                 id="{{ $post->title . '-active-togglebox' }}" type="checkbox"
                                                 class="h-4 w-4 rounded border-gray-300 bg-gray-100 text-blue-600 focus:ring-2 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700 dark:ring-offset-gray-800 dark:focus:ring-blue-600">
                                         </div>
@@ -148,20 +150,18 @@
                                                     <ul class="p-1">
                                                         <li
                                                             class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                            <a
-                                                                href="{{ route('posts.show', $post->id) }}"
+                                                            <a href="{{ route('posts.show', $post->id) }}"
                                                                 class="w-full text-left text-green-500">Göster</a>
                                                         </li>
                                                         <li
                                                             class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                            <a
-                                                                href="{{ route('posts.edit', $post->id) }}"
+                                                            <a href="{{ route('posts.edit', $post->id) }}"
                                                                 class="w-full text-left text-green-500">Düzenle</a>
                                                         </li>
                                                         <li
                                                             class="whitespace-nowrap rounded-sm border-b border-b-black/20 border-opacity-40 px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                            <button data-route_prefix="posts"
-                                                                data-route_suffix="duplicate" data-method="post"
+                                                            <button data-route_prefix="posts" data-route_suffix="duplicate"
+                                                                data-method="post"
                                                                 data-resource_unique="{{ $post->id }}"
                                                                 data-success_message="Gönderi başarıyla klonlandı!"
                                                                 data-error_message="Gönderi klonlanırken bir hata oluştu!"
@@ -170,9 +170,8 @@
                                                         </li>
                                                         <li
                                                             class="whitespace-nowrap rounded-sm px-4 py-1 font-medium text-black/95 hover:bg-black/20">
-                                                            <button data-route_prefix="posts"
-                                                                data-route_suffix="destroy" data-parent_node_name="TR"
-                                                                data-method="delete"
+                                                            <button data-route_prefix="posts" data-route_suffix="destroy"
+                                                                data-parent_node_name="TR" data-method="delete"
                                                                 data-resource_unique="{{ $post->id }}"
                                                                 data-success_message="Gönderi başarıyla silindi!"
                                                                 data-error_message="Gönderiyi silerken bir hata oluştu!"

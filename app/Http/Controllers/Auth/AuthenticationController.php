@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Jenssegers\Agent\Agent;
@@ -15,8 +14,6 @@ class AuthenticationController extends Controller
         $safeRequest = $request->only('nickname', 'password');
         $remember = $request->input('remember', false);
         $loggedSuccessfully = Auth::attempt($safeRequest, $remember);
-
-        // $user->notify('remember');
 
         $agent = new Agent();
         $nickname = $request->nickname;

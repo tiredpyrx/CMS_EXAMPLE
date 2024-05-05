@@ -3,8 +3,10 @@
 @section('page')
     <div class="p-5">
         @foreach (getCategoryPosts('Home Sections') as $section)
-            @include('front.pages.partials.sections.' . $section->field('section-view'))
-            <hr>
+            @if ($section->active)
+                @include('front.partials.sections.' . $section->field('view'))
+                <hr>
+            @endif
         @endforeach
     </div>
 @endsection

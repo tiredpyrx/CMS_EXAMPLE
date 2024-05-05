@@ -141,4 +141,14 @@ class Category extends Model implements Sortable
     {
         return self::ordered()->whereNotIn('title', self::getSpecialTitles())->where('active', 1)->get();
     }
+
+    public function isSpecial()
+    {
+        return self::getSpecialCategories()->contains($this);
+    }
+
+    public function isOrdinary()
+    {
+        return !$this->isSpecial();
+    }
 }

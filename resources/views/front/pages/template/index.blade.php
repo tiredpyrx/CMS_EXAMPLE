@@ -1,7 +1,7 @@
 @extends('templates.front')
 
 @section('document-title')
-    {{ $postTitle }}
+    {{ isset($postTitle) ? $postTitle : 'SITENAME' }}
 @endsection
 
 <!-- Breadcrumb -->

@@ -41,6 +41,8 @@ class PostController extends Controller
     {
         $post = $this->postService->create($request, $category);
         $this->postService->registerFields($post, $request);
+        if ($category->isSpecial())
+            $this->postService->handleSpecialCategoryPostFeaturesOnCreate($post);
         return to_route('categories.show', $category->id)->with('success', 'Gönderi başarıyla eklendi!');
     }
 
@@ -73,6 +75,8 @@ class PostController extends Controller
 
     public function destroy(Post $post)
     {
+        if (Category::find($post->category_id)->isSpecial())
+            $this->postService->handleSpecialCategoryPostFeaturesOnDelete($post);
         return $post->delete();
     }
 
