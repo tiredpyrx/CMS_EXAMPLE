@@ -13,6 +13,8 @@ class StoreCategoryRequest extends AppFormRequest
 
     public function rules(): array
     {
-        return Category::RULES;
+        $rules = Category::RULES;
+        $rules['title'][] = 'unique:categories,title';
+        return $rules;
     }
 }

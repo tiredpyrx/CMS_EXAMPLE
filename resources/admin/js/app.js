@@ -9,7 +9,6 @@ window.Sortable = Sortable;
 const APP_URL = location.host;
 window.APP_URL = APP_URL;
 
-DH.replaceToIcon();
 SH.toggleResourcesActive();
 DH.changeSluggableFieldsFormat();
 

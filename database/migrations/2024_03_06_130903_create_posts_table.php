@@ -14,8 +14,8 @@ return new class extends Migration
     {
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained();
-            $table->foreignId('category_id')->constrained()->cascadeOnDelete();
+            $table->unsignedBigInteger('user_id')->constrained('users');
+            $table->unsignedBigInteger('category_id')->constrained('categories')->cascadeOnDelete();
             $table->string('title')->unique();
             $table->date('publish_date')->nullable();
             $table->boolean('published')->nullable();

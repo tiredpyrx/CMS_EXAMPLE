@@ -15,7 +15,8 @@ class TrashViewController extends Controller
      */
     public function __invoke()
     {
-        // gate is user authorized to view trash?
+        // gate -> is user authorized to view trash?
+        
         $resources = [
             'category' => [
                 'all_count' => Category::count(),

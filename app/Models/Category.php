@@ -46,7 +46,7 @@ class Category extends Model implements Sortable
     ];
 
     public const RULES = [
-        'title' => ['required', 'string', 'max:60', 'unique:categories,title'],
+        'title' => ['required', 'string', 'max:60'],
         'icon' => ['nullable', 'string', 'max:60'],
         'view' => ['nullable', 'string', 'max:60', 'slug:View'],
         'description' => ['nullable', 'string', 'max:160'],

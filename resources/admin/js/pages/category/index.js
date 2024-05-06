@@ -1,5 +1,5 @@
 import tippy from "tippy.js";
-import * as DH from "../../helpers/document-helpers";
+import * as DH from "../../helpers/document-helpers.js";
 
 tippy("[for='title']", {
     content: "Kategori başlık, zorunlu, en fazla 60 karakter",

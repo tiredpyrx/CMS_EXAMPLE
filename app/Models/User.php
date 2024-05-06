@@ -20,7 +20,8 @@ class User extends Authenticatable
 
     public const AVATAR_FILE_PATHS = [
         'nogender' => 'assets/users/avatars/nogender/avatar-nogender.jpg',
-        // 'avatar-male.jpg',
+        'male' => 'assets/users/avatars/male/avatar-male.jpg',
+        'female' => 'assets/users/avatars/female/avatar-female.svg',
         // 'avatar-female.jpg',
         // 'avatar-boy.jpg',
         // 'avatar-girl.jpg',
